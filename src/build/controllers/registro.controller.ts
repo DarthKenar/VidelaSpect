@@ -6,4 +6,7 @@ export const getIndex = async (req:Request, res:Response)=>{
 export const postRegistro = async (req:Request, res:Response)=>{
     res.render("home")
 }
+export const getCamera = async (req:Request, res:Response)=>{
+    res.render("cam")
+}
 

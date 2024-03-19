@@ -3,10 +3,12 @@ const routerRegistro = express.Router();
 
 import {
   getIndex,
-  postRegistro
+  postRegistro,
+  getCamera
 } from "../controllers/registro.controller"
 
 routerRegistro.get("/", getIndex)
 routerRegistro.post("/", postRegistro)
+routerRegistro.get("/cam", getCamera)
 
 module.exports = routerRegistro;

@@ -1,0 +1,41 @@
+{{!-- <script defer src="cam.js"></script>
+<section class="cam-container">
+    <div class="video-wrap">
+        <video class="video"></video>
+    </div>
+    <div class="canvas-wrap">
+        <canvas class="canvas" width="420" height="340">
+            <img
+            src=""
+            class="photo"
+            alt="photo"
+            />
+        </canvas>
+    </div>
+    <div>
+        <button class="start-btn">PHOTO</button>
+    </div>
+</section> --}}
+<div class="flex flex-col w-full lg:flex-row cam-container">
+    <div class="grid flex-grow h-[90vh] card bg-base-300 rounded-box place-items-center mt-[5vh]">
+        <div class="video-wrap">
+            <video class="video"></video>
+        </div>
+    </div> 
+    <div class="divider lg:divider-horizontal">...</div> 
+    <div class="grid flex-grow h-[90vh] card bg-base-300 rounded-box place-items-center mt-[5vh]">
+        <div class="canvas-wrap">
+            <canvas class="canvas" width="420" height="340">
+                <img
+                src=""
+                class="photo"
+                alt="photo"
+                />
+            </canvas>
+        </div>
+    </div>
+    <div>
+        <button class="start-btn btn">PHOTO</button>
+    </div>
+</div>
+<script defer src="/js/cam.js"></script>
