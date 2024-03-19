@@ -1,1 +1,61 @@
-<h1 class="bg-blue-400">Example Apps: Home</h1>
+<div class="flex h-full flex-col w-full border-opacity-50 p-10">
+    <div class="grid h-[30%] card bg-base-300 rounded-box place-items-center">
+        <h1 class="text-5xl text-center font-mono">MARZO</h1>
+        <div class="grid grid-flow-col gap-5 text-center auto-cols-max">
+            <div class="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
+                <span class="countdown font-mono text-5xl">
+                <span style="--value:15;"></span>
+                </span>
+                Día
+            </div> 
+            <div class="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
+                <span class="countdown font-mono text-5xl">
+                <span style="--value:10;"></span>
+                </span>
+                Hora
+            </div> 
+            <div class="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
+                <span class="countdown font-mono text-5xl">
+                <span style="--value:24;"></span>
+                </span>
+                Min
+            </div> 
+            <div class="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
+                <span class="countdown font-mono text-5xl">
+                <span style="--value:48;"></span>
+                </span>
+                Seg
+            </div>
+        </div>
+    </div>
+    <div class="divider">OR</div>
+    <div class="grid h-[70%] card bg-base-300 rounded-box place-items-center">
+        <div class="card w-96 bg-base-200 shadow-xl">
+            <label class="text-center m-4" for="dni">Ingrese su numero de documento</label>
+            <label class="input input-bordered flex items-center gap-2 m-4">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4 opacity-70"><path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" /></svg>
+                <input id="dni" type="text" class="grow" placeholder="Documento" />
+            </label>
+            <section id="teclado">
+                <div class="flex justify-center gap-1 my-1 w-full">
+                    <kbd class="kbd">7</kbd>
+                    <kbd class="kbd">8</kbd>
+                    <kbd class="kbd">9</kbd>
+                </div> 
+                <div class="flex justify-center gap-1 my-1 w-full">
+                    <kbd class="kbd">4</kbd>
+                    <kbd class="kbd">5</kbd>
+                    <kbd class="kbd">6</kbd>
+                </div> 
+                <div class="flex justify-center gap-1 my-1 w-full">
+                    <kbd class="kbd">1</kbd>
+                    <kbd class="kbd">2</kbd>
+                    <kbd class="kbd">3</kbd>
+                </div>
+                <div class="flex justify-center gap-1 my-1 w-full">
+                    <kbd class="kbd">0</kbd>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
