@@ -5,10 +5,13 @@ const video = document.querySelector(".video");
 const canvas = document.querySelector(".canvas");
 
 //tomar foto
-const button = document.querySelector(".start-btn");
+const btnFoto = document.querySelector(".start-btn");
 
 //mostrar foto
 const photo = document.querySelector(".photo");
+
+//enviar datos de foto
+const btnEnviar = document.querySelector("#enviar");
 
 //constrains
 /*
@@ -46,9 +49,27 @@ const handleSucces = (stream) => {
 getVideo();
 
 //4. ----------> Button y foto
-button.addEventListener("click", () => {
+btnFoto.addEventListener("click", () => {
   let context = canvas.getContext("2d");
   context.drawImage(video, 0, 0, 640, 360);
   let data = canvas.toDataURL("image/png");
   photo.setAttribute("src", data);
+});
+
+btnEnviar.addEventListener("click", async ()=>{
+  // Convertir dataURL a Blob
+  let response = await fetch(data);
+  let blob = await response.blob();
+
+  // Enviar Blob a un servidor
+  let formData = new FormData();
+  formData.append("image", blob, "image.png");
+
+  fetch("https://tu-servidor.com/subir-imagen", {
+    method: "POST",
+    body: formData,
+  })
+    .then((response) => response.text())
+    .then((data) => console.log(data))
+    .catch((error) => console.error(error));
 });
