@@ -4,7 +4,7 @@
         <video class="video"></video>
     </div>
     <div class="canvas-wrap">
-        <canvas class="canvas" width="420" height="340">
+        <canvas class="canvas" width="640" height="420">
             <img
             src=""
             class="photo"
@@ -16,16 +16,17 @@
         <button class="start-btn">PHOTO</button>
     </div>
 </section> --}}
-<div class="flex flex-col w-full lg:flex-row cam-container">
+<div class="flex flex-col w-[90%] lg:flex-row cam-container m-auto">
     <div class="grid flex-grow h-[90vh] card bg-base-300 rounded-box place-items-center mt-[5vh]">
         <div class="video-wrap">
-            <video class="video"></video>
+            <video class="video rounded-xl"></video>
         </div>
-    </div> 
-    <div class="divider lg:divider-horizontal">...</div> 
+        <div class="btn bg-base-300 "></div>
+    </div>
+    <div class="divider lg:divider-horizontal ">...</div> 
     <div class="grid flex-grow h-[90vh] card bg-base-300 rounded-box place-items-center mt-[5vh]">
-        <div class="canvas-wrap">
-            <canvas class="canvas" width="420" height="340">
+        <div class="canvas-wrap ">
+            <canvas class="canvas rounded-xl" width="640" height="420">
                 <img
                 src=""
                 class="photo"
@@ -33,9 +34,10 @@
                 />
             </canvas>
         </div>
+        <div>
+            <button class="start-btn btn btn-outline">FOTO</button>
+        </div>
     </div>
-    <div>
-        <button class="start-btn btn">PHOTO</button>
-    </div>
+
 </div>
 <script defer src="/js/cam.js"></script>
