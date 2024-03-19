@@ -1,0 +1,30 @@
+<div class="flex flex-col w-[90%] h-[90%] lg:flex-row cam-container m-auto">
+    <div class="grid flex-grow h-[90%] card bg-base-300 rounded-box place-items-center mt-[5%]">
+        <div class="video-wrap">
+            <video class="video rounded-xl"></video>
+        </div>
+        <div class="btn bg-base-300 "></div>
+    </div>
+    <div class="divider lg:divider-horizontal ">...</div> 
+    <div class="grid flex-grow h-[90%] card bg-base-300 rounded-box place-items-center mt-[5%]">
+        <div class="canvas-wrap ">
+            <canvas class="canvas rounded-xl" width="640" height="360">
+                <img
+                src=""
+                class="photo"
+                alt="photo"
+                />
+            </canvas>
+        </div>
+        <div class="join">
+            <button class="start-btn btn btn-outline join-item">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-camera"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                FOTO
+            </button>
+            <button class="start-btn btn btn-outline join-item">ENVIAR</button>
+        </div>
+        
+    </div>
+
+</div>
+<script defer src="/js/cam.js"></script>

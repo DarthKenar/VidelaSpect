@@ -24,15 +24,15 @@ app.use((req:Request, res:Response, next:NextFunction)=>{
 })
 
 //Routers
-const routerRegistro = require('./routes/registro.routes');
-app.use('/registro', routerRegistro)
+const routerPersonal = require('./routes/personal.routes');
+app.use('/personal', routerPersonal)
 //...
 
-app.use((req:Request, res:Response)=>{
+app.use("/",(req:Request, res:Response)=>{
     console.log(req.method)
     console.log(req.body)
     console.log(req.path)
-    res.status(404).json({error:"La ruta solicitada no se encuentra."})
+    res.redirect("/personal/dni")
 })
 
 export default app;
