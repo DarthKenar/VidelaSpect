@@ -5,7 +5,7 @@ import { engine } from 'express-handlebars';
 
 const app = express()
 const PATH = require("path")
-
+const bodyParser = require('body-parser');
 
 //Handlebars config
 app.engine('handlebars', engine());
@@ -14,7 +14,9 @@ app.set('views', './dist/views');
 //
 
 //Middlewares
+app.use(express.json());
 app.use(express.static(PATH.join(__dirname, '../public')));
+app.use(bodyParser.urlencoded({ extended: true }));
 //
 
 app.use((req:Request, res:Response, next:NextFunction)=>{
