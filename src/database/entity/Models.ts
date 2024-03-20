@@ -7,13 +7,13 @@ export class Personal {
     id: number
 
     @Column()
-    Nombre: string
+    name: string
 
     @Column()
     dni: string
 
     @Column()
-    cargo: string
+    position: string
 
     @Column()
     admin: boolean

@@ -1793,6 +1793,10 @@ html {
   margin: auto;
 }
 
+.m-10 {
+  margin: 2.5rem;
+}
+
 .my-1 {
   margin-top: 0.25rem;
   margin-bottom: 0.25rem;
@@ -1808,6 +1812,10 @@ html {
 
 .mt-\[5\%\] {
   margin-top: 5%;
+}
+
+.mt-auto {
+  margin-top: auto;
 }
 
 .flex {
@@ -1826,6 +1834,10 @@ html {
   height: 30%;
 }
 
+.h-\[3rem\] {
+  height: 3rem;
+}
+
 .h-\[70\%\] {
   height: 70%;
 }
@@ -1840,14 +1852,6 @@ html {
 
 .h-full {
   height: 100%;
-}
-
-.h-\[3rem\] {
-  height: 3rem;
-}
-
-.h-\[2rem\] {
-  height: 2rem;
 }
 
 .w-4 {
@@ -1866,20 +1870,16 @@ html {
   width: 16rem;
 }
 
+.w-\[3rem\] {
+  width: 3rem;
+}
+
 .w-\[90\%\] {
   width: 90%;
 }
 
 .w-full {
   width: 100%;
-}
-
-.w-\[3rem\] {
-  width: 3rem;
-}
-
-.w-\[2rem\] {
-  width: 2rem;
 }
 
 .flex-grow {
@@ -1974,6 +1974,22 @@ html {
   padding: 1.25rem;
 }
 
+.pb-6 {
+  padding-bottom: 1.5rem;
+}
+
+.pt-6 {
+  padding-top: 1.5rem;
+}
+
+.pb-4 {
+  padding-bottom: 1rem;
+}
+
+.pt-4 {
+  padding-top: 1rem;
+}
+
 .text-center {
   text-align: center;
 }
@@ -1985,6 +2001,10 @@ html {
 .text-5xl {
   font-size: 3rem;
   line-height: 1;
+}
+
+.font-semibold {
+  font-weight: 600;
 }
 
 .text-neutral-content {

@@ -3,6 +3,8 @@ let dniLabel = document.getElementById('dni');
 
 teclado.addEventListener('click', function(event) {
     let numero = event.target.id;
-    dniLabel.value = `${dniLabel.value}${numero}`
+    if(!isNaN(numero)){
+        dniLabel.value = `${dniLabel.value}${numero}`
+    }
 });
 
