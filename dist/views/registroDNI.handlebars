@@ -28,36 +28,37 @@
             </div>
         </div>
     </div>
-    <div class="divider">OR</div>
+    <div class="divider">INGRESE SU N° DE DNI</div>
     <div class="grid h-[70%] card bg-base-300 rounded-box place-items-center">
         <div class="card w-96 bg-base-200 shadow-xl">
             <label class="input input-bordered flex items-center gap-2 w-[16rem] m-auto mb-5 mt-10">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4 opacity-70"><path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" /></svg>
-                <input id="dni" type="text" class="grow" placeholder="Documento" />
+                <input id="dni" type="text" class="grow" placeholder="Documento" readonly />
             </label>
             <section id="teclado">
                 <div class="flex justify-center gap-1 my-1 w-full">
-                    <kbd class="kbd">7</kbd>
-                    <kbd class="kbd">8</kbd>
-                    <kbd class="kbd">9</kbd>
+                    <kbd id="7" class="kbd btn w-[3rem] h-[3rem]">7</kbd>
+                    <kbd id="8" class="kbd btn w-[3rem] h-[3rem]">8</kbd>
+                    <kbd id="9" class="kbd btn w-[3rem] h-[3rem]">9</kbd>
                 </div> 
                 <div class="flex justify-center gap-1 my-1 w-full">
-                    <kbd class="kbd">4</kbd>
-                    <kbd class="kbd">5</kbd>
-                    <kbd class="kbd">6</kbd>
+                    <kbd id="4" class="kbd btn w-[3rem] h-[3rem]">4</kbd>
+                    <kbd id="5" class="kbd btn w-[3rem] h-[3rem]">5</kbd>
+                    <kbd id="6" class="kbd btn w-[3rem] h-[3rem]">6</kbd>
                 </div> 
                 <div class="flex justify-center gap-1 my-1 w-full">
-                    <kbd class="kbd">1</kbd>
-                    <kbd class="kbd">2</kbd>
-                    <kbd class="kbd">3</kbd>
+                    <kbd id="1" class="kbd btn w-[3rem] h-[3rem]">1</kbd>
+                    <kbd id="2" class="kbd btn w-[3rem] h-[3rem]">2</kbd>
+                    <kbd id="3" class="kbd btn w-[3rem] h-[3rem]">3</kbd>
                 </div>
                 <div class="flex justify-center gap-1 my-1 w-full">
-                    <kbd class="kbd">0</kbd>
+                    <kbd id="0" class="kbd btn w-[3rem] h-[3rem]">0</kbd>
                 </div>
             </section>
             <div class="p-5 m-auto mb-5">
-                <a href="/personal/foto"><input class="btn btn-outline btn-wide" type="button" value="ENVIAR"></a>
+                <a href="/personal/dni/send"><input class="btn btn-outline btn-wide" type="button" value="ENVIAR"></a>
             </div>
         </div>
     </div>
 </div>
+<script defer src="/js/kbr-dni.js"></script>
