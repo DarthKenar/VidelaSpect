@@ -15,7 +15,8 @@ export class Personal {
     @Column()
     cargo: string
 
-
+    @Column()
+    admin: boolean
 }
 
 @Entity()
@@ -42,6 +43,6 @@ export class Registro {
     fecha: Date;
 
     @Column({ type: 'time' })
-    miHora: Date;
+    hora: Date;
     
 }
