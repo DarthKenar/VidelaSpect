@@ -1,5 +1,5 @@
 "use strict";
-
+var data;
 //capturar video ó imagen
 const video = document.querySelector(".video");
 const canvas = document.querySelector(".canvas");
@@ -52,7 +52,7 @@ getVideo();
 btnFoto.addEventListener("click", () => {
   let context = canvas.getContext("2d");
   context.drawImage(video, 0, 0, 640, 360);
-  let data = canvas.toDataURL("image/png");
+  data = canvas.toDataURL("image/png");
   photo.setAttribute("src", data);
 });
 
@@ -65,7 +65,7 @@ btnEnviar.addEventListener("click", async ()=>{
   let formData = new FormData();
   formData.append("image", blob, "image.png");
 
-  fetch("https://tu-servidor.com/subir-imagen", {
+  fetch("http://localhost:7000/personal/foto/send", {
     method: "POST",
     body: formData,
   })

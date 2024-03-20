@@ -1,5 +1,7 @@
 const express = require('express');
 const routerPersonal = express.Router();
+import multer from 'multer';
+const upload = multer({ storage: multer.memoryStorage() });
 
 import {
   getRegistroDNI,
@@ -13,8 +15,8 @@ import {
 routerPersonal.get("/dni", getRegistroDNI)
 routerPersonal.get("/foto", getRegistroFoto)
 //POST
-routerPersonal.get("/dni/send", postRegistroDNI)
-routerPersonal.get("/foto/send", postRegistroFoto)
+routerPersonal.post("/dni/send", postRegistroDNI)
+routerPersonal.post("/foto/send",upload.single('image'), postRegistroFoto)
 
 //ERRORES
 routerPersonal.get("/500", get500)

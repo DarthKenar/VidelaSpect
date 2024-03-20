@@ -11,7 +11,6 @@ export const getRegistroFoto = async (req:Request, res:Response)=>{
 }
 
 export const postRegistroDNI = async (req:Request, res:Response)=>{
-    let error:string[] = []
     try{
         if(req.query.dni){
             let dni:string = req.query.dni.toString()
@@ -20,12 +19,10 @@ export const postRegistroDNI = async (req:Request, res:Response)=>{
             if(persona){
                 res.render("/personal/foto", persona)
             }else{
-                error.push(`El número de DNI - ${dni} no está registrado en el sistema. Contacte al administrador.`)
-                res.render("/personal/dni",error)
+                res.render("/personal/dni",{error: `El número de DNI - ${dni} no está registrado en el sistema. Contacte al administrador.`})
             }
         }else{
-            error.push("El número de DNI no fue ingresado.")
-            res.render("/personal/dni",error)
+            res.render("/personal/dni",{error: "El número de DNI no fue ingresado."})
         }
     }catch(err){
         console.log(err)
@@ -34,7 +31,16 @@ export const postRegistroDNI = async (req:Request, res:Response)=>{
 }
 
 export const postRegistroFoto = async (req:Request, res:Response)=>{
-    res.redirect("/personal/dni")
+    try{
+        console.log("------")
+        let data = req.file
+        console.log(data)
+        console.log("------")
+        res.redirect("/personal/dni")
+    }catch(err){
+        console.log(err)
+    }
+
 }
 
 
