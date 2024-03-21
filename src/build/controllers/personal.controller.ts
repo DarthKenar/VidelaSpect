@@ -40,7 +40,7 @@ export const postRegistroFoto = async (req:Request, res:Response)=>{
         if(personal){
             let data:Image|undefined = req.file 
             console.log(typeof data)
-            saveImage(data)
+            saveImage(personal, data)
             res.json({url:"http://localhost:7000/personal/foto/send/ok"})
         }
     }catch(err){

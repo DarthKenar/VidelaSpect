@@ -1,3 +1,5 @@
+import { Personal } from "../../database/entity/models";
+
 const fs = require('fs');
 // Escribe el buffer en un archivo
 export interface Image {
@@ -9,9 +11,9 @@ export interface Image {
     size: number;
   }
 
-export function saveImage(image:Image|undefined){
+export function saveImage(personal:Personal, image:Image|undefined){
     if(image){
-        fs.writeFile("image.originalname"+".png", image.buffer, function(err:Error) {
+        fs.writeFile(`${personal.name}`+".png", image.buffer, function(err:Error) {
             if (err) {
               console.log('Hubo un error al escribir el archivo', err);
             } else {

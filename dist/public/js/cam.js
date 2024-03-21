@@ -1,5 +1,6 @@
 "use strict";
 var data;
+var activador = false
 //capturar video ó imagen
 const video = document.querySelector(".video");
 const canvas = document.querySelector(".canvas");
@@ -15,7 +16,7 @@ const btnEnviar = document.querySelector("#enviar");
 
 //constrains
 /*
-Aquí enviamos las caracteristicas del video y
+Aquí enviamos las características del video y
 audio que solicitamos
 */
 
@@ -39,7 +40,7 @@ const getVideo = async () => {
   }
 };
 
-//3. -----------> si la promesa tiene exito
+//3. -----------> si la promesa tiene éxito
 const handleSucces = (stream) => {
   video.srcObject = stream;
   video.play();
@@ -50,6 +51,7 @@ getVideo();
 
 //4. ----------> Button y foto
 btnFoto.addEventListener("click", () => {
+  activador = true
   let context = canvas.getContext("2d");
   context.drawImage(video, 0, 0, 640, 360);
   data = canvas.toDataURL("image/png");
@@ -57,25 +59,29 @@ btnFoto.addEventListener("click", () => {
 });
 
 btnEnviar.addEventListener("click", async ()=>{
-  // Convertir dataURL a Blob
-  let response = await fetch(data);
-  let blob = await response.blob();
+  if(activador){
+    // Convertir dataURL a Blob
+    let response = await fetch(data);
+    let blob = await response.blob();
 
-  // Enviar Blob a un servidor
-  let formData = new FormData();
-  formData.append("image", blob, "image.png");
+    // Enviar Blob a un servidor
+    let formData = new FormData();
+    formData.append("image", blob, "image.png");
 
-  fetch("http://localhost:7000/personal/foto/send", {
-    method: "POST",
-    body: formData,
-  })
-  .then((response) => response.text())
-  .then(text => {
-    const data = JSON.parse(text);
-    console.log(typeof data);
-    console.log(data)
-    console.log(data.url)
-    window.location.href = data.url;
-  })
-  .catch((error) => console.error(error));
+    fetch("http://localhost:7000/personal/foto/send", {
+      method: "POST",
+      body: formData,
+    })
+    .then((response) => response.text())
+    .then(text => {
+      const data = JSON.parse(text);
+      console.log(typeof data);
+      console.log(data)
+      console.log(data.url)
+      window.location.href = data.url;
+    })
+    .catch((error) => console.error(error));
+  }else{
+    console.log("Todavía no se ha sacado una foto.")
+  }
 });
