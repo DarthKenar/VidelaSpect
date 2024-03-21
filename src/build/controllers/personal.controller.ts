@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import DataBase from "../../database/data-source";
-import { Personal } from "../../database/entity/models";
-import { saveImage, Image } from "../utils/personal.utils"
+import { Personal, Registro } from "../../database/entity/models";
+import { saveImage, Image, registrarPersonal } from "../utils/personal.utils"
 
 export const getRegistroDNI = async (req:Request, res:Response)=>{
     res.render("registroDNI")
@@ -59,11 +59,19 @@ export const postRegistroFotoOk = async (req:Request, res:Response)=>{
     const formalizeMinutes = (num: number): string => num < 10 ? `0${num}` : `${num}`;
     let minutosFormalize = formalizeMinutes(minutos)
     if(personal){
-        res.render("registroFotoOk",{personal, message:`Se ha registrado correctamente la entrada de ${personal.name} a las: ${horas}:${minutosFormalize}`})
-    }else{
-        res.render("registroFotoOk")
+        let [confirm, registros] = await registrarPersonal(personal, fecha)
+        console.log("confirm", confirm)
+        console.log("registros", registros)
+        if(confirm){
+            res.render("registroOk",{personal, message:`Se ha registrado correctamente la entrada de ${personal.name} a las: ${horas}:${minutosFormalize}`})
+        }else{
+            if (Array.isArray(registros)) {
+                let entrada = registros[0];
+                let salida = registros[1];
+                res.render("registroError",{personal, entrada, salida, error:`No se puede realizar un nuevo registro ya que hoy ya se han realizado las cargas para su entrada y salida de la escuela.`})
+            }
+        }
     }
-    
 }
 
 export const get500 = async (req:Request, res:Response)=>{

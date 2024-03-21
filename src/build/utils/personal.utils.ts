@@ -1,4 +1,5 @@
-import { Personal } from "../../database/entity/models";
+import DataBase from "../../database/data-source";
+import { Personal, Registro } from "../../database/entity/models";
 
 const fs = require('fs');
 // Escribe el buffer en un archivo
@@ -42,4 +43,29 @@ export async function saveImage(personal:Personal, image:Image|undefined){
     }else{
         console.log("La imagen no se está enviando correctamente.")
     }
+}
+
+export async function registrarPersonal(personal:Personal, ahora:Date){
+  try{
+    let dia = ("0" + ahora.getDate()).slice(-2);
+    let mes = ("0" + (ahora.getMonth() + 1)).slice(-2);
+    let ano = ahora.getFullYear();
+    let fecha = `${dia}-${mes}-${ano}`;
+    let hora = ahora.toTimeString().split(' ')[0];  // Formato: "HH:mm:ss"
+    let registroRepository = await DataBase.getRepository(Registro)
+    let registros = await registroRepository.findBy({personal_id:personal.id,fecha:fecha})
+    if(registros.length > 1){
+      return [false,registros]
+    }else{
+      let registroNuevo = new Registro
+      registroNuevo.fecha = fecha
+      registroNuevo.hora = hora
+      registroNuevo.personal_id = personal.id
+      registroRepository.save(registroNuevo)
+      return [true, registros]
+    }
+  }catch(err){
+    console.log(err)
+    return [false,[]]
+  }
 }

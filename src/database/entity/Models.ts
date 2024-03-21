@@ -20,8 +20,8 @@ export class Personal {
 }
 
 @Entity()
-export class PersonalRegistro {
-    
+export class Registro {
+
     @PrimaryGeneratedColumn()
     id: number
 
@@ -29,20 +29,9 @@ export class PersonalRegistro {
     personal_id: number
 
     @Column()
-    registro_id: number
+    fecha: string;
 
-}
-
-@Entity()
-export class Registro {
-
-    @PrimaryGeneratedColumn()
-    id: number
-
-    @Column({ type: 'date' })
-    fecha: Date;
-
-    @Column({ type: 'time' })
-    hora: Date;
+    @Column()
+    hora: string;
     
 }
