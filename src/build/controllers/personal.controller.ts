@@ -40,7 +40,7 @@ export const postRegistroFoto = async (req:Request, res:Response)=>{
             let data:Image|undefined = req.file 
             console.log(typeof data)
             saveImage(personal, data)
-            res.json({url:`http://localhost:7000/personal/foto/send/ok/${personal.id}`})
+            res.json({url:`http://localhost:7000/personal/foto/send/${personal.id}`})
         }
     }catch(err){
         res.render("registroDNI", {error: "No se ha registrado correctamente el ingreso, por favor contacte al administrador."})
@@ -53,8 +53,13 @@ export const postRegistroFotoOk = async (req:Request, res:Response)=>{
     let userId = Number(req.params.id)
     let personalRepository = await DataBase.getRepository(Personal)
     let personal = await personalRepository.findOneBy({id: userId})
+    let fecha = new Date
+    let horas = fecha.getHours()
+    let minutos = fecha.getMinutes()
+    const formalizeMinutes = (num: number): string => num < 10 ? `0${num}` : `${num}`;
+    let minutosFormalize = formalizeMinutes(minutos)
     if(personal){
-        res.render("registroFotoOk",{personal})
+        res.render("registroFotoOk",{personal, message:`Se ha registrado correctamente la entrada de ${personal.name} a las: ${horas}:${minutosFormalize}`})
     }else{
         res.render("registroFotoOk")
     }
