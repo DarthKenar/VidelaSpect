@@ -15,7 +15,7 @@ import {
 //GET
 routerPersonal.get("/dni", getRegistroDNI)
 routerPersonal.get("/foto", getRegistroFoto)
-routerPersonal.get("/foto/send/ok", postRegistroFotoOk)
+routerPersonal.get("/foto/send/ok/:id", postRegistroFotoOk)
 //POST
 routerPersonal.post("/dni/send", postRegistroDNI)
 routerPersonal.post("/foto/send",upload.single('image'), postRegistroFoto)

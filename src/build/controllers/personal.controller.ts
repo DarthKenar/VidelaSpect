@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import DataBase from "../../database/data-source";
 import { Personal } from "../../database/entity/models";
 import { saveImage, Image } from "../utils/personal.utils"
-import { error } from "console";
+import { stringify } from "querystring";
 
 export const getRegistroDNI = async (req:Request, res:Response)=>{
     res.render("registroDNI")
@@ -41,7 +41,7 @@ export const postRegistroFoto = async (req:Request, res:Response)=>{
             let data:Image|undefined = req.file 
             console.log(typeof data)
             saveImage(personal, data)
-            res.json({url:"http://localhost:7000/personal/foto/send/ok"})
+            res.json({url:`http://localhost:7000/personal/foto/send/ok/${personal.id}`})
         }
     }catch(err){
         res.render("registroDNI", {error: "No se ha registrado correctamente el ingreso, por favor contacte al administrador."})
@@ -51,7 +51,15 @@ export const postRegistroFoto = async (req:Request, res:Response)=>{
 }
 
 export const postRegistroFotoOk = async (req:Request, res:Response)=>{
-    res.render("registroFotoOk")
+    let userId = Number(req.params.id)
+    let personalRepository = await DataBase.getRepository(Personal)
+    let personal = await personalRepository.findOneBy({id: userId})
+    if(personal){
+        res.render("registroFotoOk",{personal})
+    }else{
+        res.render("registroFotoOk")
+    }
+    
 }
 
 export const get500 = async (req:Request, res:Response)=>{
