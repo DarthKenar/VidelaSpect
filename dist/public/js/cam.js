@@ -69,7 +69,10 @@ btnEnviar.addEventListener("click", async ()=>{
     method: "POST",
     body: formData,
   })
-    .then((response) => response.text())
-    .then((data) => console.log(data))
-    .catch((error) => console.error(error));
+  .then((response) => response.text())
+  .then(data => {
+    console.log(data)
+    console.log(data.url)
+  })
+  .catch((error) => console.error(error));
 });

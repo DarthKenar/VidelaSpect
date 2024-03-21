@@ -1793,10 +1793,6 @@ html {
   margin: auto;
 }
 
-.m-10 {
-  margin: 2.5rem;
-}
-
 .my-1 {
   margin-top: 0.25rem;
   margin-bottom: 0.25rem;
@@ -1812,10 +1808,6 @@ html {
 
 .mt-\[5\%\] {
   margin-top: 5%;
-}
-
-.mt-auto {
-  margin-top: auto;
 }
 
 .flex {
@@ -1972,14 +1964,6 @@ html {
 
 .p-5 {
   padding: 1.25rem;
-}
-
-.pb-6 {
-  padding-bottom: 1.5rem;
-}
-
-.pt-6 {
-  padding-top: 1.5rem;
 }
 
 .pb-4 {
