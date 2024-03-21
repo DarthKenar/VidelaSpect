@@ -3,7 +3,7 @@ var data;
 //capturar video ó imagen
 const video = document.querySelector(".video");
 const canvas = document.querySelector(".canvas");
-
+const personalId = document.getElementById("personalId")
 //tomar foto
 const btnFoto = document.querySelector(".start-btn");
 
@@ -54,22 +54,4 @@ btnFoto.addEventListener("click", () => {
   context.drawImage(video, 0, 0, 640, 360);
   data = canvas.toDataURL("image/png");
   photo.setAttribute("src", data);
-});
-
-btnEnviar.addEventListener("click", async ()=>{
-  // Convertir dataURL a Blob
-  let response = await fetch(data);
-  let blob = await response.blob();
-
-  // Enviar Blob a un servidor
-  let formData = new FormData();
-  formData.append("image", blob, "image.png");
-
-  fetch("http://localhost:7000/personal/foto/send", {
-    method: "POST",
-    body: formData,
-  })
-    .then((response) => response.text())
-    .then((data) => console.log(data))
-    .catch((error) => console.error(error));
 });

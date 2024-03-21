@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import DataBase from "../../database/data-source";
 import { Personal } from "../../database/entity/models";
 import { saveImage, Image } from "../utils/personal.utils"
+import { error } from "console";
 
 export const getRegistroDNI = async (req:Request, res:Response)=>{
     res.render("registroDNI")
@@ -27,18 +28,17 @@ export const postRegistroDNI = async (req:Request, res:Response)=>{
         }
     }catch(err){
         console.log(err)
-        console.log("--------------------------------")
         res.render("500")
     }
 }
 
 export const postRegistroFoto = async (req:Request, res:Response)=>{
     try{
-        let user = req.body.user
+        let personalId = req.body.personalId
         let data:Image|undefined = req.file 
-        console.log(typeof data)
+        console.log(data)
         saveImage(data)
-        res.render("registroDNI", {message: `Se ha registrado correctamente el ingreso de ${user.name}`})
+        res.render('registroDNI',{message: "El horario se ha registrado correctamente" });
     }catch(err){
         res.render("registroDNI", {error: "No se ha registrado correctamente el ingreso, por favor contacte al administrador."})
         console.log(err)
