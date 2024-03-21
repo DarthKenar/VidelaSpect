@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import DataBase from "../../database/data-source";
 import { Personal } from "../../database/entity/models";
 import { saveImage, Image } from "../utils/personal.utils"
-import { stringify } from "querystring";
 
 export const getRegistroDNI = async (req:Request, res:Response)=>{
     res.render("registroDNI")
