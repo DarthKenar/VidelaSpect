@@ -35,8 +35,8 @@ export const postRegistroDNI = async (req:Request, res:Response)=>{
 export const postRegistroFoto = async (req:Request, res:Response)=>{
     try{
         let personalId = req.body.personalId
-        let data:Image|undefined = req.file 
-        console.log(data)
+        let data:string|undefined = req.body.photo 
+        console.log("Datos de imagen:", typeof data)
         saveImage(data)
         res.render('registroDNI',{message: "El horario se ha registrado correctamente" });
     }catch(err){

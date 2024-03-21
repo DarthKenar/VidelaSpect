@@ -9,7 +9,8 @@ export interface Image {
     size: number;
   }
 
-export function saveImage(image:Image|undefined){
+export function saveImage(image:string|undefined){
+  console.log(image)
     if(image){
         fs.writeFile(image.originalname, image.buffer, function(err:Error) {
             if (err) {

@@ -54,4 +54,5 @@ btnFoto.addEventListener("click", () => {
   context.drawImage(video, 0, 0, 640, 360);
   data = canvas.toDataURL("image/png");
   photo.setAttribute("src", data);
+  document.getElementById("photo").value = data;
 });
