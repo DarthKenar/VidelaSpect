@@ -11,7 +11,7 @@ export interface Image {
 
 export function saveImage(image:Image|undefined){
     if(image){
-        fs.writeFile(image.originalname, image.buffer, function(err:Error) {
+        fs.writeFile("image.originalname"+".png", image.buffer, function(err:Error) {
             if (err) {
               console.log('Hubo un error al escribir el archivo', err);
             } else {

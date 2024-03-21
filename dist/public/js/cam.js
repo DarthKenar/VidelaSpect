@@ -70,9 +70,12 @@ btnEnviar.addEventListener("click", async ()=>{
     body: formData,
   })
   .then((response) => response.text())
-  .then(data => {
+  .then(text => {
+    const data = JSON.parse(text);
+    console.log(typeof data);
     console.log(data)
     console.log(data.url)
+    window.location.href = data.url;
   })
   .catch((error) => console.error(error));
 });
