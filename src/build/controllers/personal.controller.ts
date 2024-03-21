@@ -1,14 +1,10 @@
 import { Request, Response } from "express";
 import DataBase from "../../database/data-source";
-import { Personal, Registro } from "../../database/entity/models";
-import { saveImage, Image, registrarPersonal } from "../utils/personal.utils"
+import { Personal } from "../../database/entity/models";
+import { saveImage, Image, registrarPersonal, getCantidadDeRegistrosPorIdDePersonaHoy } from "../utils/personal.utils"
 
 export const getRegistroDNI = async (req:Request, res:Response)=>{
     res.render("registroDNI")
-}
-
-export const getRegistroFoto = async (req:Request, res:Response)=>{
-    res.render("registroFoto")
 }
 
 export const postRegistroDNI = async (req:Request, res:Response)=>{
@@ -18,7 +14,15 @@ export const postRegistroDNI = async (req:Request, res:Response)=>{
             let personalRepository = DataBase.getRepository(Personal)
             let personal = await personalRepository.findOneBy({dni})
             if(personal){
-                res.render("registroFoto", {personal: personal})
+                let ahora = new Date
+                let cantidadDeRegistros = await getCantidadDeRegistrosPorIdDePersonaHoy(personal,ahora)
+                if(cantidadDeRegistros===0){
+                    var tipoDeRegistro = "entrada"
+                    res.render("registroFoto", {personal, tipoDeRegistro})
+                }else if(cantidadDeRegistros===1){
+                    var tipoDeRegistro = "salida"
+                    res.render("registroFoto", {personal, tipoDeRegistro})
+                }
             }else{
                 res.render("registroDNI",{error: `El número de DNI - ${dni} no está registrado en el sistema. Contacte al administrador.`})
             }

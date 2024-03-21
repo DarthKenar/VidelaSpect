@@ -5,7 +5,6 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 import {
   getRegistroDNI,
-  getRegistroFoto,
   postRegistroDNI,
   postRegistroFoto,
   postRegistroFotoOk,
@@ -14,7 +13,6 @@ import {
 
 //GET
 routerPersonal.get("/dni", getRegistroDNI)
-routerPersonal.get("/foto", getRegistroFoto)
 routerPersonal.get("/foto/send/:id", postRegistroFotoOk)
 //POST
 routerPersonal.post("/dni/send", postRegistroDNI)

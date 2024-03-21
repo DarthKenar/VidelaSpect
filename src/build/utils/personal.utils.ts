@@ -47,10 +47,8 @@ export async function saveImage(personal:Personal, image:Image|undefined){
 
 export async function registrarPersonal(personal:Personal, ahora:Date){
   try{
-    let dia = ("0" + ahora.getDate()).slice(-2);
-    let mes = ("0" + (ahora.getMonth() + 1)).slice(-2);
-    let ano = ahora.getFullYear();
-    let fecha = `${dia}-${mes}-${ano}`;
+
+    let fecha = getFecha(ahora)
     let hora = ahora.toTimeString().split(' ')[0];  // Formato: "HH:mm:ss"
     let registroRepository = await DataBase.getRepository(Registro)
     let registros = await registroRepository.findBy({personal_id:personal.id,fecha:fecha})
@@ -68,4 +66,18 @@ export async function registrarPersonal(personal:Personal, ahora:Date){
     console.log(err)
     return [false,[]]
   }
+}
+
+export async function getCantidadDeRegistrosPorIdDePersonaHoy(personal:Personal, ahora:Date):Promise<number> {
+  let fecha = getFecha(ahora)
+  let registroRepository = await DataBase.getRepository(Registro)
+  let registros = await registroRepository.findBy({personal_id:personal.id,fecha:fecha})
+  return registros.length
+} 
+
+export function getFecha(ahora:Date) {
+  let ano = ahora.getFullYear()
+  let dia = ("0" + ahora.getDate()).slice(-2)
+  let mes = ("0" + (ahora.getMonth() + 1)).slice(-2)
+  return `${dia}-${mes}-${ano}`
 }
