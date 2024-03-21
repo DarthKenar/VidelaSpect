@@ -1,10 +1,38 @@
 <div class="flex h-full flex-col w-full border-opacity-50 p-10">
     <div class="grid h-[30%] card bg-base-300 rounded-box place-items-center">
         {{#if error}}
-           {{error}}
+            <dialog id="my_modal_3" class="modal">
+                <div class="modal-box">
+                    <form method="dialog">
+                    <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                    </form>
+                    <h3 class="font-bold text-lg">Error!</h3>
+                    <p class="py-4">{{error}}</p>
+                </div>
+            </dialog>
+            <script>
+            document.addEventListener("DOMContentLoaded", function() {
+            var dialog = document.getElementById("my_modal_3");
+            dialog.showModal();
+            });
+            </script>
         {{/if}}
         {{#if message}}
-           {{message}}
+            <dialog id="my_modal_3" class="modal">
+                <div class="modal-box">
+                    <form method="dialog">
+                    <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                    </form>
+                    <h3 class="font-bold text-lg">Error!</h3>
+                    <p class="py-4">{{message}}</p>
+                </div>
+            </dialog>
+            <script>
+            document.addEventListener("DOMContentLoaded", function() {
+            var dialog = document.getElementById("my_modal_3");
+            dialog.showModal();
+            });
+            </script>
         {{/if}}
         <h1 class="text-5xl text-center font-mono">MARZO</h1>
         <div class="grid grid-flow-col gap-5 text-center auto-cols-max">

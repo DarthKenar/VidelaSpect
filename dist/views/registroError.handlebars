@@ -1,6 +1,17 @@
-{{#if personal}}
-   <h1 class="pt-4 pb-4 text-center w-full font-mono font-semibold text-5xl">{{personal.name}}</h1>
-{{/if}}
-<p>{{error}}</p>
-<p>Entrada: {{entrada.hora}}</p>
-<p>Salida: {{salida.hora}}</p>
+<dialog id="my_modal_3" class="modal">
+      <div class="modal-box">
+         <form method="dialog">
+         <a href="/personal/dni" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</a>
+         </form>
+         <h3 class="font-bold text-lg">{{personal.name}}</h3>
+         <p class="py-4">{{error}}</p>
+         <p>Entrada: {{entrada.hora}}</p>
+         <p>Salida: {{salida.hora}}</p>
+      </div>
+</dialog>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+var dialog = document.getElementById("my_modal_3");
+dialog.showModal();
+});
+</script>

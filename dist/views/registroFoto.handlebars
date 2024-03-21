@@ -1,16 +1,16 @@
 {{#if personal}}
    <h1 class="pt-4 pb-4 text-center w-full font-mono font-semibold text-5xl">Bienvenido/a {{personal.name}}</h1>
-   <h2>Esta por registrar su {{tipoDeRegistro}}</h2>
 {{/if}}
 <div class="flex flex-col w-[90%] h-[90%] lg:flex-row cam-container m-auto">
-    <div class="grid flex-grow h-[90%] card bg-base-300 rounded-box place-items-center mt-[5%]">
+    <div class="grid flex-grow h-[80%] card bg-base-100 rounded-box place-items-center mt-[5%]">
+        <h2 class="m-auto font-mono">Está registrando su <span class="underline font-bold text-lg">{{tipoDeRegistro}}.</span></h2>
         <div class="video-wrap">
             <video class="video rounded-xl"></video>
         </div>
-        <div class="btn bg-base-300 "></div>
+        <a href="/personal/dni" class="btn btn-ghost">VOLVER</a>
     </div>
     <div class="divider lg:divider-horizontal h-[90%]">---></div> 
-    <div class="grid flex-grow h-[90%] card bg-base-300 rounded-box place-items-center mt-[5%]">
+    <div class="grid flex-grow h-[80%] card bg-base-100 rounded-box place-items-center mt-[5%]">
         <div class="canvas-wrap ">
             <canvas class="canvas rounded-xl" width="640" height="360">
                 <img

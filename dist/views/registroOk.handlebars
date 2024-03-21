@@ -1,3 +1,16 @@
-<h1>{{message}}</h1>
-<p>Deseamos que tenga una excelente jornada laboral. Muchas gracias.</p>
-<a class="btn btn-outline" href="/personal/dni">Continuar</a>
+<dialog id="my_modal_3" class="modal">
+      <div class="modal-box">
+         <form method="dialog">
+         <a href="/personal/dni" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</a>
+         </form>
+         <h3 class="font-bold text-lg">{{personal.name}}</h3>
+         <p class="py-4">{{message}}</p>
+         <p>{{despedida}}</p>
+      </div>
+</dialog>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+var dialog = document.getElementById("my_modal_3");
+dialog.showModal();
+});
+</script>

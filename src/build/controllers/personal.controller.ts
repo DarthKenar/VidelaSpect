@@ -75,7 +75,15 @@ export const postRegistroFotoOk = async (req:Request, res:Response)=>{
         console.log("confirm", confirm)
         console.log("registros", registros)
         if(confirm){
-            res.render("registroOk",{personal, message:`Se ha registrado correctamente la entrada de ${personal.name} a las: ${horas}:${minutosFormalize}`})
+            let ahora = new Date
+            let cantidadDeRegistros = await getCantidadDeRegistrosPorIdDePersonaHoy(personal,ahora)
+            if(cantidadDeRegistros===0){
+                let tipoDeRegistro = "entrada"
+                res.render("registroOk",{personal, message:`Se ha registrado correctamente su ${tipoDeRegistro} a las: ${horas}:${minutosFormalize}`, despedida:"Esperamos que tenga una excelente jornada laboral."})
+            }else if(cantidadDeRegistros===1){
+                let tipoDeRegistro = "salida"
+                res.render("registroOk",{personal, message:`Se ha registrado correctamente su ${tipoDeRegistro} a las: ${horas}:${minutosFormalize}`, despedida:"Gracias por registrar su salida, que tenga buenos días."})
+            }
         }else{
             if (Array.isArray(registros)) {
                 let entrada = registros[0];
