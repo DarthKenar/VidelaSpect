@@ -2631,6 +2631,10 @@ html {
   margin-bottom: 1.25rem;
 }
 
+.mb-\[4\.25rem\] {
+  margin-bottom: 4.25rem;
+}
+
 .ml-\[0\.75rem\] {
   margin-left: 0.75rem;
 }
@@ -2649,18 +2653,6 @@ html {
 
 .mt-\[5\%\] {
   margin-top: 5%;
-}
-
-.mb-\[3rem\] {
-  margin-bottom: 3rem;
-}
-
-.mb-\[4\.25rem\] {
-  margin-bottom: 4.25rem;
-}
-
-.mb-\[4\.24rem\] {
-  margin-bottom: 4.24rem;
 }
 
 .flex {
@@ -2685,10 +2677,6 @@ html {
 
 .h-\[30\%\] {
   height: 30%;
-}
-
-.h-\[360px\] {
-  height: 360px;
 }
 
 .h-\[3rem\] {
@@ -2719,18 +2707,6 @@ html {
   height: 100%;
 }
 
-.max-h-\[360px\] {
-  max-height: 360px;
-}
-
-.max-h-\[240\] {
-  max-height: 240;
-}
-
-.max-h-\[240px\] {
-  max-height: 240px;
-}
-
 .w-4 {
   width: 1rem;
 }
@@ -2759,10 +2735,6 @@ html {
   width: 4rem;
 }
 
-.w-\[640px\] {
-  width: 640px;
-}
-
 .w-\[90\%\] {
   width: 90%;
 }
@@ -2771,16 +2743,8 @@ html {
   width: 100%;
 }
 
-.max-w-\[640px\] {
-  max-width: 640px;
-}
-
 .max-w-xs {
   max-width: 20rem;
-}
-
-.max-w-\[426px\] {
-  max-width: 426px;
 }
 
 .flex-grow {
