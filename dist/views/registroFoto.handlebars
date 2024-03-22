@@ -1,5 +1,6 @@
 {{#if personal}}
    <h1 class="pt-4 pb-4 text-center w-full font-mono font-semibold text-5xl">Bienvenido/a {{personal.name}}</h1>
+   <input id="personalId" value="{{personal.id}}" type="text" hidden>
 {{/if}}
 <div class="flex flex-col w-[90%] h-[90%] lg:flex-row cam-container m-auto">
     <div class="grid flex-grow h-[80%] card bg-base-100 rounded-box place-items-center mt-[5%]">
@@ -27,6 +28,11 @@
             </button>
             <button id="enviar" class="start-btn btn btn-outline join-item">ENVIAR</button>
         </div>
+        <ul class="steps mt-10">
+            <li class="step step-primary">Ingresar DNI</li>
+            <li class="step step-primary">Sacar foto</li>
+            <li class="step">Finalizar registro</li>
+        </ul>
     </div>
 </div>
 <script defer src="/js/cam.js"></script>

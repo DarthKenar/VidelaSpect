@@ -46,8 +46,9 @@ export const postRegistroDNI = async (req:Request, res:Response)=>{
 export const postRegistroFoto = async (req:Request, res:Response)=>{
     try{
         let userId = req.body.userId
+        console.log("ID DEL USUARIO",userId)
         let personalRepository = await DataBase.getRepository(Personal)
-        let personal = await personalRepository.findOneBy(userId)
+        let personal = await personalRepository.findOneBy({id: userId})
         if(personal){
             let data:Image|undefined = req.file 
             console.log(typeof data)

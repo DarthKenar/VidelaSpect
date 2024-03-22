@@ -1,5 +1,5 @@
 <div class="flex h-full flex-col w-full border-opacity-50 p-10">
-    <div class="grid h-[30%] card bg-base-300 rounded-box place-items-center">
+    <div class="grid h-[30%] card bg-base-100 rounded-box place-items-center">
         {{#if error}}
             <dialog id="my_modal_3" class="modal">
                 <div class="modal-box">
@@ -63,7 +63,7 @@
         </div>
     </div>
     <div class="divider">INGRESE SU N° DE DNI</div>
-    <div class="grid h-[70%] card bg-base-300 rounded-box place-items-center">
+    <div class="grid h-[70%] card bg-base-100 rounded-box place-items-center">
         <form action="/personal/dni/send" method="POST">
             <div class="card w-96 bg-base-200 shadow-xl">
                 <label class="input input-bordered flex items-center gap-2 w-[16rem] m-auto mb-5 mt-10">
@@ -101,6 +101,11 @@
                 </div>
             </div>
         </form>
+        <ul class="steps mt-10">
+            <li class="step step-primary">Ingresar DNI</li>
+            <li class="step">Sacar foto</li>
+            <li class="step">Finalizar registro</li>
+        </ul>
     </div>
 </div>
 <script defer src="/js/kbr-dni.js"></script>

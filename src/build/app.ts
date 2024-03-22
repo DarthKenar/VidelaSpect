@@ -30,6 +30,9 @@ app.use((req:Request, res:Response, next:NextFunction)=>{
 //Routers
 const routerPersonal = require('./routes/personal.routes');
 app.use('/personal', routerPersonal)
+
+const routerAdmin = require('./routes/admin.routes');
+app.use('/admin', routerAdmin)
 //...
 
 app.use("/",(req:Request, res:Response)=>{

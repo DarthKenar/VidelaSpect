@@ -4,7 +4,8 @@ var activador = false
 //capturar video ó imagen
 const video = document.querySelector(".video");
 const canvas = document.querySelector(".canvas");
-const personalId = document.getElementById("personalId")
+const personalId = document.getElementById("personalId").value
+
 //tomar foto
 const btnFoto = document.querySelector(".start-btn");
 
@@ -67,7 +68,7 @@ btnEnviar.addEventListener("click", async ()=>{
     // Enviar Blob a un servidor
     let formData = new FormData();
     formData.append("image", blob, "image.png");
-
+    formData.append("userId",personalId)
     fetch("http://localhost:7000/personal/foto/send", {
       method: "POST",
       body: formData,
