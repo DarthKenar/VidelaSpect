@@ -17,3 +17,23 @@ export const getPanelRegistros = async (req:Request, res:Response)=>{
     console.log(registro)
     res.render("adminPanelRegistros",{registro})
 }
+
+export const getCreatePersonal = async (req:Request, res:Response)=>{
+    res.render("adminPersonalCreate")
+}
+
+export const getUpdatePersonal = async (req:Request, res:Response)=>{
+    res.render("adminPersonalUpdate")
+}
+
+export const postCreatePersonal = async (req:Request, res:Response)=>{
+    res.render("adminPanel",{message:""})
+}
+
+export const postUpdatePersonal = async (req:Request, res:Response)=>{
+    res.render("adminPanel",{message:""})
+}
+
+export const postDeletePersonal = async (req:Request, res:Response)=>{
+    res.render("adminPanel",{message:""})
+}

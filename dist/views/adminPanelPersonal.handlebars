@@ -1,3 +1,22 @@
+<menu class="flex justify-between my-10">
+  <a href="/admin/panel" class="btn btn-ghost">VOLVER</a>
+<div class="join">
+  <div>
+    <div>
+      <input class="input input-bordered join-item" placeholder="Search"/>
+    </div>
+  </div>
+  <select class="select select-bordered join-item">
+    <option>Nombre</option>
+    <option selected>DNI</option>
+    <option>Cargo</option>
+  </select>
+  <div class="indicator">
+    <button class="btn join-item">Search</button>
+  </div>
+</div>
+  <a href="/admin/panel/personal/create" class="btn btn-success">CREAR</a>
+</menu>
 <div class="overflow-x-auto">
   <table class="table table-xs">
     <thead>
@@ -7,6 +26,7 @@
         <th>DNI</th> 
         <th>Cargo</th> 
         <th>Administrador</th>
+        <th>Acción</th>
       </tr>
     </thead>
     <tbody>
@@ -16,7 +36,14 @@
                 <td>{{this.name}}</td> 
                 <td>{{this.dni}}</td> 
                 <td>{{this.position}}</td> 
-                <td>{{this.admin}}</td>
+                <td>
+                  {{#if this.admin}}
+                    Si
+                  {{else}}
+                    No
+                  {{/if}}
+                </td>
+                <td><a class="btn btn-warning btn-sm mr-1">EDITAR</a><a class="btn btn-error btn-sm">ELIMINAR</a></td>
             </tr>
         {{/each}}
     </tbody> 
@@ -27,6 +54,7 @@
         <th>DNI</th> 
         <th>Cargo</th> 
         <th>Administrador</th>
+        <th>Acción</th>
       </tr>
     </tfoot>
   </table>
