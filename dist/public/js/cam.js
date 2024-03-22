@@ -22,7 +22,7 @@ audio que solicitamos
 */
 
 const constraints = {
-  video: { width: 640, height: 360 },
+  video: { width: 426, height: 240 },
   audio: false,
 };
 
@@ -54,7 +54,7 @@ getVideo();
 btnFoto.addEventListener("click", () => {
   activador = true
   let context = canvas.getContext("2d");
-  context.drawImage(video, 0, 0, 640, 360);
+  context.drawImage(video, 0, 0, 426, 240);
   data = canvas.toDataURL("image/png");
   photo.setAttribute("src", data);
 });
