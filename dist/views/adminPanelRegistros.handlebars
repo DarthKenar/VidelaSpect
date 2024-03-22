@@ -1,0 +1,29 @@
+<div class="overflow-x-auto">
+  <table class="table table-xs">
+    <thead>
+      <tr>
+        <th></th> 
+        <th>Nombre</th> 
+        <th>Fecha</th> 
+        <th>Hora</th>
+      </tr>
+    </thead>
+    <tbody>
+        {{#each registro}}
+            <tr>
+                <td>{{this.personal_name}}</td> 
+                <td>{{this.fecha}}</td> 
+                <td>{{this.hora}}</td>
+            </tr>
+        {{/each}}
+    </tbody> 
+    <tfoot>
+      <tr>
+        <th></th> 
+        <th>Nombre</th> 
+        <th>Fecha</th> 
+        <th>Hora</th>
+      </tr>
+    </tfoot>
+  </table>
+</div>

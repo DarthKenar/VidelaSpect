@@ -1,0 +1,33 @@
+<div class="overflow-x-auto">
+  <table class="table table-xs">
+    <thead>
+      <tr>
+        <th></th> 
+        <th>Nombre</th> 
+        <th>DNI</th> 
+        <th>Cargo</th> 
+        <th>Administrador</th>
+      </tr>
+    </thead>
+    <tbody>
+        {{#each personal}}
+            <tr>
+                <th>{{this.id}}</th> 
+                <td>{{this.name}}</td> 
+                <td>{{this.dni}}</td> 
+                <td>{{this.position}}</td> 
+                <td>{{this.admin}}</td>
+            </tr>
+        {{/each}}
+    </tbody> 
+    <tfoot>
+      <tr>
+        <th></th> 
+        <th>Nombre</th> 
+        <th>DNI</th> 
+        <th>Cargo</th> 
+        <th>Administrador</th>
+      </tr>
+    </tfoot>
+  </table>
+</div>

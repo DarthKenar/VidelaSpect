@@ -29,6 +29,9 @@ export class Registro {
     personal_id: number
 
     @Column()
+    personal_name: string
+
+    @Column()
     fecha: string;
 
     @Column()

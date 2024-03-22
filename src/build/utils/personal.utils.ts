@@ -59,6 +59,7 @@ export async function registrarPersonal(personal:Personal, ahora:Date){
       registroNuevo.fecha = fecha
       registroNuevo.hora = hora
       registroNuevo.personal_id = personal.id
+      registroNuevo.personal_name = personal.name
       registroRepository.save(registroNuevo)
       return [true, registros]
     }
