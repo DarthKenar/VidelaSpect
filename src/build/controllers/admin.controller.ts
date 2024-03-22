@@ -27,7 +27,30 @@ export const getUpdatePersonal = async (req:Request, res:Response)=>{
 }
 
 export const postCreatePersonal = async (req:Request, res:Response)=>{
-    res.render("adminPanel",{message:""})
+    try{
+        let nombre:string = req.body.nombre
+        let dni:string = req.body.dni
+        let cargo:string = req.body.cargo
+        let admin:boolean;
+        if (nombre.length === 0 || dni.length === 0 || cargo.length === 0 ) {
+            throw new Error("Alguno de los datos del personal están vacíos y no se guardará");
+        }
+        if(req.body.admin){
+            admin = true
+        }else{
+            admin = false
+        }
+        let personal = new Personal
+        personal.name = nombre
+        personal.dni = dni
+        personal.position = cargo
+        personal.admin = admin
+        await DataBase.manager.save(personal)
+        res.render("adminPersonalCreate",{message:"El personal fue guardado correctamente."})
+    }catch(err){
+        console.log("")
+        res.render("adminPersonalCreate",{message:"Se deben completar todos los datos antes de intentar guardar un nuevo miembro del personal."})
+    }
 }
 
 export const postUpdatePersonal = async (req:Request, res:Response)=>{

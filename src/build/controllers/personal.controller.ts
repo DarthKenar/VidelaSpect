@@ -14,22 +14,26 @@ export const postRegistroDNI = async (req:Request, res:Response)=>{
             let personalRepository = DataBase.getRepository(Personal)
             let personal = await personalRepository.findOneBy({dni})
             if(personal){
-                let ahora = new Date
-                let cantidadDeRegistros = await getCantidadDeRegistrosPorIdDePersonaHoy(personal,ahora)
-                if(cantidadDeRegistros===0){
-                    var tipoDeRegistro = "entrada"
-                    res.render("registroFoto", {personal, tipoDeRegistro})
-                }else if(cantidadDeRegistros===1){
-                    var tipoDeRegistro = "salida"
-                    res.render("registroFoto", {personal, tipoDeRegistro})
-                }else{
-                    let fecha = new Date
-                    let [confirm, registros] = await registrarPersonal(personal, fecha)
-                    if (Array.isArray(registros)) {
-                        let entrada = registros[0];
-                        let salida = registros[1];
-                        res.render("registroError",{personal, entrada, salida, error:`No se puede realizar un nuevo registro ya que hoy ya se han realizado las cargas para su entrada y salida de la escuela.`})
+                if(personal.admin === false){
+                    let ahora = new Date
+                    let cantidadDeRegistros = await getCantidadDeRegistrosPorIdDePersonaHoy(personal,ahora)
+                    if(cantidadDeRegistros===0){
+                        var tipoDeRegistro = "entrada"
+                        res.render("registroFoto", {personal, tipoDeRegistro})
+                    }else if(cantidadDeRegistros===1){
+                        var tipoDeRegistro = "salida"
+                        res.render("registroFoto", {personal, tipoDeRegistro})
+                    }else{
+                        let fecha = new Date
+                        let [confirm, registros] = await registrarPersonal(personal, fecha)
+                        if (Array.isArray(registros)) {
+                            let entrada = registros[0];
+                            let salida = registros[1];
+                            res.render("registroError",{personal, entrada, salida, error:`No se puede realizar un nuevo registro ya que hoy ya se han realizado las cargas para su entrada y salida de la escuela.`})
+                        }
                     }
+                }else{
+                    res.render("adminPanel")
                 }
             }else{
                 res.render("registroDNI",{error: `El número de DNI - ${dni} no está registrado en el sistema. Contacte al administrador.`})
