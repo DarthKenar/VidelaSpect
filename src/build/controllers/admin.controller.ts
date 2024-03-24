@@ -25,7 +25,10 @@ export const getCreatePersonal = async (req:Request, res:Response)=>{
 }
 
 export const getUpdatePersonal = async (req:Request, res:Response)=>{
-    res.render("adminPersonalUpdate")
+    let personalId = req.params.id
+    let personalRepository = DataBase.getRepository(Personal)
+    let personal = await personalRepository.findOneBy({id: Number(personalId)})
+    res.render("adminPersonalUpdate",{personal})
 }
 
 export const postCreatePersonal = async (req:Request, res:Response)=>{
@@ -56,14 +59,42 @@ export const postCreatePersonal = async (req:Request, res:Response)=>{
 }
 
 export const postUpdatePersonal = async (req:Request, res:Response)=>{
-    res.render("adminPanel",{message:""})
+    try{
+        let personalId = Number(req.params.id)
+        let personalRepository = DataBase.getRepository(Personal)
+        let personalToUpdate = await personalRepository.findOneBy({id: personalId})
+        if (personalToUpdate) {
+            let nombre:string = req.body.nombre
+            let dni:string = req.body.dni
+            let cargo:string = req.body.cargo
+            let admin:boolean;
+            if (nombre.length === 0 || dni.length === 0 || cargo.length === 0 ) {
+                throw new Error("Alguno de los datos del personal están vacíos y no se guardará");
+            }
+            if(req.body.admin){
+                admin = true
+            }else{
+                admin = false
+            }
+            personalToUpdate.name = nombre
+            personalToUpdate.dni = dni
+            personalToUpdate.position = cargo
+            personalToUpdate.admin = admin
+            await DataBase.manager.save(personalToUpdate)
+            let personal = await personalRepository.find()
+            res.render("adminPanelPersonal",{personal, message:`Se ha modificado correctamente a ${personalToUpdate.name}`, type:"info"})
+        }
+    }catch(err){
+        console.log(err)
+        res.render("adminPersonalUpdate",{message:`${err}`, type:"error"})
+    }
 }
 
 export const postDeletePersonal = async (req:Request, res:Response)=>{
     try{
-        let userId = Number(req.params.id)
+        let personalId = Number(req.params.id)
         let personalRepository = DataBase.getRepository(Personal)
-        let personalToDelete = await personalRepository.findOneBy({id: userId})
+        let personalToDelete = await personalRepository.findOneBy({id: personalId})
         if(personalToDelete){
             let personalToDeleteName = personalToDelete.name
             await personalRepository.delete(personalToDelete)

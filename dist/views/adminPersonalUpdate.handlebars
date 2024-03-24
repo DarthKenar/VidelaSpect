@@ -1,0 +1,36 @@
+<menu class="flex my-10">
+  <a href="/admin/panel/personal" class="btn btn-ghost">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-corner-up-left"><polyline points="9 14 4 9 9 4"></polyline><path d="M20 20v-7a4 4 0 0 0-4-4H4"></path></svg>
+  VOLVER
+  </a>
+</menu>
+{{>messages}}
+<section class="flex justify-center">
+  <div class="bg-base-300 flex flex-col items-center justify-center rounded-xl w-[30rem]">
+    <h1 class="py-10 font-semibold">EDITAR A {{personal.name}}</h1>
+    <form class="w-full max-w-xs" action="/admin/panel/personal/update/{{personal.id}}" method="POST">
+      <label class="form-control w-full max-w-xs my-1">
+        <input id="nombre" name="nombre" type="text" placeholder="Nombre" value="{{personal.name}}" class="input input-bordered w-full max-w-xs" />
+      </label>
+      <label class="form-control w-full max-w-xs my-1">
+        <input id="dni" name="dni" type="text" placeholder="Dni" value="{{personal.dni}}" class="input input-bordered w-full max-w-xs" />
+      </label>
+      <label class="form-control w-full max-w-xs my-1">
+        <input id="cargo" name="cargo" type="text" placeholder="Cargo" value="{{personal.position}}" class="input input-bordered w-full max-w-xs" />
+      </label>
+      <div class="form-control">
+        <label class="label cursor-pointer max-w-xs">
+          <span class="label-text">Administrador</span> 
+          <input id="admin" name="admin" type="checkbox" 
+          {{#if personal.admin}}
+             checked="checked"
+          {{/if}} 
+          class="checkbox" />
+        </label>
+      </div>
+      <div class="label cursor-pointer max-w-xs place-content-end py-10">
+        <input class="btn btn-outline btn-warning " type="submit" value="EDITAR">
+      </div>
+    </form>
+  </div>
+</section>

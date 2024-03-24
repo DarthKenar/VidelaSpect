@@ -17,7 +17,7 @@ import {
 routerAdmin.get("/panel", getPanel) //OK
 routerAdmin.get("/panel/personal", getPanelPersonal) //OK
 routerAdmin.get("/panel/personal/create", getCreatePersonal) //OK
-routerAdmin.get("/panel/personal/update", getUpdatePersonal) 
+routerAdmin.get("/panel/personal/update/:id", getUpdatePersonal) 
 
 routerAdmin.get("/panel/registros", getPanelRegistros)
 

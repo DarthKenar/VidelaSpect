@@ -4,6 +4,7 @@
   VOLVER
   </a>
 </menu>
+{{>messages}}
 <section class="flex justify-center">
   <div class="bg-base-300 flex flex-col items-center justify-center rounded-xl w-[30rem]">
     <h1 class="py-10 font-semibold">CREAR PERSONAL</h1>
@@ -29,20 +30,5 @@
     </form>
   </div>
 </section>
-<dialog id="my_modal_3" class="modal">
-      <div class="modal-box">
-        <form method="dialog">
-          <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-        </form>
-         <h3 class="font-bold text-lg">{{message}}</h3>
-      </div>
-</dialog>
-{{#if message}}
-   <script>
-  document.addEventListener("DOMContentLoaded", function() {
-  var dialog = document.getElementById("my_modal_3");
-  dialog.showModal();
-  });
-  </script>
-{{/if}}
+
 
