@@ -9,7 +9,8 @@ import {
     getUpdatePersonal,
     postCreatePersonal,
     postUpdatePersonal,
-    postDeletePersonal
+    postDeletePersonal,
+    getPanelRegistroFoto
 } from "../controllers/admin.controller"
 
 //GET
@@ -20,6 +21,8 @@ routerAdmin.get("/panel/personal/create", getCreatePersonal) //OK
 routerAdmin.get("/panel/personal/update/:id", getUpdatePersonal) 
 
 routerAdmin.get("/panel/registros", getPanelRegistros)
+routerAdmin.get("/panel/registros/foto/:id", getPanelRegistroFoto)
+
 
 //POST
 routerAdmin.post("/panel/personal/create", postCreatePersonal) //OK

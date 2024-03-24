@@ -109,3 +109,7 @@ export const postDeletePersonal = async (req:Request, res:Response)=>{
         return res.render("adminPanel")
     }
 }
+export const getPanelRegistroFoto = async (req:Request, res:Response)=>{
+    let registroId = req.params.id
+    
+}

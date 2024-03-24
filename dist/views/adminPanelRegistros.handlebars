@@ -1,8 +1,24 @@
-<menu class="flex my-10">
+<menu class="flex justify-between my-10">
   <a href="/admin/panel" class="btn">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-corner-up-left"><polyline points="9 14 4 9 9 4"></polyline><path d="M20 20v-7a4 4 0 0 0-4-4H4"></path></svg>
     VOLVER
   </a>
+  <div class="join">
+    <div>
+      <div>
+        <input class="input input-bordered join-item" placeholder="Search"/>
+      </div>
+    </div>
+    <select class="select select-bordered join-item">
+      <option>Nombre</option>
+      <option selected>Fecha</option>
+      <option>Hora</option>
+    </select>
+    <div class="indicator">
+      <button class="btn join-item">Search</button>
+    </div>
+  </div>
+  <a href=""></a>
 </menu>
 <div class="overflow-x-auto">
   <table class="table table-xs">
@@ -12,14 +28,17 @@
         <th>Nombre</th> 
         <th>Fecha</th> 
         <th>Hora</th>
+        <th>Foto</th> 
       </tr>
     </thead>
     <tbody>
         {{#each registro}}
             <tr>
+                <td></td>
                 <td>{{this.personal_name}}</td> 
                 <td>{{this.fecha}}</td> 
                 <td>{{this.hora}}</td>
+                <td><a href="/panel/registros/foto/{{this.id}}" class="btn btn-sm btn-info"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-camera"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg></a></td>
             </tr>
         {{/each}}
     </tbody> 
@@ -29,6 +48,7 @@
         <th>Nombre</th> 
         <th>Fecha</th> 
         <th>Hora</th>
+        <th>Foto</th> 
       </tr>
     </tfoot>
   </table>
