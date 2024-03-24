@@ -55,7 +55,7 @@ export const postRegistroFoto = async (req:Request, res:Response)=>{
     let personalRepository = await DataBase.getRepository(Personal)
     let personal = await personalRepository.findOneBy({id: userId})
     if(personal){
-        //CODIGO DE OK
+        //CÓDIGO DE OK
         //Ayuda a generar el mensaje al usuario
         let fecha = new Date
         //Registra al personal
@@ -87,7 +87,7 @@ export const postRegistroFotoOk = async (req:Request, res:Response)=>{
     let personal = await personalRepository.findOneBy({id: userId})
     if (personal) {
         let ahora = new Date
-        //logica por cantidad de registros
+        //lógica por cantidad de registros
         //Ayuda a generar el mensaje al usuario
         let fecha = new Date
         let horas = fecha.getHours()
