@@ -36,8 +36,9 @@ export const postCreatePersonal = async (req:Request, res:Response)=>{
         let nombre:string = req.body.nombre
         let dni:string = req.body.dni
         let cargo:string = req.body.cargo
+        let entradasDiarias:number = Number(req.body.entradasDiarias)
         let admin:boolean;
-        if (nombre.length === 0 || dni.length === 0 || cargo.length === 0 ) {
+        if (nombre.length === 0 || dni.length === 0 || cargo.length === 0 || entradasDiarias === 1 ) {
             throw new Error("Alguno de los datos del personal están vacíos y no se guardará");
         }
         if(req.body.admin){
@@ -50,6 +51,7 @@ export const postCreatePersonal = async (req:Request, res:Response)=>{
         personal.dni = dni
         personal.position = cargo
         personal.admin = admin
+        personal.dailyEntries = entradasDiarias
         await DataBase.manager.save(personal)
         res.render("adminPersonalCreate",{message:"El personal fue guardado correctamente.", type:"success"})
     }catch(err){
@@ -67,6 +69,7 @@ export const postUpdatePersonal = async (req:Request, res:Response)=>{
             let nombre:string = req.body.nombre
             let dni:string = req.body.dni
             let cargo:string = req.body.cargo
+            let entradasDiarias:number = Number(req.body.entradasDiarias)
             let admin:boolean;
             if (nombre.length === 0 || dni.length === 0 || cargo.length === 0 ) {
                 throw new Error("Alguno de los datos del personal están vacíos y no se guardará");
@@ -80,6 +83,7 @@ export const postUpdatePersonal = async (req:Request, res:Response)=>{
             personalToUpdate.dni = dni
             personalToUpdate.position = cargo
             personalToUpdate.admin = admin
+            personalToUpdate.dailyEntries = entradasDiarias
             await DataBase.manager.save(personalToUpdate)
             let personal = await personalRepository.find()
             res.render("adminPanelPersonal",{personal, message:`Se ha modificado correctamente a ${personalToUpdate.name}`, type:"info"})

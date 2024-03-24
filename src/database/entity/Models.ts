@@ -16,6 +16,9 @@ export class Personal {
     position: string
 
     @Column()
+    dailyEntries: number
+
+    @Column()
     admin: boolean
 }
 

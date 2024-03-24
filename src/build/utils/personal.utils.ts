@@ -12,29 +12,20 @@ export interface Image {
     size: number;
   }
 
-export async function saveImage(personal:Personal, image:Image|undefined){
+export async function saveImage(registroId:number, image:Image|undefined){
     if(image){
-      let fecha = new Date
-      let mes = fecha.getMonth()
-      let dia = fecha.getDate()
-      let horas = fecha.getHours()
-      let minutos = fecha.getMinutes()
-      mes = mes + 1
-      fs.writeFile(`dist/database/fotos/${mes}/${dia}/${horas}.${minutos}-${personal.name}`+".png", image.buffer, function(err:Error) {
+      // ${dia},${dia}.${mes}-${horas}.${minutos}-${personal.name}`
+      fs.writeFile(`dist/database/fotos/${registroId}`+".png", image.buffer, function(err:Error) {
           if (err) {
             console.log('Hubo un error al escribir el archivo', err);
-            fs.mkdirSync(`./dist/database/fotos/${mes}/${dia}/`,{recursive:true});
-            fs.writeFile(`dist/database/fotos/${mes}/${dia}/${horas}.${minutos}-${personal.name}`+".png", image.buffer,function(err:Error) {
+            fs.mkdirSync(`./dist/database/fotos/`,{recursive:true});
+            fs.writeFile(`dist/database/fotos/${registroId}`+".png", image.buffer,function(err:Error) {
               if(err){
                 console.log(err)
               }else{
                 console.log("La carpeta se ha creado correctamente")
               }
             })
-            let mesHaceDosMeses = mes - 2;
-            if (mesHaceDosMeses < 1) {
-              mesHaceDosMeses += 12; // Ajustamos el mes
-            }
             //Aca estaría bueno eliminar automáticamente la carpeta pero sale un error porque pareciera que se necesitan ciertos permisos.
           } else {
             console.log('Archivo guardado con éxito');
@@ -47,12 +38,11 @@ export async function saveImage(personal:Personal, image:Image|undefined){
 
 export async function registrarPersonal(personal:Personal, ahora:Date){
   try{
-
     let fecha = getFecha(ahora)
     let hora = ahora.toTimeString().split(' ')[0];  // Formato: "HH:mm:ss"
     let registroRepository = await DataBase.getRepository(Registro)
     let registros = await registroRepository.findBy({personal_id:personal.id,fecha:fecha})
-    if(registros.length > 1){
+    if(registros.length === personal.dailyEntries){
       return [false,registros]
     }else{
       let registroNuevo = new Registro
@@ -60,8 +50,9 @@ export async function registrarPersonal(personal:Personal, ahora:Date){
       registroNuevo.hora = hora
       registroNuevo.personal_id = personal.id
       registroNuevo.personal_name = personal.name
-      registroRepository.save(registroNuevo)
-      return [true, registros]
+      registroNuevo = await registroRepository.save(registroNuevo)
+      console.log("ESTE ES EL ID DEL NUEVO REGISTRO:", registroNuevo.id)
+      return [true, registros, registroNuevo.id]
     }
   }catch(err){
     console.log(err)
@@ -82,3 +73,5 @@ export function getFecha(ahora:Date) {
   let mes = ("0" + (ahora.getMonth() + 1)).slice(-2)
   return `${dia}-${mes}-${ano}`
 }
+
+export const isPar = (numero:number) => numero % 2 === 0;
