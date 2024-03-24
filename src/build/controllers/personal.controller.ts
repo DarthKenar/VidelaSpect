@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import DataBase from "../../database/data-source";
-import { Personal } from "../../database/entity/models";
-import { saveImage, Image, registrarPersonal, getCantidadDeRegistrosPorIdDePersonaHoy, isPar } from "../utils/personal.utils"
+import { Personal, Registro } from "../../database/entity/models";
+import { saveImage, Image, registrarPersonal, getCantidadDeRegistrosPorIdDePersonaHoy, isPar, getFecha } from "../utils/personal.utils"
 
 export const getRegistroDNI = async (req:Request, res:Response)=>{
     res.render("registroDNI")
@@ -17,15 +17,17 @@ export const postRegistroDNI = async (req:Request, res:Response)=>{
                 if(personal.admin === false){
                     let ahora = new Date
                     let cantidadDeRegistros = await getCantidadDeRegistrosPorIdDePersonaHoy(personal,ahora)
-                    if(cantidadDeRegistros===0){
+                    if(isPar(cantidadDeRegistros) && cantidadDeRegistros < personal.dailyEntries){
                         var tipoDeRegistro = "entrada"
                         res.render("registroFoto", {personal, tipoDeRegistro})
-                    }else if(cantidadDeRegistros===1){
+                    }else if(!isPar(cantidadDeRegistros) && cantidadDeRegistros < personal.dailyEntries){
                         var tipoDeRegistro = "salida"
                         res.render("registroFoto", {personal, tipoDeRegistro})
                     }else{
-                        let fecha = new Date
-                        let [confirm, registros] = await registrarPersonal(personal, fecha)
+                        let ahora = new Date
+                        let fecha = getFecha(ahora)
+                        let registroRepository = DataBase.getRepository(Registro)
+                        let registros = await registroRepository.findBy({personal_id:personal.id,fecha:fecha})
                         if (Array.isArray(registros)) {
                             let entrada = registros[0];
                             let salida = registros[1];
