@@ -16,13 +16,13 @@ import {
 //muestra el panel
 routerAdmin.get("/panel", getPanel) //OK
 routerAdmin.get("/panel/personal", getPanelPersonal) //OK
-routerAdmin.get("/panel/personal/create", getCreatePersonal)
+routerAdmin.get("/panel/personal/create", getCreatePersonal) //OK
 routerAdmin.get("/panel/personal/update", getUpdatePersonal) 
 
 routerAdmin.get("/panel/registros", getPanelRegistros)
 
 //POST
-routerAdmin.post("/panel/personal/create", postCreatePersonal)
+routerAdmin.post("/panel/personal/create", postCreatePersonal) //OK
 routerAdmin.post("/panel/personal/update/:id", postUpdatePersonal)
-routerAdmin.post("/panel/personal/delete/:id", postDeletePersonal)
+routerAdmin.post("/panel/personal/delete/:id", postDeletePersonal) 
 module.exports = routerAdmin;

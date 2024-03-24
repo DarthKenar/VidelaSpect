@@ -21,6 +21,7 @@
   <a href="/admin/panel/personal/create" class="btn btn-success">CREAR</a>
 </menu>
 <div class="overflow-x-auto">
+  {{>messages}}
   <table class="table table-xs">
     <thead>
       <tr>
@@ -46,7 +47,12 @@
                     No
                   {{/if}}
                 </td>
-                <td><a class="btn btn-warning btn-sm mr-1">EDITAR</a><a class="btn btn-error btn-sm">ELIMINAR</a></td>
+                <td class="flex flex-row">
+                  <a href="/admin/panel/personal/update/{{this.id}}" class="btn btn-warning btn-sm mr-1">EDITAR</a>
+                  <form action="/admin/panel/personal/delete/{{this.id}}" method="POST">
+                    <button type="submit" class="btn btn-error btn-sm" onclick="return confirm('¿Estás seguro de que quieres eliminar a {{this.name}} del personal?')">ELIMINAR</button>
+                  </form>
+                </td>
             </tr>
         {{/each}}
     </tbody> 
