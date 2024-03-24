@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { Personal, Registro } from "../../database/entity/models";
 import DataBase from "../../database/data-source";
+const PATH = require("path")
 
 export const getPanel = async (req:Request, res:Response)=>{
     res.render("adminPanel")
@@ -114,6 +115,10 @@ export const postDeletePersonal = async (req:Request, res:Response)=>{
     }
 }
 export const getPanelRegistroFoto = async (req:Request, res:Response)=>{
+    console.log("getPanelRegistroFoto")
     let registroId = req.params.id
-    
+    if(registroId){
+        let fotoPath:string = PATH.join(__dirname, `../../database/fotos/${registroId}.png`)
+        res.sendFile(fotoPath,(err)=>{console.log(err)})
+    }
 }
