@@ -42,3 +42,15 @@ body {
     --alert-bg: var(--fallback-in,oklch(var(--in)/1));
     --alert-bg-mix: var(--fallback-b1,oklch(var(--b1)/1));
 }
+
+@keyframes fadeOut {
+    0% {opacity: 1;}
+    70% {opacity: 1;}
+    100% {opacity: 0;}
+}
+
+.vanish {
+    animation-name: fadeOut;
+    animation-duration: 5s; /* Ajusta la duración a tus necesidades */
+    animation-fill-mode: forwards; /* El elemento mantendrá el estilo del último keyframe después de la animación */
+}
