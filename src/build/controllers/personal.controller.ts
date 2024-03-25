@@ -83,6 +83,7 @@ export const postRegistroFoto = async (req:Request, res:Response)=>{
 export const postRegistroFotoOk = async (req:Request, res:Response)=>{
     //Datos de usuario para trabajar
     let userId = req.body.userId
+    console.log("ID del usuario:", userId)
     let personalRepository = await DataBase.getRepository(Personal)
     let personal = await personalRepository.findOneBy({id: userId})
     if (personal) {
