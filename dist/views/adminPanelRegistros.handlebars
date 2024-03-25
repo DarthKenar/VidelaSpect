@@ -39,7 +39,7 @@
                 <td>{{this.personal_name}}</td> 
                 <td>{{this.fecha}}</td> 
                 <td>{{this.hora}}</td>
-                <td><a href="/admin/panel/registros/foto/{{this.id}}" class="btn btn-sm btn-info"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-camera"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg></a></td>
+                <td><a onclick="getImage({{this.id}})" class="btn btn-sm btn-info"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-camera"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg></a></td>
             </tr>
         {{/each}}
     </tbody> 
@@ -54,3 +54,12 @@
     </tfoot>
   </table>
 </div>
+<dialog id="my_modal_3" class="modal">
+      <div class="modal-box">
+        <form method="dialog">
+          <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+        </form>
+        <img id="registroFoto" src="" alt="">
+      </div>
+</dialog>
+<script src="/js/getImages.js"></script>

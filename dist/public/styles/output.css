@@ -2958,21 +2958,16 @@ html {
   padding-bottom: 1rem;
 }
 
-.py-5 {
-  padding-top: 1.25rem;
-  padding-bottom: 1.25rem;
-}
-
 .pb-4 {
   padding-bottom: 1rem;
 }
 
-.pt-4 {
-  padding-top: 1rem;
-}
-
 .pb-5 {
   padding-bottom: 1.25rem;
+}
+
+.pt-4 {
+  padding-top: 1rem;
 }
 
 .text-center {
@@ -3065,6 +3060,28 @@ body {
   color: var(--fallback-inc,oklch(var(--inc)/var(--tw-text-opacity)));
   --alert-bg: var(--fallback-in,oklch(var(--in)/1));
   --alert-bg-mix: var(--fallback-b1,oklch(var(--b1)/1));
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+
+  70% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+.vanish {
+  animation-name: fadeOut;
+  animation-duration: 5s;
+  /* Ajusta la duración a tus necesidades */
+  animation-fill-mode: forwards;
+  /* El elemento mantendrá el estilo del último keyframe después de la animación */
 }
 
 @media (min-width: 1024px) {

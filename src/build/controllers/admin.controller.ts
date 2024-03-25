@@ -123,6 +123,7 @@ export const getPanelRegistroFoto = async (req:Request, res:Response)=>{
             if(fs.existsSync(fotoPath)){
                 res.sendFile(fotoPath,(err)=>{console.log(err)})
             }else{
+                console.log("No se encuentra la foto")
                 let registroRepository = DataBase.getRepository(Registro)
                 let registros:Registro[] = await registroRepository.find()
                 let registro:Registro|null = await registroRepository.findOneBy({id:registroId})
