@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import {Like} from 'typeorm';
 import { Personal, Registro } from "../../database/entity/models";
 import DataBase from "../../database/data-source";
 import {buildPersonal} from "../utils/admin.utils"
@@ -16,7 +17,7 @@ export const getPanelPersonal = async (req:Request, res:Response)=>{
     res.render("adminPanelPersonal", {personal})
 }
 
-export const getPanelRegistros = async (req:Request, res:Response)=>{
+export const getPanelRegisters = async (req:Request, res:Response)=>{
     let registroRepository = DataBase.getRepository(Registro)
     let registros:Registro[] = await registroRepository.find()
     console.log(registros)
@@ -106,7 +107,8 @@ export const postDeletePersonal = async (req:Request, res:Response)=>{
         return res.render("adminPanel")
     }
 }
-export const getPanelRegistroFoto = async (req:Request, res:Response)=>{
+
+export const getPanelRegisterPhoto = async (req:Request, res:Response)=>{
     try{
         let registroId = Number(req.params.id)
         let fotoPath:string = PATH.join(__dirname, `../../database/fotos/${registroId}.png`)
@@ -125,5 +127,43 @@ export const getPanelRegistroFoto = async (req:Request, res:Response)=>{
         }
     }catch(err){
         console.log(err)
+    }
+}
+
+export const getPanelPersonalFiltered = async (req:Request, res:Response)=>{
+    let input = req.query.input
+    let select = req.query.select
+    let personalRepository = DataBase.getRepository(Personal)
+    if(typeof input === "string"){
+        let personal:Personal[];
+        if(select === "dni"){
+            personal = await personalRepository.findBy({dni: Like(`%${input}%`)});
+        }else if(select === "name"){
+            console.log("name")
+            personal = await personalRepository.findBy({name: Like(`%${input}%`)});
+            
+        }else{
+            personal = await personalRepository.find()
+        }
+        res.render("adminPanelPersonal",{personal, input, select})
+    }
+}
+
+export const getPanelRegistersFiltered = async (req:Request, res:Response)=>{
+    let input = req.query.input
+    let select = req.query.select
+    let registroRepository = DataBase.getRepository(Registro)
+    if(typeof input === "string"){
+        let registros:Registro[];
+        if(select === "personal_name"){
+            registros = await registroRepository.findBy({personal_name: Like(`%${input}%`)});
+        }else if(select === "fecha"){
+            registros = await registroRepository.findBy({fecha: Like(`%${input}%`)});
+        }else if(select === "hora"){
+            registros = await registroRepository.findBy({hora: Like(`%${input}%`)});
+        }else{
+            registros = await registroRepository.find()
+        }
+        res.render("adminPanelRegistros",{registros, input, select})
     }
 }

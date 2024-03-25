@@ -3,21 +3,20 @@
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-corner-up-left"><polyline points="9 14 4 9 9 4"></polyline><path d="M20 20v-7a4 4 0 0 0-4-4H4"></path></svg>
   VOLVER
   </a>
-<div class="join">
-  <div>
-    <div>
-      <input class="input input-bordered join-item" placeholder="Search"/>
+  <form action="/admin/panel/personal/search" method="GET">
+    <div class="join">
+      <div>
+        <input id="input" name="input" value="{{input}}" class="input input-bordered join-item" placeholder="Search"/>
+      </div>
+      <select id="select" name="select" class="select select-bordered join-item">
+        <option value="name" {{#if_eq select "name"}} selected {{/if_eq}}>Nombre</option>
+        <option value="dni" {{#if_eq select "dni"}} selected {{/if_eq}}>DNI</option>
+      </select>
+      <div class="indicator">
+        <button class="btn join-item">Search</button>
+      </div>
     </div>
-  </div>
-  <select class="select select-bordered join-item">
-    <option>Nombre</option>
-    <option selected>DNI</option>
-    <option>Cargo</option>
-  </select>
-  <div class="indicator">
-    <button class="btn join-item">Search</button>
-  </div>
-</div>
+  </form>
   <a href="/admin/panel/personal/create" class="btn btn-success">CREAR</a>
 </menu>
 <div class="overflow-x-auto">

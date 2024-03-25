@@ -4,13 +4,15 @@ const routerAdmin = express.Router();
 import {
     getPanel,
     getPanelPersonal,
-    getPanelRegistros,
+    getPanelRegisters,
     getCreatePersonal,
     getUpdatePersonal,
     postCreatePersonal,
     postUpdatePersonal,
     postDeletePersonal,
-    getPanelRegistroFoto
+    getPanelRegisterPhoto,
+    getPanelPersonalFiltered,
+    getPanelRegistersFiltered
 } from "../controllers/admin.controller"
 
 //GET
@@ -19,10 +21,11 @@ routerAdmin.get("/panel", getPanel) //OK
 routerAdmin.get("/panel/personal", getPanelPersonal) //OK
 routerAdmin.get("/panel/personal/create", getCreatePersonal) //OK
 routerAdmin.get("/panel/personal/update/:id", getUpdatePersonal) 
+routerAdmin.get("/panel/personal/search/", getPanelPersonalFiltered) 
+routerAdmin.get("/panel/registros/search/", getPanelRegistersFiltered) 
 
-routerAdmin.get("/panel/registros", getPanelRegistros)
-routerAdmin.get("/panel/registros/foto/:id", getPanelRegistroFoto)
-
+routerAdmin.get("/panel/registros", getPanelRegisters)
+routerAdmin.get("/panel/registros/foto/:id", getPanelRegisterPhoto)
 
 //POST
 routerAdmin.post("/panel/personal/create", postCreatePersonal) //OK

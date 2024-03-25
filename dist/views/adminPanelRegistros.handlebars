@@ -3,21 +3,21 @@
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-corner-up-left"><polyline points="9 14 4 9 9 4"></polyline><path d="M20 20v-7a4 4 0 0 0-4-4H4"></path></svg>
     VOLVER
   </a>
-  <div class="join">
-    <div>
+  <form action="/admin/panel/registros/search" method="GET">
+    <div class="join">
       <div>
-        <input class="input input-bordered join-item" placeholder="Search"/>
+        <input id="input" name="input" value="{{input}}" class="input input-bordered join-item" placeholder="Search"/>
+      </div>
+      <select id="select" name="select" class="select select-bordered join-item">
+        <option value="personal_name" {{#if_eq select "personal_name"}} selected {{/if_eq}}>Nombre</option>
+        <option value="fecha" {{#if_eq select "fecha"}} selected {{/if_eq}}>Fecha</option>
+        <option value="hora" {{#if_eq select "hora"}} selected {{/if_eq}}>Hora</option>
+      </select>
+      <div class="indicator">
+        <button class="btn join-item">Search</button>
       </div>
     </div>
-    <select class="select select-bordered join-item">
-      <option>Nombre</option>
-      <option selected>Fecha</option>
-      <option>Hora</option>
-    </select>
-    <div class="indicator">
-      <button class="btn join-item">Search</button>
-    </div>
-  </div>
+  </form>
   <a href=""></a>
 </menu>
 <div class="overflow-x-auto">
