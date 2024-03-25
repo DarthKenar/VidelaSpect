@@ -30,7 +30,7 @@ export const postRegistroDNI = async (req:Request, res:Response)=>{
                         let registros = await registroRepository.findBy({personal_id:personal.id,fecha:fecha})
                         if (Array.isArray(registros)) {
                             let entrada = registros[0];
-                            let salida = registros[1];
+                            let salida = registros[registros.length-1];
                             res.render("registroError",{personal, entrada, salida, error:`No se puede realizar un nuevo registro ya que hoy ya se han realizado las cargas para su entrada y salida de la escuela.`})
                         }
                     }
@@ -74,7 +74,7 @@ export const postRegistroFoto = async (req:Request, res:Response)=>{
             if (Array.isArray(registros)) {
                 let entrada = registros[0];
                 let salida = registros[registros.length-1];
-                res.render("registroError",{personal, entrada, salida, error:`No se puede realizar un nuevo registro ya que hoy ya se han realizado las cargas para su entrada y salida de la escuela.`})
+                res.render("registroError",{personal, entrada, salida, error:`No se puede realizar un nuevo registro ya que hoy ya se han realizado las cargas correspondientes a su entrada y salida.`})
             }
         }
     }
@@ -82,7 +82,7 @@ export const postRegistroFoto = async (req:Request, res:Response)=>{
 
 export const postRegistroFotoOk = async (req:Request, res:Response)=>{
     //Datos de usuario para trabajar
-    let userId = req.body.userId
+    let userId = Number(req.params.id)
     console.log("ID del usuario:", userId)
     let personalRepository = await DataBase.getRepository(Personal)
     let personal = await personalRepository.findOneBy({id: userId})
