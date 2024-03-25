@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { Personal, Registro } from "../../database/entity/models";
 import DataBase from "../../database/data-source";
+import {buildPersonal} from "../utils/admin.utils"
 import * as fs from 'fs';
 const PATH = require("path")
 
@@ -37,10 +38,10 @@ export const postCreatePersonal = async (req:Request, res:Response)=>{
     try{
         let nombre:string = req.body.nombre
         let dni:string = req.body.dni
-        let cargo:string = req.body.cargo
-        let entradasDiarias:number = Number(req.body.entradasDiarias)
+        let position:string = req.body.position
+        let dailyEntries:number = Number(req.body.dailyEntries)
         let admin:boolean;
-        if (nombre.length === 0 || dni.length === 0 || cargo.length === 0 || entradasDiarias === 1 ) {
+        if (nombre.length === 0 || dni.length === 0 || position.length === 0 || dailyEntries === 1 ) {
             throw new Error("Alguno de los datos del personal están vacíos y no se guardará");
         }
         if(req.body.admin){
@@ -49,15 +50,10 @@ export const postCreatePersonal = async (req:Request, res:Response)=>{
             admin = false
         }
         let personal = new Personal
-        personal.name = nombre
-        personal.dni = dni
-        personal.position = cargo
-        personal.admin = admin
-        personal.dailyEntries = entradasDiarias
-        await DataBase.manager.save(personal)
+        await buildPersonal(personal, nombre, dni, position, admin, dailyEntries)
         res.render("adminPersonalCreate",{message:"El personal fue guardado correctamente.", type:"success"})
     }catch(err){
-        console.log("")
+        console.log(err)
         res.render("adminPersonalCreate",{message:"Se deben completar todos los datos antes de intentar guardar un nuevo miembro del personal.", type: "warning"})
     }
 }
@@ -70,10 +66,10 @@ export const postUpdatePersonal = async (req:Request, res:Response)=>{
         if (personalToUpdate) {
             let nombre:string = req.body.nombre
             let dni:string = req.body.dni
-            let cargo:string = req.body.cargo
-            let entradasDiarias:number = Number(req.body.entradasDiarias)
+            let position:string = req.body.position
+            let dailyEntries:number = Number(req.body.dailyEntries)
             let admin:boolean;
-            if (nombre.length === 0 || dni.length === 0 || cargo.length === 0 ) {
+            if (nombre.length === 0 || dni.length === 0 || position.length === 0 ) {
                 throw new Error("Alguno de los datos del personal están vacíos y no se guardará");
             }
             if(req.body.admin){
@@ -81,12 +77,7 @@ export const postUpdatePersonal = async (req:Request, res:Response)=>{
             }else{
                 admin = false
             }
-            personalToUpdate.name = nombre
-            personalToUpdate.dni = dni
-            personalToUpdate.position = cargo
-            personalToUpdate.admin = admin
-            personalToUpdate.dailyEntries = entradasDiarias
-            await DataBase.manager.save(personalToUpdate)
+            await buildPersonal(personalToUpdate,nombre,dni,position,admin,dailyEntries)
             let personal = await personalRepository.find()
             res.render("adminPanelPersonal",{personal, message:`Se ha modificado correctamente a ${personalToUpdate.name}`, type:"info"})
         }

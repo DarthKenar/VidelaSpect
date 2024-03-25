@@ -29,6 +29,7 @@
         <th>Nombre</th> 
         <th>DNI</th> 
         <th>Cargo</th> 
+        <th title="Registros totales por día.">Reg. x día</th>
         <th>Administrador</th>
         <th>Acción</th>
       </tr>
@@ -39,7 +40,8 @@
                 <th>{{this.id}}</th> 
                 <td>{{this.name}}</td> 
                 <td>{{this.dni}}</td> 
-                <td>{{this.position}}</td> 
+                <td>{{this.position}}</td>
+                <td>{{this.dailyEntries}}</td> 
                 <td>
                   {{#if this.admin}}
                     Si
@@ -62,6 +64,7 @@
         <th>Nombre</th> 
         <th>DNI</th> 
         <th>Cargo</th> 
+        <th title="Registros totales por día.">Reg. x día</th>
         <th>Administrador</th>
         <th>Acción</th>
       </tr>
