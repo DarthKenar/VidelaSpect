@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { Personal, Registro } from "../../database/entity/models";
 import DataBase from "../../database/data-source";
+import * as fs from 'fs';
 const PATH = require("path")
 
 export const getPanel = async (req:Request, res:Response)=>{
@@ -16,9 +17,9 @@ export const getPanelPersonal = async (req:Request, res:Response)=>{
 
 export const getPanelRegistros = async (req:Request, res:Response)=>{
     let registroRepository = DataBase.getRepository(Registro)
-    let registro:Registro[] = await registroRepository.find()
-    console.log(registro)
-    res.render("adminPanelRegistros",{registro})
+    let registros:Registro[] = await registroRepository.find()
+    console.log(registros)
+    res.render("adminPanelRegistros",{registros})
 }
 
 export const getCreatePersonal = async (req:Request, res:Response)=>{
@@ -115,10 +116,22 @@ export const postDeletePersonal = async (req:Request, res:Response)=>{
     }
 }
 export const getPanelRegistroFoto = async (req:Request, res:Response)=>{
-    console.log("getPanelRegistroFoto")
-    let registroId = req.params.id
-    if(registroId){
+    try{
+        let registroId = Number(req.params.id)
         let fotoPath:string = PATH.join(__dirname, `../../database/fotos/${registroId}.png`)
-        res.sendFile(fotoPath,(err)=>{console.log(err)})
+        if(registroId){
+            if(fs.existsSync(fotoPath)){
+                res.sendFile(fotoPath,(err)=>{console.log(err)})
+            }else{
+                let registroRepository = DataBase.getRepository(Registro)
+                let registros:Registro[] = await registroRepository.find()
+                let registro:Registro|null = await registroRepository.findOneBy({id:registroId})
+                if(registro){
+                    res.render("adminPanelRegistros",{registros, message:`La foto buscada de ${registro.personal_name} no se encuentra.`, type:"error"})
+                }
+            }
+        }
+    }catch(err){
+        console.log(err)
     }
 }

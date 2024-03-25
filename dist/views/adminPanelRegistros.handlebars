@@ -21,6 +21,7 @@
   <a href=""></a>
 </menu>
 <div class="overflow-x-auto">
+  {{>messages}}
   <table class="table table-xs">
     <thead>
       <tr>
@@ -32,7 +33,7 @@
       </tr>
     </thead>
     <tbody>
-        {{#each registro}}
+        {{#each registros}}
             <tr>
                 <td>{{this.id}}</td>
                 <td>{{this.personal_name}}</td> 
