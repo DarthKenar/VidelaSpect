@@ -4,16 +4,27 @@ import { Personal, Registro } from "../../database/entity/models";
 import DataBase from "../../database/data-source";
 import {buildPersonal, exportExcel, registersFiltered, personalFiltered} from "../utils/admin.utils"
 import * as fs from 'fs';
+import {error} from "../utils/error.utils"
 const PATH = require("path")
 
 export const getPanel = async (req:Request, res:Response)=>{
-    res.render("adminPanel")
+    try{
+        res.render("adminPanel")
+    }catch(err){
+        console.log(err)
+        res.render("error", {error})
+    }
 }
 
 export const getPanelPersonal = async (req:Request, res:Response)=>{
-    let personalRepository = DataBase.getRepository(Personal)
-    let personal:Personal[] = await personalRepository.find()
-    res.render("adminPanelPersonal", {personal})
+    try{
+        let personalRepository = DataBase.getRepository(Personal)
+        let personal:Personal[] = await personalRepository.find()
+        res.render("adminPanelPersonal", {personal})
+    }catch(err){
+        console.log(err)
+        res.render("error", {error})
+    }
 }
 
 export const getPanelRegisters = async (req:Request, res:Response)=>{
@@ -23,14 +34,24 @@ export const getPanelRegisters = async (req:Request, res:Response)=>{
 }
 
 export const getCreatePersonal = async (req:Request, res:Response)=>{
-    res.render("adminPersonalCreate")
+    try{
+        res.render("adminPersonalCreate")
+    }catch(err){
+        console.log(err)
+        res.render("error", {error})
+    }
 }
 
 export const getUpdatePersonal = async (req:Request, res:Response)=>{
-    let personalId = req.params.id
-    let personalRepository = DataBase.getRepository(Personal)
-    let personal = await personalRepository.findOneBy({id: Number(personalId)})
-    res.render("adminPersonalUpdate",{personal})
+    try{
+        let personalId = req.params.id
+        let personalRepository = DataBase.getRepository(Personal)
+        let personal = await personalRepository.findOneBy({id: Number(personalId)})
+        res.render("adminPersonalUpdate",{personal})
+    }catch(err){
+        console.log(err)
+        res.render("error", {error})
+    }
 }
 
 export const postCreatePersonal = async (req:Request, res:Response)=>{
@@ -102,7 +123,7 @@ export const postDeletePersonal = async (req:Request, res:Response)=>{
         }
     }catch(err){
         console.log(err)
-        return res.render("adminPanel")
+        res.render("error", {error})
     }
 }
 
@@ -124,6 +145,7 @@ export const getPanelRegisterPhoto = async (req:Request, res:Response)=>{
         }
     }catch(err){
         console.log(err)
+        res.render("error", {error})
     }
 }
 
@@ -135,6 +157,7 @@ export const getPanelPersonalFiltered = async (req:Request, res:Response)=>{
         res.render("adminPanelPersonalResponse",{personal, input, select})
     }catch(err){
         console.log(err)
+        res.render("error", {error})
     }
 }
 
@@ -146,6 +169,7 @@ export const getPanelRegistersFiltered = async (req:Request, res:Response)=>{
         res.render("adminPanelRegistrosResponse",{registros, input, select})
     }catch(err){
         console.log(err)
+        res.render("error", {error})
     }
 }
 
@@ -158,6 +182,7 @@ export const getPanelPersonalExcel = async (req:Request, res:Response)=>{
         res.render("adminPanelPersonalResponse",{personal, input, select, message:"El archivo excel se ha exportado correctamente."})
     }catch(err){
         console.log(err)
+        res.render("error", {error})
     }
 }
 export const getPanelRegisterExcel = async (req:Request, res:Response)=>{
@@ -169,5 +194,6 @@ export const getPanelRegisterExcel = async (req:Request, res:Response)=>{
         res.render("adminPanelRegistrosResponse",{registros, input, select, message:"El archivo excel se ha exportado correctamente."})
     }catch(err){
         console.log(err)
+        res.render("error", {error})
     }
 }

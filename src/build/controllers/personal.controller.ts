@@ -2,9 +2,14 @@ import { Request, Response } from "express";
 import DataBase from "../../database/data-source";
 import { Personal, Registro } from "../../database/entity/models";
 import { saveImage, Image, registrarPersonal, getCantidadDeRegistrosPorIdDePersonaHoy, isPar, getDate } from "../utils/personal.utils"
-
+import {error} from "../utils/error.utils"
 export const getRegistroDNI = async (req:Request, res:Response)=>{
-    res.render("registroDNI")
+    try{
+        res.render("registroDNI")
+    }catch(err){
+        console.log(err)
+        res.render("error", {error})
+    }
 }
 
 export const postRegistroDNI = async (req:Request, res:Response)=>{
@@ -45,68 +50,79 @@ export const postRegistroDNI = async (req:Request, res:Response)=>{
         }
     }catch(err){
         console.log(err)
-        res.render("500")
+        res.render("error", {error})
     }
 }
 
 export const postRegistroFoto = async (req:Request, res:Response)=>{
-    //Datos de usuario para trabajar
-    let userId = req.body.userId
-    let personalRepository = await DataBase.getRepository(Personal)
-    let personal = await personalRepository.findOneBy({id: userId})
-    if(personal){
-        //CÓDIGO DE OK
-        //Ayuda a generar el mensaje al usuario
-        let fecha = new Date
-        //Registra al personal
-        let [confirm, registros, registroId] = await registrarPersonal(personal, fecha)
-        //
-        if(confirm){
-            //Guarda la foto con el objeto {personal}
-            let data:Image|undefined = req.file 
-            if(typeof registroId === "number"){
-                saveImage(registroId, data)
-            }
+    try{
+        let userId = req.body.userId
+        let personalRepository = await DataBase.getRepository(Personal)
+        let personal = await personalRepository.findOneBy({id: userId})
+        if(personal){
+            //CÓDIGO DE OK
+            //Ayuda a generar el mensaje al usuario
+            let fecha = new Date
+            //Registra al personal
+            let [confirm, registros, registroId] = await registrarPersonal(personal, fecha)
             //
-            res.json({url:`http://localhost:7000/personal/foto/send/${personal.id}`})
-        }else{
-            if (Array.isArray(registros)) {
-                let entrada = registros[0];
-                let salida = registros[registros.length-1];
-                res.render("registroError",{personal, entrada, salida, error:`No se puede realizar un nuevo registro ya que hoy ya se han realizado las cargas correspondientes a su entrada y salida.`})
+            if(confirm){
+                //Guarda la foto con el objeto {personal}
+                let data:Image|undefined = req.file 
+                if(typeof registroId === "number"){
+                    saveImage(registroId, data)
+                }
+                //
+                res.json({url:`http://localhost:7000/personal/foto/send/${personal.id}`})
+            }else{
+                if (Array.isArray(registros)) {
+                    let entrada = registros[0];
+                    let salida = registros[registros.length-1];
+                    res.render("registroError",{personal, entrada, salida, error:`No se puede realizar un nuevo registro ya que hoy ya se han realizado las cargas correspondientes a su entrada y salida.`})
+                }
             }
         }
+    }catch(err){
+        console.log(err)
+        res.render("error", {error})
     }
 }
 
 export const postRegistroFotoOk = async (req:Request, res:Response)=>{
-    //Datos de usuario para trabajar
-    let userId = Number(req.params.id)
-    let personalRepository = await DataBase.getRepository(Personal)
-    let personal = await personalRepository.findOneBy({id: userId})
-    if (personal) {
-        let ahora = new Date
-        //lógica por cantidad de registros
-        //Ayuda a generar el mensaje al usuario
-        let fecha = new Date
-        let horas = fecha.getHours()
-        let minutos = fecha.getMinutes()
-        const formalizeMinutes = (num: number): string => num < 10 ? `0${num}` : `${num}`;
-        let minutosFormalize = formalizeMinutes(minutos)
-        //
-        let cantidadDeRegistros = await getCantidadDeRegistrosPorIdDePersonaHoy(personal,ahora)
-        if(isPar(cantidadDeRegistros)){
-            let tipoDeRegistro = "entrada"
-            res.render("registroOk",{personal, message:`Se ha registrado correctamente su ${tipoDeRegistro} a las: ${horas}:${minutosFormalize}`, despedida:"Esperamos que tenga una excelente jornada laboral."})
-        }else{
-            let tipoDeRegistro = "salida"
-            res.render("registroOk",{personal, message:`Se ha registrado correctamente su ${tipoDeRegistro} a las: ${horas}:${minutosFormalize}`, despedida:"Gracias por registrar su salida, que tenga buenos días."})
+    try{
+        let userId = Number(req.params.id)
+        let personalRepository = await DataBase.getRepository(Personal)
+        let personal = await personalRepository.findOneBy({id: userId})
+        if (personal) {
+            let ahora = new Date
+            //lógica por cantidad de registros
+            //Ayuda a generar el mensaje al usuario
+            let fecha = new Date
+            let horas = fecha.getHours()
+            let minutos = fecha.getMinutes()
+            const formalizeMinutes = (num: number): string => num < 10 ? `0${num}` : `${num}`;
+            let minutosFormalize = formalizeMinutes(minutos)
+            //
+            let cantidadDeRegistros = await getCantidadDeRegistrosPorIdDePersonaHoy(personal,ahora)
+            if(isPar(cantidadDeRegistros)){
+                let tipoDeRegistro = "entrada"
+                res.render("registroOk",{personal, message:`Se ha registrado correctamente su ${tipoDeRegistro} a las: ${horas}:${minutosFormalize}`, despedida:"Esperamos que tenga una excelente jornada laboral."})
+            }else{
+                let tipoDeRegistro = "salida"
+                res.render("registroOk",{personal, message:`Se ha registrado correctamente su ${tipoDeRegistro} a las: ${horas}:${minutosFormalize}`, despedida:"Gracias por registrar su salida, que tenga buenos días."})
+            }
         }
-    }else{
-        throw new Error("Ha ocurrido un error inesperado, contacte al administrador");
+    }catch(err){
+        console.log(err)
+        res.render("error", {error})
     }
 }
 
 export const get500 = async (req:Request, res:Response)=>{
-    res.render("500")
+    try{
+        res.render("error")
+    }catch(err){
+        console.log(err)
+        res.render("error", {error})
+    }
 }

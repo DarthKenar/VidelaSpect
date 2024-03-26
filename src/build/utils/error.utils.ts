@@ -1,0 +1,1 @@
+export const error = "Ha ocurrido un error, por favor contacte al administrador"
