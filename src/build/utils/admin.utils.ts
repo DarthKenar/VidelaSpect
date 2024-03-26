@@ -9,3 +9,7 @@ export const buildPersonal = async (personal:Personal, nombre:string, dni:string
     personal.dailyEntries = dailyEntries
     await DataBase.manager.save(personal)
 }
+
+export const exportExcel = async()=>{
+    
+}

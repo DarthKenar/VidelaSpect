@@ -5,7 +5,7 @@
   </a>
   <div class="join">
     <div>
-      <input hx-get="/admin/panel/registros/search" hx-trigger="keyup changed delay:300ms" hx-target="#search_results" hx-include="[name='select'], [name='input']" id="input" name="input" value="{{input}}" class="input input-bordered join-item" placeholder="Search"/>
+      <input hx-get="/admin/panel/registros/search" hx-trigger="keyup changed delay:300ms" hx-target="#search_results" hx-include="[name='select'], [name='input']" id="input" name="input" value="{{input}}" class="input input-bordered join-item" placeholder="Buscar"/>
     </div>
     <select id="select" name="select" class="select select-bordered join-item">
       <option value="personal_name" {{#if_eq select "personal_name"}} selected {{/if_eq}}>Nombre</option>
@@ -14,6 +14,10 @@
     </select>
   </div>
   <a href=""></a>
+  <a class="btn ml-10 btn-outline btn-accent absolute right-0 top-0 m-10" href="/admin/panel/registros/excel" title="Descargar Excel de Personal">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+    DESCARGAR
+  </a>
 </menu>
 <div id="search_results" class="overflow-x-auto">
   {{>messages}}
@@ -34,7 +38,11 @@
                 <td>{{this.personal_name}}</td> 
                 <td>{{this.fecha}}</td> 
                 <td>{{this.hora}}</td>
-                <td><a onclick="getImage({{this.id}})" class="btn btn-sm btn-info"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-camera"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg></a></td>
+                <td>
+                  <a onclick="getImage({{this.id}})" class="btn btn-sm btn-info"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-camera"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                    VER
+                  </a>
+                </td>
             </tr>
         {{/each}}
     </tbody> 
