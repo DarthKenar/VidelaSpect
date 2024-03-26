@@ -3,24 +3,19 @@
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-corner-up-left"><polyline points="9 14 4 9 9 4"></polyline><path d="M20 20v-7a4 4 0 0 0-4-4H4"></path></svg>
     VOLVER
   </a>
-  <form action="/admin/panel/registros/search" method="GET">
-    <div class="join">
-      <div>
-        <input id="input" name="input" value="{{input}}" class="input input-bordered join-item" placeholder="Search"/>
-      </div>
-      <select id="select" name="select" class="select select-bordered join-item">
-        <option value="personal_name" {{#if_eq select "personal_name"}} selected {{/if_eq}}>Nombre</option>
-        <option value="fecha" {{#if_eq select "fecha"}} selected {{/if_eq}}>Fecha</option>
-        <option value="hora" {{#if_eq select "hora"}} selected {{/if_eq}}>Hora</option>
-      </select>
-      <div class="indicator">
-        <button class="btn join-item">Search</button>
-      </div>
+  <div class="join">
+    <div>
+      <input hx-get="/admin/panel/registros/search" hx-trigger="keyup changed delay:300ms" hx-target="#search_results" hx-include="[name='select'], [name='input']" id="input" name="input" value="{{input}}" class="input input-bordered join-item" placeholder="Search"/>
     </div>
-  </form>
+    <select id="select" name="select" class="select select-bordered join-item">
+      <option value="personal_name" {{#if_eq select "personal_name"}} selected {{/if_eq}}>Nombre</option>
+      <option value="fecha" {{#if_eq select "fecha"}} selected {{/if_eq}}>Fecha</option>
+      <option value="hora" {{#if_eq select "hora"}} selected {{/if_eq}}>Hora</option>
+    </select>
+  </div>
   <a href=""></a>
 </menu>
-<div class="overflow-x-auto">
+<div id="search_results" class="overflow-x-auto">
   {{>messages}}
   <table class="table table-xs">
     <thead>

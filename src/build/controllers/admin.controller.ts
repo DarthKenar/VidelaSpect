@@ -13,14 +13,12 @@ export const getPanel = async (req:Request, res:Response)=>{
 export const getPanelPersonal = async (req:Request, res:Response)=>{
     let personalRepository = DataBase.getRepository(Personal)
     let personal:Personal[] = await personalRepository.find()
-    console.log(personal)
     res.render("adminPanelPersonal", {personal})
 }
 
 export const getPanelRegisters = async (req:Request, res:Response)=>{
     let registroRepository = DataBase.getRepository(Registro)
     let registros:Registro[] = await registroRepository.find()
-    console.log(registros)
     res.render("adminPanelRegistros",{registros})
 }
 
@@ -116,7 +114,6 @@ export const getPanelRegisterPhoto = async (req:Request, res:Response)=>{
             if(fs.existsSync(fotoPath)){
                 res.sendFile(fotoPath,(err)=>{console.log(err)})
             }else{
-                console.log("No se encuentra la foto")
                 let registroRepository = DataBase.getRepository(Registro)
                 let registros:Registro[] = await registroRepository.find()
                 let registro:Registro|null = await registroRepository.findOneBy({id:registroId})
@@ -145,25 +142,32 @@ export const getPanelPersonalFiltered = async (req:Request, res:Response)=>{
         }else{
             personal = await personalRepository.find()
         }
-        res.render("adminPanelPersonal",{personal, input, select})
+        res.render("adminPanelPersonalResponse",{personal, input, select})
     }
 }
 
 export const getPanelRegistersFiltered = async (req:Request, res:Response)=>{
-    let input = req.query.input
-    let select = req.query.select
-    let registroRepository = DataBase.getRepository(Registro)
-    if(typeof input === "string"){
+    try{
+        let input = req.query.input
+        let select = req.query.select
+        let registroRepository = DataBase.getRepository(Registro)
         let registros:Registro[];
-        if(select === "personal_name"){
-            registros = await registroRepository.findBy({personal_name: Like(`%${input}%`)});
-        }else if(select === "fecha"){
-            registros = await registroRepository.findBy({fecha: Like(`%${input}%`)});
-        }else if(select === "hora"){
-            registros = await registroRepository.findBy({hora: Like(`%${input}%`)});
+        if(typeof input === "string"){
+            if(select === "personal_name"){
+                registros = await registroRepository.findBy({personal_name: Like(`%${input}%`)});
+            }else if(select === "fecha"){
+                registros = await registroRepository.findBy({fecha: Like(`%${input}%`)});
+            }else if(select === "hora"){
+                registros = await registroRepository.findBy({hora: Like(`%${input}%`)});
+            }else{
+                registros = await registroRepository.find()
+            }
+            res.render("adminPanelRegistrosResponse",{registros, input, select})
         }else{
             registros = await registroRepository.find()
+            res.render("adminPanelRegistrosResponse",{registros, input, select})
         }
-        res.render("adminPanelRegistros",{registros, input, select})
+    }catch(err){
+        console.log(err)
     }
 }
