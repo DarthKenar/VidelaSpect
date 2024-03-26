@@ -7,7 +7,7 @@
     <div>
       <input hx-get="/admin/panel/registros/search" hx-trigger="keyup changed delay:300ms" hx-target="#search_results" hx-include="[name='select'], [name='input']" id="input" name="input" value="{{input}}" class="input input-bordered join-item" placeholder="Buscar"/>
     </div>
-    <select id="select" name="select" class="select select-bordered join-item">
+    <select hx-get="/admin/panel/registros/search" hx-trigger="change" hx-target="#search_results" hx-include="[name='select'], [name='input']" id="select" name="select" class="select select-bordered join-item">
       <option value="personal_name" {{#if_eq select "personal_name"}} selected {{/if_eq}}>Nombre</option>
       <option value="fecha" {{#if_eq select "fecha"}} selected {{/if_eq}}>Fecha</option>
       <option value="hora" {{#if_eq select "hora"}} selected {{/if_eq}}>Hora</option>
@@ -36,8 +36,8 @@
             <tr>
                 <td>{{this.id}}</td>
                 <td>{{this.personal_name}}</td> 
-                <td>{{this.fecha}}</td> 
-                <td>{{this.hora}}</td>
+                <td>{{this.date}}</td> 
+                <td>{{this.time}}</td>
                 <td>
                   <a onclick="getImage({{this.id}})" class="btn btn-sm btn-info"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-camera"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
                     VER

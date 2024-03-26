@@ -7,7 +7,7 @@
     <div>
       <input hx-get="/admin/panel/personal/search" hx-trigger="keyup changed delay:300ms" hx-target="#search_results" hx-include="[name='select'], [name='input']" id="input" name="input" value="{{input}}" class="input input-bordered join-item" placeholder="Buscar"/>
     </div>
-    <select id="select" name="select" class="select select-bordered join-item">
+    <select hx-get="/admin/panel/personal/search" hx-trigger="change" hx-target="#search_results" hx-include="[name='select'], [name='input']" id="select" name="select" class="select select-bordered join-item">
       <option value="name" {{#if_eq select "name"}} selected {{/if_eq}}>Nombre</option>
       <option value="dni" {{#if_eq select "dni"}} selected {{/if_eq}}>DNI</option>
     </select>
