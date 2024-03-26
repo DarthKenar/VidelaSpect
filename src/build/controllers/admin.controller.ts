@@ -155,7 +155,7 @@ export const getPanelPersonalExcel = async (req:Request, res:Response)=>{
         let select = String(req.query.select)
         let personal = await personalFiltered(input, select)
         await exportExcel(personal,input,select)
-        res.render("adminPanelRegistros",{personal, input, select, message:"El archivo excel se ha exportado correctamente."})
+        res.render("adminPanelPersonalResponse",{personal, input, select, message:"El archivo excel se ha exportado correctamente."})
     }catch(err){
         console.log(err)
     }
@@ -166,7 +166,7 @@ export const getPanelRegisterExcel = async (req:Request, res:Response)=>{
         let select = String(req.query.select)
         let registros = await registersFiltered(input, select)
         await exportExcel(registros,input,select)
-        res.render("adminPanelRegistros",{registros, input, select, message:"El archivo excel se ha exportado correctamente."})
+        res.render("adminPanelRegistrosResponse",{registros, input, select, message:"El archivo excel se ha exportado correctamente."})
     }catch(err){
         console.log(err)
     }
