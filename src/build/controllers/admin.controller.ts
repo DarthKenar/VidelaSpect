@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import {Like} from 'typeorm';
+
 import { Personal, Registro } from "../../database/entity/models";
 import DataBase from "../../database/data-source";
-import {buildPersonal} from "../utils/admin.utils"
+import {buildPersonal, exportExcel, registersFiltered, personalFiltered} from "../utils/admin.utils"
 import * as fs from 'fs';
 const PATH = require("path")
 
@@ -128,96 +128,46 @@ export const getPanelRegisterPhoto = async (req:Request, res:Response)=>{
 }
 
 export const getPanelPersonalFiltered = async (req:Request, res:Response)=>{
-    let input = req.query.input
-    let select = req.query.select
-    let personalRepository = DataBase.getRepository(Personal)
-    if(typeof input === "string"){
-        let personal:Personal[];
-        if(select === "dni"){
-            personal = await personalRepository.findBy({dni: Like(`%${input}%`)});
-        }else if(select === "name"){
-            console.log("name")
-            personal = await personalRepository.findBy({name: Like(`%${input}%`)});
-            
-        }else{
-            personal = await personalRepository.find()
-        }
+    try{
+        let input = String(req.query.input)
+        let select = String(req.query.select)
+        let personal = await personalFiltered(input, select)
         res.render("adminPanelPersonalResponse",{personal, input, select})
+    }catch(err){
+        console.log(err)
     }
 }
 
 export const getPanelRegistersFiltered = async (req:Request, res:Response)=>{
     try{
-        let input = req.query.input
-        let select = req.query.select
-        let registroRepository = DataBase.getRepository(Registro)
-        let registros:Registro[];
-        if(typeof input === "string"){
-            if(select === "personal_name"){
-                registros = await registroRepository.findBy({personal_name: Like(`%${input}%`)});
-            }else if(select === "fecha"){
-                registros = await registroRepository.findBy({fecha: Like(`%${input}%`)});
-            }else if(select === "hora"){
-                registros = await registroRepository.findBy({hora: Like(`%${input}%`)});
-            }else{
-                registros = await registroRepository.find()
-            }
-            res.render("adminPanelRegistrosResponse",{registros, input, select})
-        }else{
-            registros = await registroRepository.find()
-            res.render("adminPanelRegistrosResponse",{registros, input, select})
-        }
+        let input = String(req.query.input)
+        let select = String(req.query.select)
+        let registros = await registersFiltered(input, select)
+        res.render("adminPanelRegistrosResponse",{registros, input, select})
     }catch(err){
         console.log(err)
     }
 }
 
 export const getPanelPersonalExcel = async (req:Request, res:Response)=>{
-    // Require library
-    var xl = require('excel4node');
-
-    // Create a new instance of a Workbook class
-    var wb = new xl.Workbook();
-
-    // Add Worksheets to the workbook
-    var ws = wb.addWorksheet('Sheet 1');
-    var ws2 = wb.addWorksheet('Sheet 2');
-
-    // Create a reusable style
-    var style = wb.createStyle({
-    font: {
-        color: '#FF0800',
-        size: 12,
-    },
-    numberFormat: '$#,##0.00; ($#,##0.00); -',
-    });
-
-    // Set value of cell A1 to 100 as a number type styled with paramaters of style
-    ws.cell(1, 1)
-    .number(100)
-    .style(style);
-
-    // Set value of cell B1 to 200 as a number type styled with paramaters of style
-    ws.cell(1, 2)
-    .number(200)
-    .style(style);
-
-    // Set value of cell C1 to a formula styled with paramaters of style
-    ws.cell(1, 3)
-    .formula('A1 + B1')
-    .style(style);
-
-    // Set value of cell A2 to 'string' styled with paramaters of style
-    ws.cell(2, 1)
-    .string('string')
-    .style(style);
-
-    // Set value of cell A3 to true as a boolean type styled with paramaters of style but with an adjustment to the font size.
-    ws.cell(3, 1)
-    .bool(true)
-    .style(style)
-    .style({font: {size: 14}});
-
-    wb.write('Excel.xlsx');
+    try{
+        let input = String(req.query.input)
+        let select = String(req.query.select)
+        let personal = await personalFiltered(input, select)
+        await exportExcel(personal,input,select)
+        res.render("adminPanelRegistros",{personal, input, select, message:"El archivo excel se ha exportado correctamente."})
+    }catch(err){
+        console.log(err)
+    }
 }
-export const getPanelRegisterExcel = async (req:Request, res:Response)=>{}
+export const getPanelRegisterExcel = async (req:Request, res:Response)=>{
+    try{
+        let input = String(req.query.input)
+        let select = String(req.query.select)
+        let registros = await registersFiltered(input, select)
+        await exportExcel(registros,input,select)
+        res.render("adminPanelRegistros",{registros, input, select, message:"El archivo excel se ha exportado correctamente."})
+    }catch(err){
+        console.log(err)
+    }
+}

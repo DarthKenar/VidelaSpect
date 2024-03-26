@@ -36,22 +36,21 @@ export async function saveImage(registroId:number, image:Image|undefined){
     }
 }
 
-export async function registrarPersonal(personal:Personal, ahora:Date){
+export async function registrarPersonal(personal:Personal, dateTime:Date){
   try{
-    let fecha = getFecha(ahora)
-    let hora = ahora.toTimeString().split(' ')[0];  // Formato: "HH:mm:ss"
+    let date = getDate(dateTime)
+    let time = getTime(dateTime)
     let registroRepository = await DataBase.getRepository(Registro)
-    let registros = await registroRepository.findBy({personal_id:personal.id,fecha:fecha})
+    let registros = await registroRepository.findBy({personal_id:personal.id,date:date})
     if(registros.length === personal.dailyEntries){
       return [false,registros]
     }else{
       let registroNuevo = new Registro
-      registroNuevo.fecha = fecha
-      registroNuevo.hora = hora
+      registroNuevo.date = date
+      registroNuevo.time = time
       registroNuevo.personal_id = personal.id
       registroNuevo.personal_name = personal.name
       registroNuevo = await registroRepository.save(registroNuevo)
-      console.log("ESTE ES EL ID DEL NUEVO REGISTRO:", registroNuevo.id)
       return [true, registros, registroNuevo.id]
     }
   }catch(err){
@@ -61,17 +60,21 @@ export async function registrarPersonal(personal:Personal, ahora:Date){
 }
 
 export async function getCantidadDeRegistrosPorIdDePersonaHoy(personal:Personal, ahora:Date):Promise<number> {
-  let fecha = getFecha(ahora)
+  let fecha = getDate(ahora)
   let registroRepository = await DataBase.getRepository(Registro)
-  let registros = await registroRepository.findBy({personal_id:personal.id,fecha:fecha})
+  let registros = await registroRepository.findBy({personal_id:personal.id,date:fecha})
   return registros.length
 } 
 
-export function getFecha(ahora:Date) {
+export function getDate(ahora:Date):string {
   let ano = ahora.getFullYear()
   let dia = ("0" + ahora.getDate()).slice(-2)
   let mes = ("0" + (ahora.getMonth() + 1)).slice(-2)
   return `${dia}-${mes}-${ano}`
+}
+
+export function getTime(dateTime:Date):string {
+  return dateTime.toTimeString().split(' ')[0];  // Formato: "HH:mm:ss"
 }
 
 export const isPar = (numero:number) => numero % 2 === 0;

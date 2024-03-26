@@ -3,6 +3,9 @@ import { Entity, PrimaryGeneratedColumn, Column} from "typeorm"
 @Entity()
 export class Personal {
 
+    //Personal o Registro puede tener cualquier número de propiedades adicionales, y que el valor de esas propiedades puede ser de cualquier tipo.
+    [key: string]: any;
+
     @PrimaryGeneratedColumn()
     id: number
 
@@ -25,6 +28,9 @@ export class Personal {
 @Entity()
 export class Registro {
 
+    //Personal o Registro puede tener cualquier número de propiedades adicionales, y que el valor de esas propiedades puede ser de cualquier tipo.
+    [key: string]: any;
+
     @PrimaryGeneratedColumn()
     id: number
 
@@ -35,9 +41,9 @@ export class Registro {
     personal_name: string
 
     @Column()
-    fecha: string;
+    date: string;
 
     @Column()
-    hora: string;
+    time: string;
     
 }

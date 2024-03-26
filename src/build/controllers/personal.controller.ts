@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import DataBase from "../../database/data-source";
 import { Personal, Registro } from "../../database/entity/models";
-import { saveImage, Image, registrarPersonal, getCantidadDeRegistrosPorIdDePersonaHoy, isPar, getFecha } from "../utils/personal.utils"
+import { saveImage, Image, registrarPersonal, getCantidadDeRegistrosPorIdDePersonaHoy, isPar, getDate } from "../utils/personal.utils"
 
 export const getRegistroDNI = async (req:Request, res:Response)=>{
     res.render("registroDNI")
@@ -25,9 +25,9 @@ export const postRegistroDNI = async (req:Request, res:Response)=>{
                         res.render("registroFoto", {personal, tipoDeRegistro})
                     }else{
                         let ahora = new Date
-                        let fecha = getFecha(ahora)
+                        let fecha = getDate(ahora)
                         let registroRepository = DataBase.getRepository(Registro)
-                        let registros = await registroRepository.findBy({personal_id:personal.id,fecha:fecha})
+                        let registros = await registroRepository.findBy({personal_id:personal.id,date:fecha})
                         if (Array.isArray(registros)) {
                             let entrada = registros[0];
                             let salida = registros[registros.length-1];
