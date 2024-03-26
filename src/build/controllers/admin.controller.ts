@@ -13,14 +13,12 @@ export const getPanel = async (req:Request, res:Response)=>{
 export const getPanelPersonal = async (req:Request, res:Response)=>{
     let personalRepository = DataBase.getRepository(Personal)
     let personal:Personal[] = await personalRepository.find()
-    console.log(personal)
     res.render("adminPanelPersonal", {personal})
 }
 
 export const getPanelRegisters = async (req:Request, res:Response)=>{
     let registroRepository = DataBase.getRepository(Registro)
     let registros:Registro[] = await registroRepository.find()
-    console.log(registros)
     res.render("adminPanelRegistros",{registros})
 }
 
@@ -116,7 +114,6 @@ export const getPanelRegisterPhoto = async (req:Request, res:Response)=>{
             if(fs.existsSync(fotoPath)){
                 res.sendFile(fotoPath,(err)=>{console.log(err)})
             }else{
-                console.log("No se encuentra la foto")
                 let registroRepository = DataBase.getRepository(Registro)
                 let registros:Registro[] = await registroRepository.find()
                 let registro:Registro|null = await registroRepository.findOneBy({id:registroId})
@@ -139,9 +136,7 @@ export const getPanelPersonalFiltered = async (req:Request, res:Response)=>{
         if(select === "dni"){
             personal = await personalRepository.findBy({dni: Like(`%${input}%`)});
         }else if(select === "name"){
-            console.log("name")
             personal = await personalRepository.findBy({name: Like(`%${input}%`)});
-            
         }else{
             personal = await personalRepository.find()
         }

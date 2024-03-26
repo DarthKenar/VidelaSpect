@@ -1,6 +1,5 @@
 import "reflect-metadata"
 import app from "./app"
-import DataBase from "../database/data-source"
 require('dotenv').config();
 
 

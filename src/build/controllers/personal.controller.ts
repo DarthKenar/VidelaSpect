@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import DataBase from "../../database/data-source";
 import { Personal, Registro } from "../../database/entity/models";
 import { saveImage, Image, registrarPersonal, getCantidadDeRegistrosPorIdDePersonaHoy, isPar, getFecha } from "../utils/personal.utils"
+import { HfInference } from "@huggingface/inference";
 
 export const getRegistroDNI = async (req:Request, res:Response)=>{
     res.render("registroDNI")
@@ -64,7 +65,24 @@ export const postRegistroFoto = async (req:Request, res:Response)=>{
         if(confirm){
             //Guarda la foto con el objeto {personal}
             let data:Image|undefined = req.file 
-            console.log(typeof registroId)
+            const Buffer = require('buffer').Buffer;
+            let blob = Buffer.from(data?.buffer);
+            let model = "openai/clip-vit-large-patch14-336"
+            const hf = new HfInference(process.env.HF_TOKEN_KEY)
+            let scores = await hf.zeroShotImageClassification({
+                model: model,
+                inputs: {
+                    image: await (await fetch('https://huggingface.co/datasets/huggingfacejs/tasks/resolve/main/zero-shot-image-classification/image-classification-input.jpeg')).blob()
+                },  
+                parameters: {
+                    candidate_labels: ['real face', 'object', 'place']
+                }
+                })
+            console.log(scores)
+            
+            //CODIGO DE IMAGEN
+            
+
             if(typeof registroId === "number"){
                 saveImage(registroId, data)
             }
@@ -83,7 +101,6 @@ export const postRegistroFoto = async (req:Request, res:Response)=>{
 export const postRegistroFotoOk = async (req:Request, res:Response)=>{
     //Datos de usuario para trabajar
     let userId = Number(req.params.id)
-    console.log("ID del usuario:", userId)
     let personalRepository = await DataBase.getRepository(Personal)
     let personal = await personalRepository.findOneBy({id: userId})
     if (personal) {
