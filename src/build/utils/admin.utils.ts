@@ -102,7 +102,7 @@ export const personalFiltered = async(input:string, select:string)=>{
     return personal
 }
 
-export const sendExcel = async(excelPath:string)=>{
+export const sendExcel = async(excelPath:string, emailAdmin:string)=>{
 
     const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
@@ -115,11 +115,11 @@ export const sendExcel = async(excelPath:string)=>{
     });
 
     // async..await is not allowed in global scope, must use a wrapper
-    async function main(excelPath:string) {
+    async function main(excelPath:string, emailAdmin:string) {
         // send mail with defined transport object
         const info = await transporter.sendMail({
-            from: '"VidelaSpect 👁‍🗨" <maddison53@ethereal.email>', // sender address
-            to: "sihoubroitreuquoi-4677@yopmail.com", // list of receivers
+            from: `"VidelaSpect 👁‍🗨" <${process.env.EMAIL_USER}>`, // sender address
+            to: `${emailAdmin}`, // list of receivers
             subject: "Hello ✔", // Subject line
             text: "Hello world?", // plain text body
             html: "<b>Hello world?</b>", // html body
@@ -134,5 +134,5 @@ export const sendExcel = async(excelPath:string)=>{
         console.log("Message sent: %s", info.messageId);
     }
 
-    main(excelPath).catch(console.error);
+    main(excelPath, emailAdmin).catch(console.error);
 }
