@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 
 import { Personal, Registro } from "../../database/entity/models";
 import DataBase from "../../database/data-source";
-import {savePersonal, exportExcel, registersFiltered, personalFiltered, sendExcel} from "../utils/admin.utils"
+import {savePersonal, exportExcel, registersFiltered, personalFiltered, sendExcel, saveAuth} from "../utils/admin.utils"
 import {getErrorTemplate} from "./personal.controller"
 
 import * as fs from 'fs';
@@ -66,6 +66,11 @@ export const postCreatePersonal = async (req:Request, res:Response)=>{
         if (!(nombre.length === 0 || dni.length === 0 || position.length === 0)) {
             let personal = new Personal
             await savePersonal(personal, nombre, dni, position, admin, dailyEntries)
+            if (admin) {
+                let email:string = req.body.email
+                let password:string = req.body.password
+                saveAuth(personal,email,password)
+            }
             res.render("adminPersonalCreate",{message:"El personal fue guardado correctamente.", type:"success"})
         }else{
             res.render("adminPersonalCreate",{message:"Alguno de los datos del personal están vacíos y no se guardará", type: "warning"})
@@ -89,6 +94,11 @@ export const postUpdatePersonal = async (req:Request, res:Response)=>{
             let admin:boolean = !!req.body.admin
             if (!(nombre.length === 0 || dni.length === 0 || position.length === 0)) {
                 await savePersonal(personalToUpdate,nombre,dni,position,admin,dailyEntries)
+                if (admin) {
+                    let email:string = req.body.email
+                    let password:string = req.body.password
+                    saveAuth(personalToUpdate,email,password)
+                }
                 let personal = await personalRepository.find()
                 res.render("adminPanelPersonal",{personal, message:`Se ha modificado correctamente a ${personalToUpdate.name}`, type:"info"})
             }else{

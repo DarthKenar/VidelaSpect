@@ -68,6 +68,6 @@ export class Auth {
 
     @OneToOne(() => Personal)
     @JoinColumn()
-    user: Personal
+    personal: Personal
     
 }

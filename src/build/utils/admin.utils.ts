@@ -1,6 +1,6 @@
 import { config } from "dotenv";
 import DataBase from "../../database/data-source"
-import { Personal, Registro } from "../../database/entity/models"
+import { Auth, Personal, Registro } from "../../database/entity/models"
 import {Like} from 'typeorm';
 const nodemailer = require("nodemailer");
 const PATH = require("path")
@@ -13,6 +13,14 @@ export const savePersonal = async (personal:Personal, nombre:string, dni:string,
     personal.admin = admin
     personal.dailyEntries = dailyEntries
     await DataBase.manager.save(personal)
+}
+
+export const saveAuth = async (personal:Personal,email:string, password:string)=>{
+    let auth = new Auth
+    auth.personal = personal
+    auth.email = email
+    auth.password = password
+    await DataBase.manager.save(auth)
 }
 
 export const exportExcel = async(objectList:Personal[]|Registro[],input:string, select:string, sendEmail:boolean):Promise<string>=>{
