@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import { User, Registro } from "../../database/entity/models";
+import { Personal, Registro } from "../../database/entity/models";
 import DataBase from "../../database/data-source";
 import {buildPersonal, exportExcel, registersFiltered, personalFiltered, sendExcel} from "../utils/admin.utils"
 import {getErrorTemplate} from "./personal.controller"
@@ -20,8 +20,8 @@ export const getPanel = async (req:Request, res:Response)=>{
 
 export const getPanelPersonal = async (req:Request, res:Response)=>{
     try{
-        let personalRepository = DataBase.getRepository(User)
-        let personal:User[] = await personalRepository.find()
+        let personalRepository = DataBase.getRepository(Personal)
+        let personal:Personal[] = await personalRepository.find()
         res.render("adminPanelPersonal", {personal})
     }catch(err){
         console.log(err)
@@ -47,7 +47,7 @@ export const getCreatePersonal = async (req:Request, res:Response)=>{
 export const getUpdatePersonal = async (req:Request, res:Response)=>{
     try{
         let personalId = req.params.id
-        let personalRepository = DataBase.getRepository(User)
+        let personalRepository = DataBase.getRepository(Personal)
         let personal = await personalRepository.findOneBy({id: Number(personalId)})
         res.render("adminPersonalUpdate",{personal})
     }catch(err){
@@ -71,7 +71,7 @@ export const postCreatePersonal = async (req:Request, res:Response)=>{
         }else{
             admin = false
         }
-        let personal = new User
+        let personal = new Personal
         await buildPersonal(personal, nombre, dni, position, admin, dailyEntries)
         res.render("adminPersonalCreate",{message:"El personal fue guardado correctamente.", type:"success"})
     }catch(err){
@@ -83,7 +83,7 @@ export const postCreatePersonal = async (req:Request, res:Response)=>{
 export const postUpdatePersonal = async (req:Request, res:Response)=>{
     try{
         let personalId = Number(req.params.id)
-        let personalRepository = DataBase.getRepository(User)
+        let personalRepository = DataBase.getRepository(Personal)
         let personalToUpdate = await personalRepository.findOneBy({id: personalId})
         if (personalToUpdate) {
             let nombre:string = req.body.nombre
@@ -112,7 +112,7 @@ export const postUpdatePersonal = async (req:Request, res:Response)=>{
 export const postDeletePersonal = async (req:Request, res:Response)=>{
     try{
         let personalId = Number(req.params.id)
-        let personalRepository = DataBase.getRepository(User)
+        let personalRepository = DataBase.getRepository(Personal)
         let personalToDelete = await personalRepository.findOneBy({id: personalId})
         if(personalToDelete){
             let personalToDeleteName = personalToDelete.name

@@ -1,5 +1,5 @@
 import DataBase from "../../database/data-source";
-import { User, Registro } from "../../database/entity/models";
+import { Personal, Registro } from "../../database/entity/models";
 
 const fs = require('fs');
 // Escribe el buffer en un archivo
@@ -36,7 +36,7 @@ export async function saveImage(registroId:number, image:Image|undefined){
     }
 }
 
-export async function registrarPersonal(personal:User, dateTime:Date){
+export async function registrarPersonal(personal:Personal, dateTime:Date){
   let date = getDate(dateTime)
   let time = getTime(dateTime)
   let registroRepository = await DataBase.getRepository(Registro)
@@ -54,7 +54,7 @@ export async function registrarPersonal(personal:User, dateTime:Date){
   }
 }
 
-export async function getCantidadDeRegistrosPorIdDePersonaHoy(personal:User, ahora:Date):Promise<number> {
+export async function getCantidadDeRegistrosPorIdDePersonaHoy(personal:Personal, ahora:Date):Promise<number> {
   let fecha = getDate(ahora)
   let registroRepository = await DataBase.getRepository(Registro)
   let registros = await registroRepository.findBy({personal_id:personal.id,date:fecha})

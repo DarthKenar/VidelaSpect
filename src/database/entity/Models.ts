@@ -7,7 +7,7 @@ import {
 } from "typeorm"
 
 @Entity()
-export class User {
+export class Personal {
 
     //Personal o Registro puede tener cualquier número de propiedades adicionales, y que el valor de esas propiedades puede ser de cualquier tipo.
     [key: string]: any;
@@ -60,9 +60,9 @@ export class Auth {
     @PrimaryGeneratedColumn()
     id: number
 
-    @OneToOne(() => User)
+    @OneToOne(() => Personal)
     @JoinColumn()
-    user: User
+    user: Personal
 
     @Column()
     password: string

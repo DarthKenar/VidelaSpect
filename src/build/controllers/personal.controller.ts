@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import DataBase from "../../database/data-source";
-import { User, Registro } from "../../database/entity/models";
+import { Personal, Registro } from "../../database/entity/models";
 import { saveImage, Image, registrarPersonal, getCantidadDeRegistrosPorIdDePersonaHoy, isPar, getDate } from "../utils/personal.utils"
 
 import {error} from "../utils/error.utils"
@@ -17,7 +17,7 @@ export const postRegistroDNI = async (req:Request, res:Response)=>{
     try{
         if(req.body.dni){
             let dni:string = req.body.dni.toString()
-            let personalRepository = DataBase.getRepository(User)
+            let personalRepository = DataBase.getRepository(Personal)
             let personal = await personalRepository.findOneBy({dni})
             if(personal){
                 if(personal.admin === false){
@@ -58,7 +58,7 @@ export const postRegistroDNI = async (req:Request, res:Response)=>{
 export const postRegistroFoto = async (req:Request, res:Response)=>{
     try{
         let userId = req.body.userId
-        let personalRepository = await DataBase.getRepository(User)
+        let personalRepository = await DataBase.getRepository(Personal)
         let personal = await personalRepository.findOneBy({id: userId})
         if(personal){
             //CÓDIGO DE OK
@@ -92,7 +92,7 @@ export const postRegistroFoto = async (req:Request, res:Response)=>{
 export const postRegistroFotoOk = async (req:Request, res:Response)=>{
     try{
         let userId = Number(req.params.id)
-        let personalRepository = await DataBase.getRepository(User)
+        let personalRepository = await DataBase.getRepository(Personal)
         let personal = await personalRepository.findOneBy({id: userId})
         if (personal) {
             let ahora = new Date

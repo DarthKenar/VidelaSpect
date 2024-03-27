@@ -1,12 +1,12 @@
 import { config } from "dotenv";
 import DataBase from "../../database/data-source"
-import { User, Registro } from "../../database/entity/models"
+import { Personal, Registro } from "../../database/entity/models"
 import {Like} from 'typeorm';
 const nodemailer = require("nodemailer");
 const PATH = require("path")
 var xl = require('excel4node');
 
-export const buildPersonal = async (personal:User, nombre:string, dni:string, position:string, admin:boolean, dailyEntries:number)=>{
+export const buildPersonal = async (personal:Personal, nombre:string, dni:string, position:string, admin:boolean, dailyEntries:number)=>{
     personal.name = nombre
     personal.dni = dni
     personal.position = position
@@ -15,7 +15,7 @@ export const buildPersonal = async (personal:User, nombre:string, dni:string, po
     await DataBase.manager.save(personal)
 }
 
-export const exportExcel = async(objectList:User[]|Registro[],input:string, select:string, sendEmail:boolean):Promise<string>=>{
+export const exportExcel = async(objectList:Personal[]|Registro[],input:string, select:string, sendEmail:boolean):Promise<string>=>{
     
     console.log(objectList)
     var wb = new xl.Workbook();
@@ -62,7 +62,7 @@ export const exportExcel = async(objectList:User[]|Registro[],input:string, sele
 
     let excelPath:string;
 
-    if (objectList[0] instanceof User) {
+    if (objectList[0] instanceof Personal) {
         excelPath = PATH.join(__dirname, `../../database/excel/personal.xlsx`)
     }else{
         excelPath = PATH.join(__dirname, `../../database/excel/registro.xlsx`)
@@ -88,8 +88,8 @@ export const registersFiltered = async(input:string, select:string)=>{
 }
 
 export const personalFiltered = async(input:string, select:string)=>{
-    let personal:User[];
-    let personalRepository = DataBase.getRepository(User)
+    let personal:Personal[];
+    let personalRepository = DataBase.getRepository(Personal)
     if(select === "dni"){
         personal = await personalRepository.findBy({dni: Like(`%${input}%`)});
     }else if(select === "name"){
