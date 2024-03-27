@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 
 import { User, Registro } from "../../database/entity/models";
 import DataBase from "../../database/data-source";
-import {buildPersonal, exportExcel, registersFiltered, personalFiltered} from "../utils/admin.utils"
+import {buildPersonal, exportExcel, registersFiltered, personalFiltered, sendExcel} from "../utils/admin.utils"
 import {getErrorTemplate} from "./personal.controller"
 
 import * as fs from 'fs';
@@ -179,8 +179,11 @@ export const getPanelPersonalExcel = async (req:Request, res:Response)=>{
     try{
         let input = String(req.query.input)
         let select = String(req.query.select)
+        let email = Boolean(req.query.email)
         let personal = await personalFiltered(input, select)
-        await exportExcel(personal,input,select)
+        let excelPath = await exportExcel(personal,input,select,email)
+        let emailAdmin = String(process.env.EMAIL_ADMIN)
+        await sendExcel(excelPath, emailAdmin)
         res.render("adminPanelPersonalResponse",{personal, input, select, message:"El archivo excel se ha exportado correctamente.", type:"success"})
     }catch(err){
         console.log(err)
@@ -192,7 +195,9 @@ export const getPanelRegisterExcel = async (req:Request, res:Response)=>{
         let input = String(req.query.input)
         let select = String(req.query.select)
         let registros = await registersFiltered(input, select)
-        await exportExcel(registros,input,select)
+        let excelPath = await exportExcel(registros,input,select, true)
+        let emailAdmin = String(process.env.EMAIL_ADMIN)
+        await sendExcel(excelPath, emailAdmin)
         res.render("adminPanelRegistrosResponse",{registros, input, select, message:"El archivo excel se ha exportado correctamente.", type:"success"})
     }catch(err){
         console.log(err)
