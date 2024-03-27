@@ -21,7 +21,7 @@ export const exportExcel = async(objectList:Personal[]|Registro[],input:string, 
     let attributes = Object.keys(objectList[0])
     var styleHeader = wb.createStyle({
         font: {
-            color: '#000000',
+            color: '#cc0000',
             size: 16,
         },
     });
