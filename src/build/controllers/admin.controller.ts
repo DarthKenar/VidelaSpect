@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 
 import { Personal, Registro } from "../../database/entity/models";
 import DataBase from "../../database/data-source";
-import {buildPersonal, exportExcel, registersFiltered, personalFiltered, sendExcel} from "../utils/admin.utils"
+import {savePersonal, exportExcel, registersFiltered, personalFiltered, sendExcel} from "../utils/admin.utils"
 import {getErrorTemplate} from "./personal.controller"
 
 import * as fs from 'fs';
@@ -62,21 +62,17 @@ export const postCreatePersonal = async (req:Request, res:Response)=>{
         let dni:string = req.body.dni
         let position:string = req.body.position
         let dailyEntries:number = Number(req.body.dailyEntries)
-        let admin:boolean;
-        if (nombre.length === 0 || dni.length === 0 || position.length === 0 || dailyEntries === 1 ) {
-            throw new Error("Alguno de los datos del personal están vacíos y no se guardará");
-        }
-        if(req.body.admin){
-            admin = true
+        let admin:boolean = !!req.body.admin
+        if (!(nombre.length === 0 || dni.length === 0 || position.length === 0)) {
+            let personal = new Personal
+            await savePersonal(personal, nombre, dni, position, admin, dailyEntries)
+            res.render("adminPersonalCreate",{message:"El personal fue guardado correctamente.", type:"success"})
         }else{
-            admin = false
+            res.render("adminPersonalCreate",{message:"Alguno de los datos del personal están vacíos y no se guardará", type: "warning"})
         }
-        let personal = new Personal
-        await buildPersonal(personal, nombre, dni, position, admin, dailyEntries)
-        res.render("adminPersonalCreate",{message:"El personal fue guardado correctamente.", type:"success"})
     }catch(err){
         console.log(err)
-        res.render("adminPersonalCreate",{message:"Se deben completar todos los datos antes de intentar guardar un nuevo miembro del personal.", type: "warning"})
+        res.render("error", {message: error, type:"error"})
     }
 }
 
@@ -90,18 +86,14 @@ export const postUpdatePersonal = async (req:Request, res:Response)=>{
             let dni:string = req.body.dni
             let position:string = req.body.position
             let dailyEntries:number = Number(req.body.dailyEntries)
-            let admin:boolean;
-            if (nombre.length === 0 || dni.length === 0 || position.length === 0 ) {
-                throw new Error("Alguno de los datos del personal están vacíos y no se guardará");
-            }
-            if(req.body.admin){
-                admin = true
+            let admin:boolean = !!req.body.admin
+            if (!(nombre.length === 0 || dni.length === 0 || position.length === 0)) {
+                await savePersonal(personalToUpdate,nombre,dni,position,admin,dailyEntries)
+                let personal = await personalRepository.find()
+                res.render("adminPanelPersonal",{personal, message:`Se ha modificado correctamente a ${personalToUpdate.name}`, type:"info"})
             }else{
-                admin = false
+                res.render("adminPanelPersonal",{message:"Alguno de los datos del personal están vacíos y no se guardará", type:"warning"})
             }
-            await buildPersonal(personalToUpdate,nombre,dni,position,admin,dailyEntries)
-            let personal = await personalRepository.find()
-            res.render("adminPanelPersonal",{personal, message:`Se ha modificado correctamente a ${personalToUpdate.name}`, type:"info"})
         }
     }catch(err){
         console.log(err)

@@ -60,11 +60,14 @@ export class Auth {
     @PrimaryGeneratedColumn()
     id: number
 
-    @OneToOne(() => Personal)
-    @JoinColumn()
-    user: Personal
+    @Column()
+    email: string
 
     @Column()
     password: string
 
+    @OneToOne(() => Personal)
+    @JoinColumn()
+    user: Personal
+    
 }

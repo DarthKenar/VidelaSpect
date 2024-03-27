@@ -6,7 +6,7 @@ const nodemailer = require("nodemailer");
 const PATH = require("path")
 var xl = require('excel4node');
 
-export const buildPersonal = async (personal:Personal, nombre:string, dni:string, position:string, admin:boolean, dailyEntries:number)=>{
+export const savePersonal = async (personal:Personal, nombre:string, dni:string, position:string, admin:boolean, dailyEntries:number)=>{
     personal.name = nombre
     personal.dni = dni
     personal.position = position
