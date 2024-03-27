@@ -8,7 +8,7 @@ import {
   postRegistroDNI,
   postRegistroFoto,
   postRegistroFotoOk,
-  get500
+  getErrorTemplate
 } from "../controllers/personal.controller"
 
 //GET
@@ -19,7 +19,7 @@ routerPersonal.post("/dni/send", postRegistroDNI)
 routerPersonal.post("/foto/send",upload.single('image'), postRegistroFoto)
 
 //ERRORES
-routerPersonal.get("/500", get500)
+routerPersonal.get("/error", getErrorTemplate)
 
 module.exports = routerPersonal;
 

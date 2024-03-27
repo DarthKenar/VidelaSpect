@@ -37,25 +37,20 @@ export async function saveImage(registroId:number, image:Image|undefined){
 }
 
 export async function registrarPersonal(personal:Personal, dateTime:Date){
-  try{
-    let date = getDate(dateTime)
-    let time = getTime(dateTime)
-    let registroRepository = await DataBase.getRepository(Registro)
-    let registros = await registroRepository.findBy({personal_id:personal.id,date:date})
-    if(registros.length === personal.dailyEntries){
-      return [false,registros]
-    }else{
-      let registroNuevo = new Registro
-      registroNuevo.date = date
-      registroNuevo.time = time
-      registroNuevo.personal_id = personal.id
-      registroNuevo.personal_name = personal.name
-      registroNuevo = await registroRepository.save(registroNuevo)
-      return [true, registros, registroNuevo.id]
-    }
-  }catch(err){
-    console.log(err)
-    return [false,[]]
+  let date = getDate(dateTime)
+  let time = getTime(dateTime)
+  let registroRepository = await DataBase.getRepository(Registro)
+  let registros = await registroRepository.findBy({personal_id:personal.id,date:date})
+  if(registros.length === personal.dailyEntries){
+    return [false,registros]
+  }else{
+    let registroNuevo = new Registro
+    registroNuevo.date = date
+    registroNuevo.time = time
+    registroNuevo.personal_id = personal.id
+    registroNuevo.personal_name = personal.name
+    registroNuevo = await registroRepository.save(registroNuevo)
+    return [true, registros, registroNuevo.id]
   }
 }
 

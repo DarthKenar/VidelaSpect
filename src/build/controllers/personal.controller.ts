@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import DataBase from "../../database/data-source";
 import { Personal, Registro } from "../../database/entity/models";
 import { saveImage, Image, registrarPersonal, getCantidadDeRegistrosPorIdDePersonaHoy, isPar, getDate } from "../utils/personal.utils"
+
 import {error} from "../utils/error.utils"
 export const getRegistroDNI = async (req:Request, res:Response)=>{
     try{
@@ -118,11 +119,11 @@ export const postRegistroFotoOk = async (req:Request, res:Response)=>{
     }
 }
 
-export const get500 = async (req:Request, res:Response)=>{
+export const getErrorTemplate = async (req:Request, res:Response)=>{
     try{
         res.render("error")
     }catch(err){
         console.log(err)
-        res.render("error", {error})
+        res.render("error", {message: error, type:"error"})
     }
 }
