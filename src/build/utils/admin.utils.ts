@@ -1,7 +1,9 @@
+import { config } from "dotenv";
 import DataBase from "../../database/data-source"
 import { Personal, Registro } from "../../database/entity/models"
 import {Like} from 'typeorm';
-
+const nodemailer = require("nodemailer");
+const PATH = require("path")
 var xl = require('excel4node');
 
 export const buildPersonal = async (personal:Personal, nombre:string, dni:string, position:string, admin:boolean, dailyEntries:number)=>{
@@ -13,7 +15,7 @@ export const buildPersonal = async (personal:Personal, nombre:string, dni:string
     await DataBase.manager.save(personal)
 }
 
-export const exportExcel = async(objectList:Personal[]|Registro[],input:string, select:string)=>{
+export const exportExcel = async(objectList:Personal[]|Registro[],input:string, select:string, sendEmail:boolean):Promise<string>=>{
     
     console.log(objectList)
     var wb = new xl.Workbook();
@@ -57,12 +59,17 @@ export const exportExcel = async(objectList:Personal[]|Registro[],input:string, 
             }
         }
     }
+
+    let excelPath:string;
+
     if (objectList[0] instanceof Personal) {
-        wb.write(`Personal.xlsx`);
-    }else if(objectList[0] instanceof Registro){
-        wb.write(`Registro.xlsx`);
+        excelPath = PATH.join(__dirname, `../../database/excel/personal.xlsx`)
+    }else{
+        excelPath = PATH.join(__dirname, `../../database/excel/registro.xlsx`)
     }
-    
+
+    wb.write(excelPath);
+    return excelPath;
 }
 
 export const registersFiltered = async(input:string, select:string)=>{
@@ -93,4 +100,39 @@ export const personalFiltered = async(input:string, select:string)=>{
         personal = await personalRepository.find()
     }
     return personal
+}
+
+export const sendExcel = async(excelPath:string)=>{
+
+    const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true, // Use `true` for port 465, `false` for all other ports
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+    },
+    });
+
+    // async..await is not allowed in global scope, must use a wrapper
+    async function main(excelPath:string) {
+        // send mail with defined transport object
+        const info = await transporter.sendMail({
+            from: '"VidelaSpect 👁‍🗨" <maddison53@ethereal.email>', // sender address
+            to: "sihoubroitreuquoi-4677@yopmail.com", // list of receivers
+            subject: "Hello ✔", // Subject line
+            text: "Hello world?", // plain text body
+            html: "<b>Hello world?</b>", // html body
+            attachments:[
+                {   
+                    filename: 'registros.xlsx',
+                    path: excelPath 
+                },
+            ]
+        });
+
+        console.log("Message sent: %s", info.messageId);
+    }
+
+    main(excelPath).catch(console.error);
 }
