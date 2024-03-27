@@ -1,7 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column} from "typeorm"
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    OneToOne,
+    JoinColumn,
+} from "typeorm"
 
 @Entity()
-export class Personal {
+export class User {
 
     //Personal o Registro puede tener cualquier número de propiedades adicionales, y que el valor de esas propiedades puede ser de cualquier tipo.
     [key: string]: any;
@@ -46,4 +52,19 @@ export class Registro {
     @Column()
     time: string;
     
+}
+
+@Entity()
+export class Auth {
+
+    @PrimaryGeneratedColumn()
+    id: number
+
+    @OneToOne(() => User)
+    @JoinColumn()
+    user: User
+
+    @Column()
+    password: string
+
 }

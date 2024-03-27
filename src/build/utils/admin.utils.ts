@@ -1,10 +1,10 @@
 import DataBase from "../../database/data-source"
-import { Personal, Registro } from "../../database/entity/models"
+import { User, Registro } from "../../database/entity/models"
 import {Like} from 'typeorm';
 
 var xl = require('excel4node');
 
-export const buildPersonal = async (personal:Personal, nombre:string, dni:string, position:string, admin:boolean, dailyEntries:number)=>{
+export const buildPersonal = async (personal:User, nombre:string, dni:string, position:string, admin:boolean, dailyEntries:number)=>{
     personal.name = nombre
     personal.dni = dni
     personal.position = position
@@ -13,7 +13,7 @@ export const buildPersonal = async (personal:Personal, nombre:string, dni:string
     await DataBase.manager.save(personal)
 }
 
-export const exportExcel = async(objectList:Personal[]|Registro[],input:string, select:string)=>{
+export const exportExcel = async(objectList:User[]|Registro[],input:string, select:string)=>{
     
     console.log(objectList)
     var wb = new xl.Workbook();
@@ -57,7 +57,7 @@ export const exportExcel = async(objectList:Personal[]|Registro[],input:string, 
             }
         }
     }
-    if (objectList[0] instanceof Personal) {
+    if (objectList[0] instanceof User) {
         wb.write(`Personal.xlsx`);
     }else if(objectList[0] instanceof Registro){
         wb.write(`Registro.xlsx`);
@@ -81,8 +81,8 @@ export const registersFiltered = async(input:string, select:string)=>{
 }
 
 export const personalFiltered = async(input:string, select:string)=>{
-    let personal:Personal[];
-    let personalRepository = DataBase.getRepository(Personal)
+    let personal:User[];
+    let personalRepository = DataBase.getRepository(User)
     if(select === "dni"){
         personal = await personalRepository.findBy({dni: Like(`%${input}%`)});
     }else if(select === "name"){
