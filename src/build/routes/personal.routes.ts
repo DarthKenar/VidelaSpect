@@ -16,6 +16,7 @@ routerPersonal.get("/dni", getRegistroDNI)
 //POST
 routerPersonal.get("/foto/send/:id", postRegistroFotoOk)
 routerPersonal.post("/dni/send", postRegistroDNI)
+routerPersonal.post("/password/send", postRegistroDNI)
 routerPersonal.post("/foto/send",upload.single('image'), postRegistroFoto)
 
 //ERRORES

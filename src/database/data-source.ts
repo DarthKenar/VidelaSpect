@@ -6,9 +6,12 @@ import { saveAuth, savePersonal } from "../build/utils/admin.utils";
 const PATH = require("path")
 
 async function createBasicPersonal(){
-    let personal = new Personal;
-    await savePersonal(personal,"administrador","00000000","admin",true,0)
-    await saveAuth(personal,"ejemplovidelaspect@yopmail.com","1234")
+    let existsPersonal:boolean = await DataBase.getRepository(Personal).existsBy({dni:"00000000"})
+    if(!existsPersonal){
+        let personal = new Personal;
+        await savePersonal(personal,"administrador","00000000","admin",true,0)
+        await saveAuth(personal,"ejemplovidelaspect@yopmail.com","1234")
+    }
 }
 
 function getDataSource(): DataSource {

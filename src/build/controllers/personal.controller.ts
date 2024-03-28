@@ -41,7 +41,7 @@ export const postRegistroDNI = async (req:Request, res:Response)=>{
                         }
                     }
                 }else{
-                    res.render("adminPanel")
+                    res.render("registroPassword",{personal})
                 }
             }else{
                 res.render("registroDNI",{error: `El número de DNI - ${dni} no está registrado en el sistema. Contacte al administrador.`})
