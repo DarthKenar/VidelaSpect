@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import DataBase from "../../database/data-source";
 import { Personal, Registro } from "../../database/entity/models";
-import { saveImage, Image, registrarPersonal, getCantidadDeRegistrosPorIdDePersonaHoy, isPar, getDate } from "../utils/personal.utils"
+import { saveImage, Image, registrarPersonal, getCantidadDeRegistrosPorIdDePersonaHoy, isPar, getDate, getPassWhitPersonal } from "../utils/personal.utils"
 
 import {error} from "../utils/error.utils"
 export const getRegistroDNI = async (req:Request, res:Response)=>{
@@ -125,5 +125,19 @@ export const getErrorTemplate = async (req:Request, res:Response)=>{
     }catch(err){
         console.log(err)
         res.render("error", {message: error, type:"error"})
+    }
+}
+
+export const postRegistroPassword = async (req:Request, res:Response)=>{
+    let userId = Number(req.params.id)
+    let personalRepository = await DataBase.getRepository(Personal)
+    let personal = await personalRepository.findOneBy({id: userId})
+    let password = String(req.body.password)
+    if (personal) {
+        if(password === await getPassWhitPersonal(personal)){
+            res.render("adminPanel", {personal, message: "Bienvenido a su panel de administrador.", type:"info"})
+        }else{
+            res.render("registroPassword", {personal, message: "La contraseña ingresada no es correcta", type: "warning"})
+        }
     }
 }

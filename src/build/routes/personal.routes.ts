@@ -8,7 +8,8 @@ import {
   postRegistroDNI,
   postRegistroFoto,
   postRegistroFotoOk,
-  getErrorTemplate
+  getErrorTemplate,
+  postRegistroPassword
 } from "../controllers/personal.controller"
 
 //GET
@@ -16,7 +17,7 @@ routerPersonal.get("/dni", getRegistroDNI)
 //POST
 routerPersonal.get("/foto/send/:id", postRegistroFotoOk)
 routerPersonal.post("/dni/send", postRegistroDNI)
-routerPersonal.post("/password/send", postRegistroDNI)
+routerPersonal.post("/password/send/:id", postRegistroPassword)
 routerPersonal.post("/foto/send",upload.single('image'), postRegistroFoto)
 
 //ERRORES

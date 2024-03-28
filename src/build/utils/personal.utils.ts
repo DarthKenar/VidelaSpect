@@ -1,5 +1,5 @@
 import DataBase from "../../database/data-source";
-import { Personal, Registro } from "../../database/entity/models";
+import { Auth, Personal, Registro } from "../../database/entity/models";
 
 const fs = require('fs');
 // Escribe el buffer en un archivo
@@ -73,3 +73,13 @@ export function getTime(dateTime:Date):string {
 }
 
 export const isPar = (numero:number) => numero % 2 === 0;
+
+export async function getPassWhitPersonal(personal:Personal):Promise<string>{
+  let authRepository = await DataBase.getRepository(Auth)
+  let auth = await authRepository.findOneBy({personal: personal})
+  if (auth) {
+    return auth.password
+  }else{
+    return ""
+  }
+}
