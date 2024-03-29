@@ -1,5 +1,5 @@
 let collapseTitle = document.getElementById("collapse-checkbox")
-console.log(collapseTitle)
+
 function switchAdminCheckbox(){
     let dailyEntriesLabel = document.getElementById("dailyEntriesLabel")
     let dailyEntries = document.getElementById("dailyEntries")
