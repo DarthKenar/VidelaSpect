@@ -5,7 +5,7 @@ import {Like} from 'typeorm';
 const nodemailer = require("nodemailer");
 const PATH = require("path")
 var xl = require('excel4node');
-
+import fs from "fs"
 export const savePersonal = async (personal:Personal, nombre:string, dni:string, position:string, admin:boolean, dailyEntries:number)=>{
     personal.name = nombre
     personal.dni = dni
@@ -21,6 +21,12 @@ export const saveAuth = async (personal:Personal,email:string, password:string)=
     auth.email = email
     auth.password = password
     await DataBase.manager.save(auth)
+}
+
+export const getAuth = async (personal:Personal):Promise<Auth|null> => {
+    let authRepository = DataBase.getRepository(Auth)
+    let auth = authRepository.findOneBy({personal})
+    return auth
 }
 
 export const exportExcel = async(objectList:Personal[]|Registro[],input:string, select:string, sendEmail:boolean):Promise<string>=>{
@@ -75,7 +81,7 @@ export const exportExcel = async(objectList:Personal[]|Registro[],input:string, 
     }else{
         excelPath = PATH.join(__dirname, `../../database/excel/registro.xlsx`)
     }
-
+    fs.mkdirSync(`./dist/database/excel/`,{recursive:true});
     wb.write(excelPath);
     return excelPath;
 }
