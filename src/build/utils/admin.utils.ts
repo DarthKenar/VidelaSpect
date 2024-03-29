@@ -15,12 +15,17 @@ export const savePersonal = async (personal:Personal, nombre:string, dni:string,
     await DataBase.manager.save(personal)
 }
 
-export const saveAuth = async (personal:Personal,email:string, password:string)=>{
-    let auth = new Auth
+export const saveAuth = async (personal:Personal, auth:Auth ,email:string, password:string, phone:string)=>{
     auth.personal = personal
     auth.email = email
+    auth.phone = phone
     auth.password = password
     await DataBase.manager.save(auth)
+}
+
+export const deleteAuth = async (personal:Personal)=>{
+    let authRepository = DataBase.getRepository(Auth)
+    authRepository.delete(personal)
 }
 
 export const getAuth = async (personal:Personal):Promise<Auth|null> => {

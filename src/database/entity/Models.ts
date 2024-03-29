@@ -64,6 +64,9 @@ export class Auth {
     email: string
 
     @Column()
+    phone: string
+
+    @Column()
     password: string
 
     @OneToOne(() => Personal)

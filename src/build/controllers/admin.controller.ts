@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
 
-import { Personal, Registro } from "../../database/entity/models";
+import { Auth, Personal, Registro } from "../../database/entity/models";
 import DataBase from "../../database/data-source";
-import {savePersonal, exportExcel, registersFiltered, personalFiltered, sendExcel, saveAuth} from "../utils/admin.utils"
-import {getErrorTemplate} from "./personal.controller"
+import {savePersonal, exportExcel, registersFiltered, personalFiltered, sendExcel, saveAuth, getAuth, deleteAuth} from "../utils/admin.utils"
 
 import * as fs from 'fs';
 import {error} from "../utils/error.utils"
@@ -68,8 +67,11 @@ export const postCreatePersonal = async (req:Request, res:Response)=>{
             await savePersonal(personal, nombre, dni, position, admin, dailyEntries)
             if (admin) {
                 let email:string = req.body.email
+                let phone:string = req.body.phone
                 let password:string = req.body.password
-                saveAuth(personal,email,password)
+                let password2:string = req.body.password2
+                let auth = new Auth
+                saveAuth(personal,auth,email,password,phone)
             }
             res.render("adminPersonalCreate",{message:"El personal fue guardado correctamente.", type:"success"})
         }else{
@@ -93,16 +95,31 @@ export const postUpdatePersonal = async (req:Request, res:Response)=>{
             let dailyEntries:number = Number(req.body.dailyEntries)
             let admin:boolean = !!req.body.admin
             if (!(nombre.length === 0 || dni.length === 0 || position.length === 0)) {
+                let personal = await personalRepository.find()
                 await savePersonal(personalToUpdate,nombre,dni,position,admin,dailyEntries)
                 if (admin) {
                     let email:string = req.body.email
+                    let phone:string = req.body.phone
                     let password:string = req.body.password
-                    saveAuth(personalToUpdate,email,password)
+                    let password2:string = req.body.password2
+                    if(password === password2){
+                        let auth = await getAuth(personalToUpdate)
+                        if(auth){
+                            saveAuth(personalToUpdate,auth,email,password,phone)
+                        }
+                        res.render("adminPanelPersonal",{personal, message:`Se ha modificado correctamente a ${personalToUpdate.name}`, type:"info"})
+                    }else{
+                        let personal = personalToUpdate
+                        res.render("adminPersonalUpdate",{personal, email, phone, message:"Las contraseñas no coinciden. Por favor, inténtalo de nuevo.", type:"warning"})
+                    }
+                }else{
+                    //En postUpdatePersonal, si no es admin debería buscar su auth y eliminarlo en caso de que tenga uno asociado.
+                    await deleteAuth(personalToUpdate)
+                    res.render("adminPanelPersonal",{personal, message:`Se ha modificado correctamente a ${personalToUpdate.name}`, type:"info"})
                 }
-                let personal = await personalRepository.find()
-                res.render("adminPanelPersonal",{personal, message:`Se ha modificado correctamente a ${personalToUpdate.name}`, type:"info"})
             }else{
-                res.render("adminPanelPersonal",{message:"Alguno de los datos del personal están vacíos y no se guardará", type:"warning"})
+                let personal = personalToUpdate
+                res.render("adminPersonalUpdate",{personal, message:"Alguno de los datos del personal están vacíos y no se guardará", type:"warning"})
             }
         }
     }catch(err){

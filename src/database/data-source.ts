@@ -10,7 +10,8 @@ async function createBasicPersonal(){
     if(!existsPersonal){
         let personal = new Personal;
         await savePersonal(personal,"administrador","00000000","admin",true,0)
-        await saveAuth(personal,"ejemplovidelaspect@yopmail.com","1234")
+        let auth = new Auth
+        await saveAuth(personal,auth,"ejemplovidelaspect@yopmail.com","1234","")
     }
 }
 
