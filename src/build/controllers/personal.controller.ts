@@ -4,6 +4,7 @@ import { Personal, Registro } from "../../database/entity/models";
 import { saveImage, Image, registerPersonal, getCantidadDeRegistrosPorIdDePersonaHoy, isPar, getDate, getPassWhitPersonal } from "../utils/personal.utils"
 
 import {error} from "../helpers/error.helper"
+import { ValidationClass } from "../interfaces/interfaces";
 export const getRegistroDNI = async (req:Request, res:Response)=>{
     try{
         res.render("registroDNI")
@@ -107,10 +108,10 @@ export const postRegistroFotoOk = async (req:Request, res:Response)=>{
             let cantidadDeRegistros = await getCantidadDeRegistrosPorIdDePersonaHoy(personal,ahora)
             if(!(isPar(cantidadDeRegistros))){
                 let tipoDeRegistro = "entrada"
-                res.render("registroOk",{personal, message:`Se ha registrado correctamente su ${tipoDeRegistro} a las: ${horas}:${minutosFormalize}`, despedida:"Esperamos que tenga una excelente jornada laboral."})
+                res.render("registroOk",{personal, message:`Se ha registrado correctamente su ${tipoDeRegistro} a las: ${horas}:${minutosFormalize}`, farewell:"Esperamos que tenga una excelente jornada laboral."})
             }else{
                 let tipoDeRegistro = "salida"
-                res.render("registroOk",{personal, message:`Se ha registrado correctamente su ${tipoDeRegistro} a las: ${horas}:${minutosFormalize}`, despedida:"Gracias por registrar su salida, que tenga buenos días."})
+                res.render("registroOk",{personal, message:`Se ha registrado correctamente su ${tipoDeRegistro} a las: ${horas}:${minutosFormalize}`, farewell:"Gracias por registrar su salida, que tenga buenos días."})
             }
         }
     }catch(err){
@@ -134,10 +135,13 @@ export const postRegistroPassword = async (req:Request, res:Response)=>{
     let personal = await personalRepository.findOneBy({id: userId})
     let password = String(req.body.password)
     if (personal) {
+        let validation = new ValidationClass
         if(password === await getPassWhitPersonal(personal)){
-            res.render("adminPanel", {personal, message: "Bienvenido a su panel de administrador.", type:"info"})
+            validation.addMessage("Bienvenido a su panel de administrador.","info")
+            res.render("adminPanel", {personal, messages: validation.messages})
         }else{
-            res.render("registroPassword", {personal, message: "La contraseña ingresada no es correcta", type: "warning"})
+            validation.addMessage("La contraseña ingresada no es correcta.","warning")
+            res.render("registroPassword", {personal, messages: validation.messages})
         }
     }
 }

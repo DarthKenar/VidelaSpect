@@ -79,7 +79,7 @@ export const exportExcel = async(objectList:Personal[]|Registro[],input:string, 
                 .bool(objectList[i][attributes[j]])
                 .style(styleBody);
             }else{
-                console.log("El tipo de dato a insertar en la tabla, no está definido en el admin.utils.ts")
+                throw new Error("El tipo de dato a insertar en la tabla, no está definido en el admin.utils.ts");
             }
         }
     }
@@ -117,9 +117,7 @@ export const personalFiltered = async(input:string, select:string)=>{
     if(select === "dni"){
         personal = await personalRepository.findBy({dni: Like(`%${input}%`)});
     }else if(select === "name"){
-        console.log("name")
         personal = await personalRepository.findBy({name: Like(`%${input}%`)});
-        
     }else{
         personal = await personalRepository.find()
     }

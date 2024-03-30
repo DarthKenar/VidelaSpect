@@ -35,7 +35,6 @@ const getVideo = async () => {
   try {
     const stream = await navigator.mediaDevices.getUserMedia(constraints);
     handleSucces(stream);
-    console.log(stream);
   } catch (error) {
     console.log(error);
   }
@@ -76,9 +75,6 @@ btnEnviar.addEventListener("click", async ()=>{
     .then((response) => response.text())
     .then(text => {
       const data = JSON.parse(text);
-      console.log(typeof data);
-      console.log(data)
-      console.log(data.url)
       window.location.href = data.url;
     })
     .catch((error) => console.error(error));

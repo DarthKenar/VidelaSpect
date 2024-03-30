@@ -74,7 +74,7 @@ export const postCreatePersonal = async (req:Request, res:Response)=>{
         let password:string = req.body.password
         let password2:string = req.body.password2
         // Validaciones
-        let validation:Validation = new ValidationClass()
+        let validation = new ValidationClass()
         validation = areEmptyFieldsInPersonal(validation, name, dni, position)
         if(admin) {
             validation = arePasswordsEqual(validation, password, password2)
@@ -87,7 +87,7 @@ export const postCreatePersonal = async (req:Request, res:Response)=>{
                 let auth = new Auth
                 await saveAuth(personal,auth,email,password,phone)
             }
-            validation.messages.push({message:"El personal fue guardado correctamente.", type:"success"})
+            validation.addMessage("El personal fue guardado correctamente.","success")
         }
         res.render("adminPersonalCreate",{messages: validation.messages})
     }catch(err){
@@ -113,13 +113,12 @@ export const postUpdatePersonal = async (req:Request, res:Response)=>{
         let personalToUpdate = await personalRepository.findOneBy({id: personalId})
         if (personalToUpdate){
             // Validaciones
-            let validation:Validation = new ValidationClass()
+            let validation = new ValidationClass()
             validation = areEmptyFieldsInPersonal(validation, name, dni, position)
             if(admin) {
                 validation = arePasswordsEqual(validation, password, password2)
             }
             // Acciones
-            console.log(validation.status)
             if (validation.status) {
                 await savePersonal(personalToUpdate, name, dni, position, admin, dailyEntries)
                 if (admin) {
@@ -128,7 +127,7 @@ export const postUpdatePersonal = async (req:Request, res:Response)=>{
                 }else{
                     await deleteAuth(personalToUpdate)
                 }
-                validation.messages.push({message:"El personal fue guardado correctamente.", type:"success"})
+                validation.addMessage("El personal fue guardado correctamente.", "success")
                 let personal = await personalRepository.find()
                 res.render("adminPanelPersonal",{personal, messages: validation.messages})
             }else{
@@ -146,16 +145,16 @@ export const postDeletePersonal = async (req:Request, res:Response)=>{
         let personalId = Number(req.params.id)
         let personalRepository = DataBase.getRepository(Personal)
         let personalToDelete = await personalRepository.findOneBy({id: personalId})
-        let validation:Validation = new ValidationClass
+        let validation = new ValidationClass
         if(personalToDelete){
             let personalToDeleteName = personalToDelete.name
             await personalRepository.delete(personalToDelete)
             if (personalToDelete.admin) {
                 await deleteAuth(personalToDelete)
             }
-            validation.messages.push({message:`${personalToDeleteName} se ha eliminado correctamente del personal.`, type:"success"})
+            validation.addMessage(`${personalToDeleteName} se ha eliminado correctamente del personal.`,"success")
             let personal = await personalRepository.find()
-            res.render("adminPanelPersonal",{messages: validation.messages})
+            res.render("adminPanelPersonal",{personal, messages: validation.messages})
         }
     }catch(err){
         console.log(err)
@@ -171,12 +170,12 @@ export const getPanelRegisterPhoto = async (req:Request, res:Response)=>{
             if(fs.existsSync(fotoPath)){
                 res.sendFile(fotoPath,(err)=>{console.log(err)})
             }else{
-                let validation:Validation = new ValidationClass
+                let validation = new ValidationClass
                 let registroRepository = DataBase.getRepository(Registro)
                 let registros:Registro[] = await registroRepository.find()
                 let registro:Registro|null = await registroRepository.findOneBy({id:registroId})
                 if(registro){
-                    validation.messages.push({message:`La foto buscada de ${registro.personal_name} no se encuentra.`, type:"error"})
+                    validation.addMessage(`La foto buscada de ${registro.personal_name} no se encuentra.`,"error")
                     res.render("adminPanelRegistros",{registros, messages: validation.messages})
                 }
             }
@@ -222,8 +221,8 @@ export const getPanelPersonalExcel = async (req:Request, res:Response)=>{
             let emailAdmin = ""
             await sendExcel(excelPath, emailAdmin)
         }
-        let validation:Validation = new ValidationClass
-        validation.messages.push({message:"El archivo excel se ha exportado correctamente.", type:"success"})
+        let validation = new ValidationClass
+        validation.addMessage("El archivo excel se ha exportado correctamente.", "success")
         res.render("adminPanelPersonalResponse",{personal, input, select, messages: validation.messages})
     }catch(err){
         console.log(err)
@@ -242,8 +241,8 @@ export const getPanelRegisterExcel = async (req:Request, res:Response)=>{
             let emailAdmin = ""
             await sendExcel(excelPath, emailAdmin)
         }
-        let validation:Validation = new ValidationClass
-        validation.messages.push({message:"El archivo excel se ha exportado correctamente.", type:"success"})
+        let validation = new ValidationClass
+        validation.addMessage("El archivo excel se ha exportado correctamente.","success")
         res.render("adminPanelRegistrosResponse",{registros, input, select, messages: validation.messages})
     }catch(err){
         console.log(err)

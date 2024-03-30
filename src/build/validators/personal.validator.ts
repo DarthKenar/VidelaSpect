@@ -1,7 +1,7 @@
 import { existsSync } from "fs"
-import {Validation} from "../interfaces/interfaces"
+import {ValidationClass} from "../interfaces/interfaces"
 
-export const areEmptyFieldsInPersonal = (validation:Validation, name:string,dni:string,position:string):Validation => {
+export const areEmptyFieldsInPersonal = (validation:ValidationClass, name:string,dni:string,position:string):ValidationClass => {
     let value = !(name.length === 0 || dni.length === 0 || position.length === 0)
     if (value) {
         return validation
@@ -15,7 +15,7 @@ export const areEmptyFieldsInPersonal = (validation:Validation, name:string,dni:
     }
 }
 
-export const arePasswordsEqual = (validation:Validation, password:string, password2:string):Validation=>{
+export const arePasswordsEqual = (validation:ValidationClass, password:string, password2:string):ValidationClass=>{
     if (password === "" || password2 === "") {
         validation.status = false
         validation.messages.push({
