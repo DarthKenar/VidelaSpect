@@ -16,6 +16,13 @@ export const areEmptyFieldsInPersonal = (validation:Validation, name:string,dni:
 }
 
 export const arePasswordsEqual = (validation:Validation, password:string, password2:string):Validation=>{
+    if (password === "" || password2 === "") {
+        validation.status = false
+        validation.messages.push({
+            message: "Las contraseñas no pueden estar vacías",
+            type: "warning"
+        })
+    }
     if (password !== password2) {
         validation.status = false
         validation.messages.push({
