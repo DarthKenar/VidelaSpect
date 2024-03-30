@@ -215,26 +215,36 @@ export const getPanelPersonalExcel = async (req:Request, res:Response)=>{
     try{
         let input = String(req.query.input)
         let select = String(req.query.select)
-        let email = Boolean(req.query.email)
+        let emailOption = Boolean(req.query.email)
         let personal = await personalFiltered(input, select)
-        let excelPath = await exportExcel(personal,input,select,email)
-        let emailAdmin = String(process.env.EMAIL_ADMIN)
-        await sendExcel(excelPath, emailAdmin)
-        res.render("adminPanelPersonalResponse",{personal, input, select, message:"El archivo excel se ha exportado correctamente.", type:"success"})
+        let excelPath = await exportExcel(personal,input,select)
+        if (emailOption) {
+            let emailAdmin = ""
+            await sendExcel(excelPath, emailAdmin)
+        }
+        let validation:Validation = new ValidationClass
+        validation.messages.push({message:"El archivo excel se ha exportado correctamente.", type:"success"})
+        res.render("adminPanelPersonalResponse",{personal, input, select, messages: validation.messages})
     }catch(err){
         console.log(err)
         res.render("error", {messages: error})
     }
 }
+
 export const getPanelRegisterExcel = async (req:Request, res:Response)=>{
     try{
         let input = String(req.query.input)
         let select = String(req.query.select)
+        let emailOption = Boolean(req.query.email)
         let registros = await registersFiltered(input, select)
-        let excelPath = await exportExcel(registros,input,select, true)
-        let emailAdmin = String(process.env.EMAIL_ADMIN)
-        await sendExcel(excelPath, emailAdmin)
-        res.render("adminPanelRegistrosResponse",{registros, input, select, message:"El archivo excel se ha exportado correctamente.", type:"success"})
+        let excelPath = await exportExcel(registros,input,select)
+        if (emailOption) {
+            let emailAdmin = ""
+            await sendExcel(excelPath, emailAdmin)
+        }
+        let validation:Validation = new ValidationClass
+        validation.messages.push({message:"El archivo excel se ha exportado correctamente.", type:"success"})
+        res.render("adminPanelRegistrosResponse",{registros, input, select, messages: validation.messages})
     }catch(err){
         console.log(err)
         res.render("error", {messages: error})

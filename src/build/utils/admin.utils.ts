@@ -40,7 +40,7 @@ export const getAuth = async (personal:Personal):Promise<Auth> => {
     return auth
 }
 
-export const exportExcel = async(objectList:Personal[]|Registro[],input:string, select:string, sendEmail:boolean):Promise<string>=>{
+export const exportExcel = async(objectList:Personal[]|Registro[],input:string, select:string):Promise<string>=>{
     
     var wb = new xl.Workbook();
     var ws = wb.addWorksheet(`${typeof objectList}`);
@@ -127,7 +127,7 @@ export const personalFiltered = async(input:string, select:string)=>{
 }
 
 export const sendExcel = async(excelPath:string, emailAdmin:string)=>{
-
+    emailAdmin = String(process.env.EMAIL_ADMIN)
     const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
