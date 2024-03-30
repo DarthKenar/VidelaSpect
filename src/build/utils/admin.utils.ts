@@ -6,8 +6,8 @@ const nodemailer = require("nodemailer");
 const PATH = require("path")
 var xl = require('excel4node');
 import fs from "fs"
-export const savePersonal = async (personal:Personal, nombre:string, dni:string, position:string, admin:boolean, dailyEntries:number)=>{
-    personal.name = nombre
+export const savePersonal = async (personal:Personal, name:string, dni:string, position:string, admin:boolean, dailyEntries:number)=>{
+    personal.name = name
     personal.dni = dni
     personal.position = position
     personal.admin = admin
@@ -25,7 +25,10 @@ export const saveAuth = async (personal:Personal, auth:Auth ,email:string, passw
 
 export const deleteAuth = async (personal:Personal)=>{
     let authRepository = DataBase.getRepository(Auth)
-    authRepository.delete(personal)
+    let authToDelete = await authRepository.findOneBy({personal: personal})
+    if (authToDelete) {
+        authRepository.delete(authToDelete) 
+    }
 }
 
 export const getAuth = async (personal:Personal):Promise<Auth> => {
