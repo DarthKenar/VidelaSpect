@@ -26,7 +26,7 @@ export async function saveImage(registroId:number, image:Image|undefined){
                 console.log("La carpeta se ha creado correctamente")
               }
             })
-            //Aca estaría bueno eliminar automáticamente la carpeta pero sale un error porque pareciera que se necesitan ciertos permisos.
+            //Aca estaría bueno eliminar automáticamente la carpeta pero sale un error cuando lo hago porque pareciera que se necesitan ciertos permisos.
           } else {
             console.log('Archivo guardado con éxito');
           }
@@ -36,7 +36,7 @@ export async function saveImage(registroId:number, image:Image|undefined){
     }
 }
 
-export async function registrarPersonal(personal:Personal, dateTime:Date){
+export async function registerPersonal(personal:Personal, dateTime:Date){
   let date = getDate(dateTime)
   let time = getTime(dateTime)
   let registroRepository = await DataBase.getRepository(Registro)

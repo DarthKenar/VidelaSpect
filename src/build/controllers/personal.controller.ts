@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import DataBase from "../../database/data-source";
 import { Personal, Registro } from "../../database/entity/models";
-import { saveImage, Image, registrarPersonal, getCantidadDeRegistrosPorIdDePersonaHoy, isPar, getDate, getPassWhitPersonal } from "../utils/personal.utils"
+import { saveImage, Image, registerPersonal, getCantidadDeRegistrosPorIdDePersonaHoy, isPar, getDate, getPassWhitPersonal } from "../utils/personal.utils"
 
-import {error} from "../utils/error.utils"
+import {error} from "../helpers/error.helper"
 export const getRegistroDNI = async (req:Request, res:Response)=>{
     try{
         res.render("registroDNI")
@@ -65,7 +65,7 @@ export const postRegistroFoto = async (req:Request, res:Response)=>{
             //Ayuda a generar el mensaje al usuario
             let fecha = new Date
             //Registra al personal
-            let [confirm, registros, registroId] = await registrarPersonal(personal, fecha)
+            let [confirm, registros, registroId] = await registerPersonal(personal, fecha)
             //
             if(confirm){
                 //Guarda la foto con el objeto {personal}

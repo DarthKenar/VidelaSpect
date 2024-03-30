@@ -6,7 +6,7 @@ const exphbs  = require('express-handlebars');
 const app = express()
 const PATH = require("path")
 const bodyParser = require('body-parser');
-import { if_eq,  } from "./utils/helpers"
+import { if_eq,  } from "./helpers/handlebars.helpers"
 //Handlebars config
 var hbs = exphbs.create({
     helpers: {if_eq}

@@ -28,15 +28,17 @@ export const deleteAuth = async (personal:Personal)=>{
     authRepository.delete(personal)
 }
 
-export const getAuth = async (personal:Personal):Promise<Auth|null> => {
+export const getAuth = async (personal:Personal):Promise<Auth> => {
     let authRepository = DataBase.getRepository(Auth)
-    let auth = authRepository.findOneBy({personal})
+    let auth = await authRepository.findOneBy({personal})
+    if (auth === null) {
+        auth = new Auth
+    }
     return auth
 }
 
 export const exportExcel = async(objectList:Personal[]|Registro[],input:string, select:string, sendEmail:boolean):Promise<string>=>{
     
-    console.log(objectList)
     var wb = new xl.Workbook();
     var ws = wb.addWorksheet(`${typeof objectList}`);
     let attributes = Object.keys(objectList[0])
@@ -74,7 +76,7 @@ export const exportExcel = async(objectList:Personal[]|Registro[],input:string, 
                 .bool(objectList[i][attributes[j]])
                 .style(styleBody);
             }else{
-                console.log("El tipo de dato a insertar en la tabla, no está definido en el utils")
+                console.log("El tipo de dato a insertar en la tabla, no está definido en el admin.utils.ts")
             }
         }
     }
@@ -92,18 +94,18 @@ export const exportExcel = async(objectList:Personal[]|Registro[],input:string, 
 }
 
 export const registersFiltered = async(input:string, select:string)=>{
-    let registros:Registro[];
+    let registrations:Registro[];
     let registroRepository = DataBase.getRepository(Registro)
     if(select === "personal_name"){
-        registros = await registroRepository.findBy({personal_name: Like(`%${input}%`)});
+        registrations = await registroRepository.findBy({personal_name: Like(`%${input}%`)});
     }else if(select === "fecha"){
-        registros = await registroRepository.findBy({date: Like(`%${input}%`)});
+        registrations = await registroRepository.findBy({date: Like(`%${input}%`)});
     }else if(select === "hora"){
-        registros = await registroRepository.findBy({time: Like(`%${input}%`)});
+        registrations = await registroRepository.findBy({time: Like(`%${input}%`)});
     }else{
-        registros = await registroRepository.find()
+        registrations = await registroRepository.find()
     }
-    return registros
+    return registrations
 }
 
 export const personalFiltered = async(input:string, select:string)=>{
@@ -135,6 +137,8 @@ export const sendExcel = async(excelPath:string, emailAdmin:string)=>{
 
     // async..await is not allowed in global scope, must use a wrapper
     async function main(excelPath:string, emailAdmin:string) {
+        //aca debería sacar el nombre del archivo y el filename tendría que ser el mismo.
+        console.log(excelPath)
         // send mail with defined transport object
         const info = await transporter.sendMail({
             from: `"VidelaSpect 👁‍🗨" <${process.env.EMAIL_USER}>`, // sender address
