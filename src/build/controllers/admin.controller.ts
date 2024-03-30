@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { Auth, Personal, Registro } from "../../database/entity/models";
 import DataBase from "../../database/data-source";
 import {savePersonal, exportExcel, registersFiltered, personalFiltered, sendExcel, saveAuth, getAuth, deleteAuth} from "../utils/admin.utils"
-import {areEmptyFieldsInPersonal, arePasswordsEqual} from "../validators/personal.validator"
+import {areEmptyFieldsInPersonal, passwordValidations} from "../validators/personal.validator"
 import * as fs from 'fs';
 import {error} from "../helpers/error.helper"
 import { Validation, ValidationClass } from "../interfaces/interfaces";
@@ -77,7 +77,7 @@ export const postCreatePersonal = async (req:Request, res:Response)=>{
         let validation = new ValidationClass()
         validation = areEmptyFieldsInPersonal(validation, name, dni, position)
         if(admin) {
-            validation = arePasswordsEqual(validation, password, password2)
+            validation = passwordValidations(validation, password, password2)
         }
         // Acciones
         if (validation.status) {
@@ -116,7 +116,7 @@ export const postUpdatePersonal = async (req:Request, res:Response)=>{
             let validation = new ValidationClass()
             validation = areEmptyFieldsInPersonal(validation, name, dni, position)
             if(admin) {
-                validation = arePasswordsEqual(validation, password, password2)
+                validation = passwordValidations(validation, password, password2)
             }
             // Acciones
             if (validation.status) {

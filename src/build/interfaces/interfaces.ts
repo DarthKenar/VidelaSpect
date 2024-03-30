@@ -1,3 +1,12 @@
+export interface Image {
+    fieldname: string;
+    originalname: string;
+    encoding: string;
+    mimetype: string;
+    buffer: Buffer;
+    size: number;
+  }
+
 export interface RootObject {
     validation: Validation;
 }

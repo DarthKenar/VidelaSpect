@@ -1,16 +1,8 @@
 import DataBase from "../../database/data-source";
 import { Auth, Personal, Registro } from "../../database/entity/models";
-
+import { Image } from "../interfaces/interfaces";
 const fs = require('fs');
 // Escribe el buffer en un archivo
-export interface Image {
-    fieldname: string;
-    originalname: string;
-    encoding: string;
-    mimetype: string;
-    buffer: Buffer;
-    size: number;
-  }
 
 export async function saveImage(registroId:number, image:Image|undefined){
     if(image){
@@ -26,6 +18,7 @@ export async function saveImage(registroId:number, image:Image|undefined){
                 console.log("La carpeta se ha creado correctamente")
               }
             })
+            //TODO:
             //Aca estaría bueno eliminar automáticamente la carpeta pero sale un error cuando lo hago porque pareciera que se necesitan ciertos permisos.
           } else {
             console.log('Archivo guardado con éxito');
@@ -54,7 +47,7 @@ export async function registerPersonal(personal:Personal, dateTime:Date){
   }
 }
 
-export async function getCantidadDeRegistrosPorIdDePersonaHoy(personal:Personal, ahora:Date):Promise<number> {
+export async function getTodaysRegisterCountById(personal:Personal, ahora:Date):Promise<number> {
   let fecha = getDate(ahora)
   let registroRepository = await DataBase.getRepository(Registro)
   let registros = await registroRepository.findBy({personal_id:personal.id,date:fecha})
@@ -73,6 +66,8 @@ export function getTime(dateTime:Date):string {
 }
 
 export const isPar = (numero:number) => numero % 2 === 0;
+
+export const formalizeMinutes = (num: number): string => num < 10 ? `0${num}` : `${num}`;
 
 export async function getPassWhitPersonal(personal:Personal):Promise<string>{
   let authRepository = await DataBase.getRepository(Auth)

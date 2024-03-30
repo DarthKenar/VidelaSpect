@@ -1,10 +1,9 @@
 import { Request, Response } from "express";
 import DataBase from "../../database/data-source";
 import { Personal, Registro } from "../../database/entity/models";
-import { saveImage, Image, registerPersonal, getCantidadDeRegistrosPorIdDePersonaHoy, isPar, getDate, getPassWhitPersonal } from "../utils/personal.utils"
-
+import { saveImage, registerPersonal, getTodaysRegisterCountById, isPar, getDate, getPassWhitPersonal, formalizeMinutes } from "../utils/personal.utils"
 import {error} from "../helpers/error.helper"
-import { ValidationClass } from "../interfaces/interfaces";
+import { ValidationClass , Image} from "../interfaces/interfaces";
 export const getRegistroDNI = async (req:Request, res:Response)=>{
     try{
         res.render("registroDNI")
@@ -23,7 +22,7 @@ export const postRegistroDNI = async (req:Request, res:Response)=>{
             if(personal){
                 if(personal.admin === false){
                     let ahora = new Date
-                    let cantidadDeRegistros = await getCantidadDeRegistrosPorIdDePersonaHoy(personal,ahora)
+                    let cantidadDeRegistros = await getTodaysRegisterCountById(personal,ahora)
                     if(isPar(cantidadDeRegistros) && cantidadDeRegistros < personal.dailyEntries){
                         var tipoDeRegistro = "entrada"
                         res.render("registroFoto", {personal, tipoDeRegistro})
@@ -99,19 +98,18 @@ export const postRegistroFotoOk = async (req:Request, res:Response)=>{
             let ahora = new Date
             //lógica por cantidad de registros
             //Ayuda a generar el mensaje al usuario
-            let fecha = new Date
-            let horas = fecha.getHours()
-            let minutos = fecha.getMinutes()
-            const formalizeMinutes = (num: number): string => num < 10 ? `0${num}` : `${num}`;
-            let minutosFormalize = formalizeMinutes(minutos)
+            let date = new Date
+            let hours = date.getHours()
+            let minutes = date.getMinutes()
+            let minutesString = formalizeMinutes(minutes)
             //
-            let cantidadDeRegistros = await getCantidadDeRegistrosPorIdDePersonaHoy(personal,ahora)
+            let cantidadDeRegistros = await getTodaysRegisterCountById(personal,ahora)
             if(!(isPar(cantidadDeRegistros))){
                 let tipoDeRegistro = "entrada"
-                res.render("registroOk",{personal, message:`Se ha registrado correctamente su ${tipoDeRegistro} a las: ${horas}:${minutosFormalize}`, farewell:"Esperamos que tenga una excelente jornada laboral."})
+                res.render("registroOk",{personal, message:`Se ha registrado correctamente su ${tipoDeRegistro} a las: ${hours}:${minutesString}`, farewell:"Esperamos que tenga una excelente jornada laboral."})
             }else{
                 let tipoDeRegistro = "salida"
-                res.render("registroOk",{personal, message:`Se ha registrado correctamente su ${tipoDeRegistro} a las: ${horas}:${minutosFormalize}`, farewell:"Gracias por registrar su salida, que tenga buenos días."})
+                res.render("registroOk",{personal, message:`Se ha registrado correctamente su ${tipoDeRegistro} a las: ${hours}:${minutesString}`, farewell:"Gracias por registrar su salida, que tenga buenos días."})
             }
         }
     }catch(err){

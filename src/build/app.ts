@@ -1,19 +1,21 @@
 import "reflect-metadata"
 import express from 'express';
 import { Request, Response, NextFunction } from 'express';
-const exphbs  = require('express-handlebars');
 
+const exphbs  = require('express-handlebars');
 const app = express()
 const PATH = require("path")
 const bodyParser = require('body-parser');
+
 import { if_eq,  } from "./helpers/handlebars.helpers"
+
 //Handlebars config
-var hbs = exphbs.create({
-    helpers: {if_eq}
-});
-app.engine('handlebars', hbs.engine);
-app.set('view engine', 'handlebars');
-app.set('views', './dist/views');
+    var hbs = exphbs.create({
+        helpers: {if_eq}
+    });
+    app.engine('handlebars', hbs.engine);
+    app.set('view engine', 'handlebars');
+    app.set('views', './dist/views');
 //
 
 //Middlewares
