@@ -105,7 +105,7 @@ export const postRegistroFotoOk = async (req:Request, res:Response)=>{
             let minutosFormalize = formalizeMinutes(minutos)
             //
             let cantidadDeRegistros = await getCantidadDeRegistrosPorIdDePersonaHoy(personal,ahora)
-            if(isPar(cantidadDeRegistros)){
+            if(!(isPar(cantidadDeRegistros))){
                 let tipoDeRegistro = "entrada"
                 res.render("registroOk",{personal, message:`Se ha registrado correctamente su ${tipoDeRegistro} a las: ${horas}:${minutosFormalize}`, despedida:"Esperamos que tenga una excelente jornada laboral."})
             }else{
