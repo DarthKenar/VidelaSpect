@@ -49,7 +49,12 @@ export const getUpdatePersonal = async (req:Request, res:Response)=>{
         let personalId = Number(req.params.id)
         let personalRepository = DataBase.getRepository(Personal)
         let personal = await personalRepository.findOneBy({id: personalId})
-        res.render("adminPersonalUpdate",{personal})
+        if (personal) {
+            let auth = await getAuth(personal)
+            let email = auth.email
+            let phone = auth.phone
+            res.render("adminPersonalUpdate",{personal, email, phone})
+        }
     }catch(err){
         console.log(err)
         res.render("error", {messages: error})
@@ -114,6 +119,7 @@ export const postUpdatePersonal = async (req:Request, res:Response)=>{
                 validation = arePasswordsEqual(validation, password, password2)
             }
             // Acciones
+            console.log(validation.status)
             if (validation.status) {
                 await savePersonal(personalToUpdate, name, dni, position, admin, dailyEntries)
                 if (admin) {
@@ -126,7 +132,7 @@ export const postUpdatePersonal = async (req:Request, res:Response)=>{
                 let personal = await personalRepository.find()
                 res.render("adminPanelPersonal",{personal, messages: validation.messages})
             }else{
-                res.render("adminPersonalUpdate",{messages: validation.messages})
+                res.render("adminPersonalUpdate",{personal: personalToUpdate, messages: validation.messages})
             }
         }
     }catch(err){
