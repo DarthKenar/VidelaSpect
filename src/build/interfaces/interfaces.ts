@@ -21,6 +21,11 @@ export interface Message {
     type: string;
 }
 
+export interface Authentication {
+    auth: true;
+    token: ""
+}
+
 export class ValidationClass implements Validation {
     status: boolean;
     messages: Message[];

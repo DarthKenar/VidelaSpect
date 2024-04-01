@@ -6,7 +6,7 @@ const exphbs  = require('express-handlebars');
 const app = express()
 const PATH = require("path")
 const bodyParser = require('body-parser');
-
+import { verifyToken } from "./middlewares/verifyToken.middleware"
 import { if_eq,  } from "./helpers/handlebars.helpers"
 
 //Handlebars config
@@ -37,7 +37,7 @@ const routerPersonal = require('./routes/personal.routes');
 app.use('/personal', routerPersonal)
 
 const routerAdmin = require('./routes/admin.routes');
-app.use('/admin', routerAdmin)
+if(process.env.NODE_ENV="test"){app.use('/admin', routerAdmin)}else{app.use('/admin', verifyToken, routerAdmin)}
 //...
 
 app.use("/",(req:Request, res:Response)=>{
