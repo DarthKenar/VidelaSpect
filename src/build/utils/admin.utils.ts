@@ -2,6 +2,7 @@ import { config } from "dotenv";
 import DataBase from "../../database/data-source"
 import { Auth, Personal, Registro } from "../../database/entity/models"
 import {Like} from 'typeorm';
+import {encryptPass} from "./../helpers/password.helpers"
 const nodemailer = require("nodemailer");
 const PATH = require("path")
 var xl = require('excel4node');
@@ -19,7 +20,7 @@ export const saveAuth = async (personal:Personal, auth:Auth ,email:string, passw
     auth.personal = personal
     auth.email = email
     auth.phone = phone
-    auth.password = password
+    auth.password = await encryptPass(password)
     await DataBase.manager.save(auth)
 }
 
@@ -125,6 +126,7 @@ export const personalFiltered = async(input:string, select:string)=>{
 }
 
 export const sendExcel = async(excelPath:string, emailAdmin:string)=>{
+    
     emailAdmin = String(process.env.EMAIL_ADMIN)
     const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",

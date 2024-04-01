@@ -4,9 +4,10 @@ import { Auth, Personal, Registro } from "../../database/entity/models";
 import DataBase from "../../database/data-source";
 import {savePersonal, exportExcel, registersFiltered, personalFiltered, sendExcel, saveAuth, getAuth, deleteAuth} from "../utils/admin.utils"
 import {areEmptyFieldsInPersonal, passwordValidations} from "../validators/personal.validator"
+import {getEmailWhitUserId} from "../helpers/email.helpers"
 import * as fs from 'fs';
 import {error} from "../helpers/error.helper"
-import { Validation, ValidationClass } from "../interfaces/interfaces";
+import { ValidationClass } from "../interfaces/interfaces";
 const PATH = require("path")
 
 export const getPanel = async (req:Request, res:Response)=>{
@@ -215,14 +216,20 @@ export const getPanelPersonalExcel = async (req:Request, res:Response)=>{
         let input = String(req.query.input)
         let select = String(req.query.select)
         let emailOption = Boolean(req.query.email)
+        let userId = req.cookies.userID
         let personal = await personalFiltered(input, select)
         let excelPath = await exportExcel(personal,input,select)
-        if (emailOption) {
-            let emailAdmin = ""
-            await sendExcel(excelPath, emailAdmin)
-        }
         let validation = new ValidationClass
-        validation.addMessage("El archivo excel se ha exportado correctamente.", "success")
+        if (emailOption && userId) {
+            let email = await getEmailWhitUserId(userId)
+            if (email) {
+                await sendExcel(excelPath, email)
+            }else{
+                validation.status = false
+                validation.addMessage("Antes de intentar enviar un archivo por favor agregue un correo electrónico a su cuenta.","warning")
+            }
+        }
+        validation.addMessage("El archivo excel se ha exportado correctamente.","success")
         res.render("adminPanelPersonalResponse",{personal, input, select, messages: validation.messages})
     }catch(err){
         console.log(err)
@@ -235,13 +242,19 @@ export const getPanelRegisterExcel = async (req:Request, res:Response)=>{
         let input = String(req.query.input)
         let select = String(req.query.select)
         let emailOption = Boolean(req.query.email)
+        let userId = req.cookies.userId
         let registros = await registersFiltered(input, select)
         let excelPath = await exportExcel(registros,input,select)
-        if (emailOption) {
-            let emailAdmin = ""
-            await sendExcel(excelPath, emailAdmin)
-        }
         let validation = new ValidationClass
+        if (emailOption && userId) {
+            let email = await getEmailWhitUserId(userId)
+            if (email) {
+                await sendExcel(excelPath, email)
+            }else{
+                validation.status = false
+                validation.addMessage("Antes de intentar enviar un archivo por favor agregue un correo electrónico a su cuenta.","warning")
+            }
+        }
         validation.addMessage("El archivo excel se ha exportado correctamente.","success")
         res.render("adminPanelRegistrosResponse",{registros, input, select, messages: validation.messages})
     }catch(err){

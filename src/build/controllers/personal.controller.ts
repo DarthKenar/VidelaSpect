@@ -4,11 +4,13 @@ import { Personal, Registro } from "../../database/entity/models";
 import { saveImage, registerPersonal, getTodaysRegisterCountById, isPar, getDate, getPassWhitPersonal, formalizeMinutes } from "../utils/personal.utils"
 import {error} from "../helpers/error.helper"
 import { ValidationClass , Image} from "../interfaces/interfaces";
+import {comparePass} from "../helpers/password.helpers"
 const jwt = require("jsonwebtoken")
 
 export const getRegistroDNI = async (req:Request, res:Response)=>{
     try{
         res.clearCookie('token');
+        res.clearCookie('userId');
         res.render("registroDNI")
     }catch(err){
         console.log(err)
@@ -141,12 +143,13 @@ export const postRegistroPassword = async (req:Request, res:Response)=>{
     let password = String(req.body.password)
     if (personal) {
         let validation = new ValidationClass
-        if(password === await getPassWhitPersonal(personal)){
+        if(await comparePass(password, await getPassWhitPersonal(personal))){
             const token = jwt.sign({id: personal.id}, process.env.TOKEN_SECRET, {
                 expiresIn: 60 * 60 * 1
             })
             validation.addMessage("Bienvenido a su panel de administrador.","info")
             res.cookie('token', token, { httpOnly: true })
+            res.cookie("userId", userId, { httpOnly: true })
             res.render("adminPanel", {personal, messages: validation.messages})
         }else{
             validation.addMessage("La contraseña ingresada no es correcta.","warning")

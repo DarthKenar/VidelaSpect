@@ -6,7 +6,7 @@ export interface Image {
     buffer: Buffer;
     size: number;
   }
-
+  
 export interface RootObject {
     validation: Validation;
 }

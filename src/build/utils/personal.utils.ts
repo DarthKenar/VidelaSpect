@@ -71,7 +71,7 @@ export const formalizeMinutes = (num: number): string => num < 10 ? `0${num}` : 
 
 export async function getPassWhitPersonal(personal:Personal):Promise<string>{
   let authRepository = await DataBase.getRepository(Auth)
-  let auth = await authRepository.findOneBy({personal: personal})
+  let auth = await authRepository.findOneBy({personal})
   if (auth) {
     return auth.password
   }else{
