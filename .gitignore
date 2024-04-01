@@ -10,3 +10,4 @@ database.sqlite
 Excel.xlsx
 Personal.xlsx
 Registro.xlsx
+.env
