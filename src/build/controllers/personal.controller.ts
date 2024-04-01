@@ -44,10 +44,14 @@ export const postRegistroDNI = async (req:Request, res:Response)=>{
                     res.render("registroPassword",{personal})
                 }
             }else{
-                res.render("registroDNI",{error: `El número de DNI - ${dni} no está registrado en el sistema. Contacte al administrador.`})
+                let validation = new ValidationClass
+                validation.addMessage(`El número de DNI - ${dni} no está registrado en el sistema. Contacte al administrador.`, "error")
+                res.render("registroDNI",{messages: validation.messages})
             }
         }else{
-            res.render("registroDNI",{error: "El número de DNI no fue ingresado."})
+            let validation = new ValidationClass
+            validation.addMessage("El número de DNI no fue ingresado.","error")
+            res.render("registroDNI",{messages: validation.messages})
         }
     }catch(err){
         console.log(err)
