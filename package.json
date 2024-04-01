@@ -21,6 +21,7 @@
   "homepage": "https://github.com/DarthKenar/VidelaSpect#readme",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.6",
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
     "excel4node": "^1.8.2",
