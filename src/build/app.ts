@@ -38,9 +38,11 @@ app.use((req:Request, res:Response, next:NextFunction)=>{
 const routerPersonal = require('./routes/personal.routes');
 app.use('/personal', routerPersonal)
 
-const routerAdmin = require('./routes/admin.routes');
-// if(process.env.NODE_ENV="test"){app.use('/admin', routerAdmin)}else{app.use('/admin', verifyToken, routerAdmin)}
-app.use('/admin', verifyToken, routerAdmin)
+const routerAdminPanel = require('./routes/admin.routes');
+if(process.env.NODE_ENV="test"){app.use('/admin/panel', routerAdminPanel)}else{app.use('/admin/panel', verifyToken, routerAdminPanel)}
+
+const routerAdminOptions = require('./routes/admin.routes');
+if(process.env.NODE_ENV="test"){app.use('/admin/options/profile', routerAdminOptions)}else{app.use('/admin/options/profile', verifyToken, routerAdminOptions)}
 //...
 
 app.use("/",(req:Request, res:Response)=>{
