@@ -126,8 +126,7 @@ export const personalFiltered = async(input:string, select:string)=>{
 }
 
 export const sendExcel = async(excelPath:string, emailAdmin:string)=>{
-    
-    emailAdmin = String(process.env.EMAIL_ADMIN)
+    console.log(emailAdmin)
     const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
@@ -146,9 +145,9 @@ export const sendExcel = async(excelPath:string, emailAdmin:string)=>{
         const info = await transporter.sendMail({
             from: `"VidelaSpect 👁‍🗨" <${process.env.EMAIL_USER}>`, // sender address
             to: `${emailAdmin}`, // list of receivers
-            subject: "Hello ✔", // Subject line
-            text: "Hello world?", // plain text body
-            html: "<b>Hello world?</b>", // html body
+            subject: "Hola Administrador ✔", // Subject line
+            text: "👁‍🗨", // plain text body
+            html: "<b>Gracias por usar VidelaSpect.<br>Recuerda cerrar su sesión en el servidor para proteger su privacidad.<br><br> Que tenga un buen día.<br><br>VidelaSpect 👁‍🗨 ", // html body
             attachments:[
                 {   
                     filename: 'registros.xlsx',

@@ -27,7 +27,7 @@ export const arePasswordsEmpty = (validation:ValidationClass, password:string, p
 export const arePasswordsMinLength = (validation:ValidationClass, password:string, password2:string, length:number):ValidationClass=>{
     if (password.length < length || password2.length < length) {
         validation.status = false
-        validation.addMessage("Las contraseñas no pueden estar vacías","warning")
+        validation.addMessage("Las contraseñas debe tener al menos 8 caracteres.","warning")
     }
     return validation
 }

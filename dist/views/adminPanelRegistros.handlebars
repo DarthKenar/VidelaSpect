@@ -14,10 +14,25 @@
     </select>
   </div>
   <a href=""></a>
-  <a hx-get="/admin/panel/registros/excel" hx-trigger="click" hx-target="#search_results" hx-include="[name='select'], [name='input']" class="btn ml-10 btn-outline btn-accent absolute right-0 top-0 m-10" title="Descargar Excel de Personal">
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-    DESCARGAR
-  </a>
+  <aside  class="absolute right-0 top-0 m-10">
+    <div class="form-control">
+      <label class="cursor-pointer label">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        <span class="label-text px-4">Descargar</span>
+        <input type="checkbox" checked="checked" class="checkbox checkbox-info" disabled checked/>
+      </label>
+      <label class="cursor-pointer label">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-send"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        <span class="label-text px-4">Enviar a email</span>
+        <input name='email' id="email" type="checkbox" checked="checked" class="checkbox checkbox-info" />
+      </label>
+      <label class="cursor-pointer label flex justify-center">
+        <a hx-get="/admin/panel/registros/excel" hx-trigger="click" hx-target="#search_results" hx-include="[name='select'], [name='input'], [name='email']" class="btn btn-outline btn-accent btn-sm" title="Descargar/Enviar Excel de Registros">
+          SOLICITAR
+        </a>
+      </label>
+    </div>
+  </aside>
 </menu>
 <div id="search_results" class="overflow-x-auto">
   {{>messages}}

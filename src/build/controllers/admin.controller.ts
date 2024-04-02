@@ -216,10 +216,12 @@ export const getPanelPersonalExcel = async (req:Request, res:Response)=>{
         let input = String(req.query.input)
         let select = String(req.query.select)
         let emailOption = Boolean(req.query.email)
-        let userId = req.cookies.userID
+        let userId = req.cookies.userId
         let personal = await personalFiltered(input, select)
         let excelPath = await exportExcel(personal,input,select)
         let validation = new ValidationClass
+        console.log("emailOption",emailOption)
+        console.log("userId",userId)
         if (emailOption && userId) {
             let email = await getEmailWhitUserId(userId)
             if (email) {

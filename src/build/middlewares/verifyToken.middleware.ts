@@ -5,7 +5,6 @@ import { ValidationClass } from "../interfaces/interfaces";
 
 
 export function verifyToken(req:Request, res:Response, next:NextFunction){
-    console.log("verify token")
     const token = req.cookies.token
     if(!token){
         let validation = new ValidationClass
