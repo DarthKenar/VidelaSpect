@@ -83,7 +83,6 @@ export const postRegistroFoto = async (req:Request, res:Response)=>{
                     await saveImage(registroId, data)
                 }
                 //
-                console.log("antes del render")
                 res.json({url:`http://localhost:7000/personal/foto/send/${personal.id}`})
             }else{
                 if (Array.isArray(registros)) {
