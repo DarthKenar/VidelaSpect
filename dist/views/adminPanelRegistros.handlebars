@@ -19,15 +19,15 @@
       <label class="cursor-pointer label">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
         <span class="label-text px-4">Descargar</span>
-        <input type="checkbox" checked="checked" class="checkbox checkbox-info" disabled checked/>
+        <input type="checkbox" checked="checked" class="checkbox checkbox-primary" disabled checked/>
       </label>
       <label class="cursor-pointer label">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-send"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
         <span class="label-text px-4">Enviar a email</span>
-        <input name='email' id="email" type="checkbox" checked="checked" class="checkbox checkbox-info" />
+        <input name='email' id="email" type="checkbox" checked="checked" class="checkbox checkbox-primary" />
       </label>
       <label class="cursor-pointer label flex justify-center">
-        <a hx-get="/admin/panel/registros/excel" hx-trigger="click" hx-target="#search_results" hx-include="[name='select'], [name='input'], [name='email']" class="btn btn-outline btn-accent btn-sm" title="Descargar/Enviar Excel de Registros">
+        <a hx-get="/admin/panel/registros/excel" hx-trigger="click" hx-target="#search_results" hx-include="[name='select'], [name='input'], [name='email']" class="btn btn-outline btn-primary btn-sm" title="Descargar/Enviar Excel de Registros">
           SOLICITAR
         </a>
       </label>
@@ -54,7 +54,7 @@
                 <td>{{this.date}}</td> 
                 <td>{{this.time}}</td>
                 <td>
-                  <a onclick="getImage({{this.id}})" class="btn btn-sm btn-info"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-camera"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                  <a onclick="getImage({{this.id}})" class="btn btn-sm btn-info btn-outline"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-camera"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
                     VER
                   </a>
                 </td>

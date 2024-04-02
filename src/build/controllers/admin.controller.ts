@@ -89,8 +89,16 @@ export const postCreatePersonal = async (req:Request, res:Response)=>{
                 await saveAuth(personal,auth,email,password,phone)
             }
             validation.addMessage("El personal fue guardado correctamente.","success")
+            
+        }else{
+            let newUser = new Personal
+            newUser.name = name
+            newUser.dni = dni
+            newUser.position = position
+            newUser.dailyEntries = dailyEntries
+            res.render("adminPersonalCreate",{messages: validation.messages, newUser, email, phone})
         }
-        res.render("adminPersonalCreate",{messages: validation.messages})
+        
     }catch(err){
         console.log(err)
         res.render("error", {messages: error})

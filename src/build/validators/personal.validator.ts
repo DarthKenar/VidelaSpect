@@ -24,17 +24,20 @@ export const arePasswordsEmpty = (validation:ValidationClass, password:string, p
     return validation
 }
 
-export const arePasswordsMinLength = (validation:ValidationClass, password:string, password2:string, length:number):ValidationClass=>{
-    if (password.length < length || password2.length < length) {
+export const arePasswordsMinLength = (validation:ValidationClass, password:string, password2:string, len:number):ValidationClass=>{
+    console.log("arePasswordsMinLength")
+    console.log(password)
+    console.log(password2)
+    if (password.length < len || password2.length < len) {
         validation.status = false
-        validation.addMessage("Las contraseñas debe tener al menos 8 caracteres.","warning")
+        validation.addMessage(`Las contraseñas debe tener al menos ${len} caracteres.`,"warning")
     }
     return validation
 }
 
 export const passwordValidations = (validation:ValidationClass,password:string, password2:string):ValidationClass=>{
-    validation = arePasswordsEqual(validation, password, password2)
     validation = arePasswordsEmpty(validation, password, password2)
+    validation = arePasswordsEqual(validation, password, password2)
     validation = arePasswordsMinLength(validation, password, password2, 8)
     return validation
 }
