@@ -74,3 +74,18 @@ export class Auth {
     personal: Personal
     
 }
+
+@Entity()
+export class PersonalUi {
+
+    @PrimaryGeneratedColumn()
+    id: number
+
+    @Column()
+    profile_image_name: string
+
+    @OneToOne(() => Personal)
+    @JoinColumn()
+    personal: Personal
+    
+}
