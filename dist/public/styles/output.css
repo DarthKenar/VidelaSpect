@@ -774,16 +774,6 @@ html {
     border-color: var(--fallback-p,oklch(var(--p)/var(--tw-border-opacity)));
   }
 
-  .checkbox-accent:hover {
-    --tw-border-opacity: 1;
-    border-color: var(--fallback-a,oklch(var(--a)/var(--tw-border-opacity)));
-  }
-
-  .checkbox-info:hover {
-    --tw-border-opacity: 1;
-    border-color: var(--fallback-in,oklch(var(--in)/var(--tw-border-opacity)));
-  }
-
   .label a:hover {
     --tw-text-opacity: 1;
     color: var(--fallback-bc,oklch(var(--bc)/var(--tw-text-opacity)));
@@ -1633,10 +1623,6 @@ html {
     --btn-color: var(--fallback-p);
   }
 
-  .btn-accent {
-    --btn-color: var(--fallback-a);
-  }
-
   .btn-info {
     --btn-color: var(--fallback-in);
   }
@@ -1708,10 +1694,6 @@ html {
     --btn-color: var(--p);
   }
 
-  .btn-accent {
-    --btn-color: var(--a);
-  }
-
   .btn-info {
     --btn-color: var(--in);
   }
@@ -1727,12 +1709,6 @@ html {
   .btn-error {
     --btn-color: var(--er);
   }
-}
-
-.btn-accent {
-  --tw-text-opacity: 1;
-  color: var(--fallback-ac,oklch(var(--ac)/var(--tw-text-opacity)));
-  outline-color: var(--fallback-a,oklch(var(--a)/1));
 }
 
 .btn-info {
@@ -2012,50 +1988,6 @@ html {
   background-color: var(--fallback-p,oklch(var(--p)/var(--tw-bg-opacity)));
   --tw-text-opacity: 1;
   color: var(--fallback-pc,oklch(var(--pc)/var(--tw-text-opacity)));
-}
-
-.checkbox-accent {
-  --chkbg: var(--fallback-a,oklch(var(--a)/1));
-  --chkfg: var(--fallback-ac,oklch(var(--ac)/1));
-  --tw-border-opacity: 1;
-  border-color: var(--fallback-a,oklch(var(--a)/var(--tw-border-opacity)));
-}
-
-.checkbox-accent:focus-visible {
-  outline-color: var(--fallback-a,oklch(var(--a)/1));
-}
-
-.checkbox-accent:checked,
-    .checkbox-accent[checked="true"],
-    .checkbox-accent[aria-checked="true"] {
-  --tw-border-opacity: 1;
-  border-color: var(--fallback-a,oklch(var(--a)/var(--tw-border-opacity)));
-  --tw-bg-opacity: 1;
-  background-color: var(--fallback-a,oklch(var(--a)/var(--tw-bg-opacity)));
-  --tw-text-opacity: 1;
-  color: var(--fallback-ac,oklch(var(--ac)/var(--tw-text-opacity)));
-}
-
-.checkbox-info {
-  --chkbg: var(--fallback-in,oklch(var(--in)/1));
-  --chkfg: var(--fallback-inc,oklch(var(--inc)/1));
-  --tw-border-opacity: 1;
-  border-color: var(--fallback-in,oklch(var(--in)/var(--tw-border-opacity)));
-}
-
-.checkbox-info:focus-visible {
-  outline-color: var(--fallback-in,oklch(var(--in)/1));
-}
-
-.checkbox-info:checked,
-    .checkbox-info[checked="true"],
-    .checkbox-info[aria-checked="true"] {
-  --tw-border-opacity: 1;
-  border-color: var(--fallback-in,oklch(var(--in)/var(--tw-border-opacity)));
-  --tw-bg-opacity: 1;
-  background-color: var(--fallback-in,oklch(var(--in)/var(--tw-bg-opacity)));
-  --tw-text-opacity: 1;
-  color: var(--fallback-inc,oklch(var(--inc)/var(--tw-text-opacity)));
 }
 
 .checkbox:disabled {

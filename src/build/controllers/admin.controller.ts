@@ -89,7 +89,7 @@ export const postCreatePersonal = async (req:Request, res:Response)=>{
                 await saveAuth(personal,auth,email,password,phone)
             }
             validation.addMessage("El personal fue guardado correctamente.","success")
-            
+            res.render("adminPersonalCreate",{messages: validation.messages})
         }else{
             let newUser = new Personal
             newUser.name = name
