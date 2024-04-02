@@ -7,6 +7,34 @@ const nodemailer = require("nodemailer");
 const PATH = require("path")
 var xl = require('excel4node');
 import fs from "fs"
+
+const formalizeTitle = (title:string)=>{
+    switch (title) {
+        case "id":
+            return "ID"
+        case "name":
+            return "NOMBRE"
+        case "dni":
+            return "DNI"
+        case "position":
+            return "CARGO"
+        case "dailyEntries":
+            return "ENTRADAS/SALIDAS"
+        case "admin":
+            return "ADMINISTRADOR"
+        case "personal_id":
+            return "ID PERSONAL"
+        case "personal_name":
+            return "NOMBRE"
+        case "date":
+            return "FECHA"
+        case "time":
+            return "HORA"
+        default:
+            return title
+    }
+}
+
 export const savePersonal = async (personal:Personal, name:string, dni:string, position:string, admin:boolean, dailyEntries:number)=>{
     personal.name = name
     personal.dni = dni
@@ -61,7 +89,7 @@ export const exportExcel = async(objectList:Personal[]|Registro[],input:string, 
     //Header de la tabla
     for(let index = 0; index < attributes.length; index++){
         ws.cell(1, index+1)
-        .string(attributes[index])
+        .string(formalizeTitle(attributes[index]))
         .style(styleHeader);
     }
     //Cuerpo de la tabla
@@ -126,7 +154,6 @@ export const personalFiltered = async(input:string, select:string)=>{
 }
 
 export const sendExcel = async(excelPath:string, emailAdmin:string)=>{
-    console.log(emailAdmin)
     const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
@@ -139,18 +166,17 @@ export const sendExcel = async(excelPath:string, emailAdmin:string)=>{
 
     // async..await is not allowed in global scope, must use a wrapper
     async function main(excelPath:string, emailAdmin:string) {
-        //aca debería sacar el nombre del archivo y el filename tendría que ser el mismo.
-        console.log(excelPath)
+        const fileName = excelPath.split("\\").pop()
         // send mail with defined transport object
         const info = await transporter.sendMail({
             from: `"VidelaSpect 👁‍🗨" <${process.env.EMAIL_USER}>`, // sender address
             to: `${emailAdmin}`, // list of receivers
-            subject: "Hola Administrador ✔", // Subject line
+            subject: "Hola Administrador, su registro está listo ✔", // Subject line
             text: "👁‍🗨", // plain text body
             html: "<b>Gracias por usar VidelaSpect.<br>Recuerda cerrar su sesión en el servidor para proteger su privacidad.<br><br> Que tenga un buen día.<br><br>VidelaSpect 👁‍🗨 ", // html body
             attachments:[
                 {   
-                    filename: 'registros.xlsx',
+                    filename: `VidelaSpect-${fileName}.xlsx`,
                     path: excelPath 
                 },
             ]

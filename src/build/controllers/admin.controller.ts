@@ -228,8 +228,6 @@ export const getPanelPersonalExcel = async (req:Request, res:Response)=>{
         let personal = await personalFiltered(input, select)
         let excelPath = await exportExcel(personal,input,select)
         let validation = new ValidationClass
-        console.log("emailOption",emailOption)
-        console.log("userId",userId)
         if (emailOption && userId) {
             let email = await getEmailWhitUserId(userId)
             if (email) {
@@ -239,7 +237,7 @@ export const getPanelPersonalExcel = async (req:Request, res:Response)=>{
                 validation.addMessage("Antes de intentar enviar un archivo por favor agregue un correo electrónico a su cuenta.","warning")
             }
         }
-        validation.addMessage("El archivo excel se ha exportado correctamente.","success")
+        validation.addMessage("El archivo excel se ha descargado correctamente.","success")
         res.render("adminPanelPersonalResponse",{personal, input, select, messages: validation.messages})
     }catch(err){
         console.log(err)
