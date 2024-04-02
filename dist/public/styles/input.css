@@ -54,3 +54,19 @@ body {
     animation-duration: 5s; /* Ajusta la duración a tus necesidades */
     animation-fill-mode: forwards; /* El elemento mantendrá el estilo del último keyframe después de la animación */
 }
+
+.user-profile {
+    width: 2.5rem/* 40px */;
+    height: 2.5rem/* 40px */;
+    border-radius: 50%;
+    background-color: #67a81c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.user-initials {
+    color: #000;
+    font-size: 16px;
+    font-weight: bold;
+}

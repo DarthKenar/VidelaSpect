@@ -1,8 +1,9 @@
-<menu class="flex justify-between my-10">
-  <a href="/admin/panel" class="btn">
+<menu class="flex justify-evenly py-10 ">
+  <a href="/admin/panel"class="btn btn-ghost absolute left-0 top-0 m-10">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-corner-up-left"><polyline points="9 14 4 9 9 4"></polyline><path d="M20 20v-7a4 4 0 0 0-4-4H4"></path></svg>
     VOLVER
   </a>
+  <a href=""></a>
   <div class="join">
     <div>
       <input hx-get="/admin/panel/registros/search" hx-trigger="keyup changed delay:300ms" hx-target="#search_results" hx-include="[name='select'], [name='input']" id="input" name="input" value="{{input}}" class="input input-bordered join-item" placeholder="Buscar"/>
@@ -14,7 +15,7 @@
     </select>
   </div>
   <a href=""></a>
-  <aside  class="absolute right-0 top-0 m-10">
+  <aside class="absolute right-0 top-0 m-10">
     <div class="form-control">
       <label class="cursor-pointer label">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
