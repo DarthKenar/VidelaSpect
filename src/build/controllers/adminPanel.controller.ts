@@ -3,9 +3,8 @@ import { Auth, Personal, Registro } from "../../database/entity/models";
 import DataBase from "../../database/data-source";
 import {savePersonal, exportExcel, registersFiltered, personalFiltered, sendExcel, saveAuth, getAuthOrCreate, deleteAuth, getPersonalWhitId, validateAndHandleExcelExport} from "../utils/adminPanel.utils"
 import {areEmptyFieldsInPersonal, passwordValidations} from "../validators/personal.validator"
-import {getEmailWhitUserId} from "../helpers/email.helpers"
 import * as fs from 'fs';
-import {error} from "../helpers/error.helper"
+import {error} from "../interfaces/interfaces"
 import { ValidationClass } from "../interfaces/interfaces";
 import { emailIsNotEmpty, listIsNotEmpty } from "../validators/adminProfile.validator";
 const PATH = require("path")

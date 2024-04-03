@@ -4,7 +4,7 @@ import { ValidationClass } from "../interfaces/interfaces";
 import DataBase from "../../database/data-source";
 import { passwordValidations, comparePassValidation } from "../validators/personal.validator";
 import { emailValidations } from "../validators/adminProfile.validator"
-import { encryptPass } from "../helpers/password.helpers";
+import { encryptPass } from "../helpers/bcrypt.helpers";
 
 export const getProfile = async (req:Request, res:Response) => {
     let personal = await getPersonalWhitId(req.cookies.userId)

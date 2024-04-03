@@ -26,6 +26,11 @@ export interface Authentication {
     token: ""
 }
 
+export const error = [{
+    message: "Ha ocurrido un error, por favor contacte al administrador",
+    type: "error"
+}]
+
 export class ValidationClass implements Validation {
     status: boolean;
     messages: Message[];

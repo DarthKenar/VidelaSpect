@@ -2,14 +2,14 @@ import { config } from "dotenv";
 import DataBase from "../../database/data-source"
 import { Auth, Personal, Registro } from "../../database/entity/models"
 import {Like} from 'typeorm';
-import {encryptPass} from "../helpers/password.helpers"
-import { Validation, ValidationClass } from "../interfaces/interfaces"
+import {encryptPass} from "../helpers/bcrypt.helpers"
+import { ValidationClass } from "../interfaces/interfaces"
 const nodemailer = require("nodemailer");
 const PATH = require("path")
 var xl = require('excel4node');
 import fs from "fs"
 import { emailIsNotEmpty, listIsNotEmpty } from "../validators/adminProfile.validator";
-import { getEmailWhitUserId } from "../helpers/email.helpers";
+
 
 const formalizeTitle = (title:string)=>{
     switch (title) {
@@ -35,6 +35,17 @@ const formalizeTitle = (title:string)=>{
             return "HORA"
         default:
             return title
+    }
+}
+
+const getEmailWhitUserId = async (userId:number):Promise<string|null>=>{
+    let personalRepository = DataBase.getRepository(Personal)
+    let user = await personalRepository.findOneBy({id:userId})
+    if (user) {
+        let auth = await getAuthOrCreate(user)
+        return auth.email
+    }else{
+        return null
     }
 }
 

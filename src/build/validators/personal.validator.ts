@@ -1,4 +1,4 @@
-import { comparePass } from "../helpers/password.helpers"
+import { comparePass } from "../helpers/bcrypt.helpers"
 import {ValidationClass} from "../interfaces/interfaces"
 
 export const areEmptyFieldsInPersonal = (validation:ValidationClass, name:string, dni:string, position:string):ValidationClass => {

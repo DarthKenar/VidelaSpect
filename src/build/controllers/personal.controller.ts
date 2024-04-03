@@ -2,9 +2,9 @@ import { Request, Response } from "express";
 import DataBase from "../../database/data-source";
 import { Personal, Registro } from "../../database/entity/models";
 import { saveImage, registerPersonal, getTodaysRegisterCountById, isPar, getDate, getPassWhitPersonal, formalizeMinutes } from "../utils/personal.utils"
-import {error} from "../helpers/error.helper"
+import {error} from "../interfaces/interfaces"
 import { ValidationClass , Image} from "../interfaces/interfaces";
-import {comparePass} from "../helpers/password.helpers"
+import {comparePass} from "../helpers/bcrypt.helpers"
 const jwt = require("jsonwebtoken")
 
 export const getRegistroDNI = async (req:Request, res:Response)=>{
