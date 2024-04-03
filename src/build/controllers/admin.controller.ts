@@ -121,25 +121,30 @@ export const postUpdatePersonal = async (req:Request, res:Response)=>{
         let personalRepository = DataBase.getRepository(Personal)
         let personalToUpdate = await personalRepository.findOneBy({id: personalId})
         if (personalToUpdate){
-            // Validaciones
             let validation = new ValidationClass()
-            validation = areEmptyFieldsInPersonal(validation, name, dni, position)
-            if(admin) {
-                validation = passwordValidations(validation, password, password2)
-            }
-            // Acciones
-            if (validation.status) {
-                await savePersonal(personalToUpdate, name, dni, position, admin, dailyEntries)
-                if (admin) {
-                    let auth = await getAuth(personalToUpdate)
-                    await saveAuth(personalToUpdate,auth,email,password,phone)
-                }else{
-                    await deleteAuth(personalToUpdate)
+            if (!personalToUpdate.admin) {
+                // Validaciones
+                validation = areEmptyFieldsInPersonal(validation, name, dni, position)
+                if(admin) {
+                    validation = passwordValidations(validation, password, password2)
                 }
-                validation.addMessage("El personal fue guardado correctamente.", "success")
-                let personal = await personalRepository.find()
-                res.render("adminPanelPersonal",{personal, messages: validation.messages})
+                // Acciones
+                if (validation.status) {
+                    await savePersonal(personalToUpdate, name, dni, position, admin, dailyEntries)
+                    if (admin) {
+                        let auth = await getAuth(personalToUpdate)
+                        await saveAuth(personalToUpdate,auth,email,password,phone)
+                    }else{
+                        await deleteAuth(personalToUpdate)
+                    }
+                    validation.addMessage("El personal fue guardado correctamente.", "success")
+                    let personal = await personalRepository.find()
+                    res.render("adminPanelPersonal",{personal, messages: validation.messages})
+                }else{
+                    res.render("adminPersonalUpdate",{personal: personalToUpdate, messages: validation.messages})
+                }
             }else{
+                validation.addMessage("No se puede modificar un administrador, no tienes privilegios","error")
                 res.render("adminPersonalUpdate",{personal: personalToUpdate, messages: validation.messages})
             }
         }
