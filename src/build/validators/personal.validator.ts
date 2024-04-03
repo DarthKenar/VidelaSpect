@@ -1,3 +1,4 @@
+import { comparePass } from "../helpers/password.helpers"
 import {ValidationClass} from "../interfaces/interfaces"
 
 export const areEmptyFieldsInPersonal = (validation:ValidationClass, name:string, dni:string, position:string):ValidationClass => {
@@ -36,5 +37,15 @@ export const passwordValidations = (validation:ValidationClass,password:string, 
     validation = arePasswordsEmpty(validation, password, password2)
     validation = arePasswordsEqual(validation, password, password2)
     validation = arePasswordsMinLength(validation, password, password2, 8)
+    return validation
+}
+
+export const comparePassValidation = async (validation:ValidationClass, passwordOld:string, passwordInDb:string):Promise<ValidationClass>=>{
+    if(!await comparePass(passwordOld, passwordInDb)) {
+        console.log("entro")
+        validation.status = false
+        validation.addMessage("La contraseña actual es incorrecta.","warning")
+    }
+    console.log(validation.status)
     return validation
 }
