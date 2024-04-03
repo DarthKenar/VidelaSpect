@@ -7,6 +7,7 @@ import {getEmailWhitUserId} from "../helpers/email.helpers"
 import * as fs from 'fs';
 import {error} from "../helpers/error.helper"
 import { ValidationClass } from "../interfaces/interfaces";
+import { emailIsNotEmpty, listIsNotEmpty } from "../validators/adminProfile.validator";
 const PATH = require("path")
 
 export const getPanel = async (req:Request, res:Response)=>{
@@ -237,19 +238,28 @@ export const getPanelPersonalExcel = async (req:Request, res:Response)=>{
         let emailOption = Boolean(req.query.email)
         let userId = req.cookies.userId
         let personal = await personalFiltered(input, select)
-        let excelPath = await exportExcel(personal,input,select)
         let validation = new ValidationClass
-        if (emailOption && userId) {
-            let email = await getEmailWhitUserId(userId)
-            if (email) {
-                await sendExcel(excelPath, email)
+        if (userId) {
+            validation = listIsNotEmpty(validation, personal)
+            if (emailOption) {
+                let email = await getEmailWhitUserId(userId)
+                validation = emailIsNotEmpty(validation, email)
+                if (validation.status && email) {
+                    let excelPath = await exportExcel(personal,input,select)
+                    await sendExcel(excelPath, email)
+                    validation.addMessage("El archivo excel se ha enviado correctamente. Por favor revise su casilla de correo no deseado.","success")
+                }
             }else{
-                validation.status = false
-                validation.addMessage("Antes de intentar enviar un archivo por favor agregue un correo electrónico a su cuenta.","warning")
+                if (validation.status) {
+                    await exportExcel(personal,input,select)
+                    validation.addMessage("El archivo excel se ha descargado correctamente.","success")
+                }
             }
+            res.render("adminPanelPersonalResponse",{personal, input, select, messages: validation.messages})
+        }else{
+            validation.addMessage("No se encontró el usuario, por favor inicie sesión nuevamente.","error")
+            res.render("error",{messages: validation.messages})
         }
-        validation.addMessage("El archivo excel se ha descargado correctamente.","success")
-        res.render("adminPanelPersonalResponse",{personal, input, select, messages: validation.messages})
     }catch(err){
         console.log(err)
         res.render("error", {messages: error})
@@ -263,19 +273,28 @@ export const getPanelRegisterExcel = async (req:Request, res:Response)=>{
         let emailOption = Boolean(req.query.email)
         let userId = req.cookies.userId
         let registros = await registersFiltered(input, select)
-        let excelPath = await exportExcel(registros,input,select)
         let validation = new ValidationClass
-        if (emailOption && userId) {
-            let email = await getEmailWhitUserId(userId)
-            if (email) {
-                await sendExcel(excelPath, email)
+        if (userId) {
+            validation = listIsNotEmpty(validation, registros)
+            if (emailOption) {
+                let email = await getEmailWhitUserId(userId)
+                validation = emailIsNotEmpty(validation, email)
+                if (validation.status && email) {
+                    let excelPath = await exportExcel(registros,input,select)
+                    await sendExcel(excelPath, email)
+                    validation.addMessage("El archivo excel se ha enviado correctamente. Por favor revise su casilla de correo no deseado.","success")
+                }
             }else{
-                validation.status = false
-                validation.addMessage("Antes de intentar enviar un archivo por favor agregue un correo electrónico a su cuenta.","warning")
+                if (validation.status) {
+                    await exportExcel(registros,input,select)
+                    validation.addMessage("El archivo excel se ha descargado correctamente.","success")
+                }
             }
+            res.render("adminPanelRegistrosResponse",{registros, input, select, messages: validation.messages})
+        }else{
+            validation.addMessage("No se encontró el usuario, por favor inicie sesión nuevamente.","error")
+            res.render("error",{messages: validation.messages})
         }
-        validation.addMessage("El archivo excel se ha exportado correctamente.","success")
-        res.render("adminPanelRegistrosResponse",{registros, input, select, messages: validation.messages})
     }catch(err){
         console.log(err)
         res.render("error", {messages: error})

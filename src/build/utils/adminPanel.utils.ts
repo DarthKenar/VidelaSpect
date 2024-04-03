@@ -3,6 +3,7 @@ import DataBase from "../../database/data-source"
 import { Auth, Personal, Registro } from "../../database/entity/models"
 import {Like} from 'typeorm';
 import {encryptPass} from "../helpers/password.helpers"
+import { ValidationClass } from "../interfaces/interfaces"
 const nodemailer = require("nodemailer");
 const PATH = require("path")
 var xl = require('excel4node');
@@ -200,3 +201,4 @@ export const getPersonalWhitId = async(id:number):Promise<Personal|null>=>{
     let personal = await personalRepository.findOneBy({id: userId})
     return personal
 }
+

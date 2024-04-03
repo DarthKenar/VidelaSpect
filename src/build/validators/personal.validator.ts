@@ -42,10 +42,8 @@ export const passwordValidations = (validation:ValidationClass,password:string, 
 
 export const comparePassValidation = async (validation:ValidationClass, passwordOld:string, passwordInDb:string):Promise<ValidationClass>=>{
     if(!await comparePass(passwordOld, passwordInDb)) {
-        console.log("entro")
         validation.status = false
         validation.addMessage("La contraseña actual es incorrecta.","warning")
     }
-    console.log(validation.status)
     return validation
 }

@@ -34,4 +34,19 @@ export const emailValidations = (validation: ValidationClass, emailOld: string, 
     return validation
 };
 
+export const emailIsNotEmpty = (validation: ValidationClass, email: string|null) => {
+    if (email === "" || email === null) {
+        validation.status = false;
+        validation.addMessage("Antes de intentar enviar un archivo por favor agregue un correo electrónico a su cuenta.", "warning")
+    }
+    return validation;
+}
+
+export const listIsNotEmpty = (validation: ValidationClass, list: any[]) => {
+    if (list.length === 0) {
+        validation.status = false;
+        validation.addMessage("No hay registros disponibles.", "warning")
+    }
+    return validation;
+}
 
