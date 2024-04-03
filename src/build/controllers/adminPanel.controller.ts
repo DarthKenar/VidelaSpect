@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { Auth, Personal, Registro } from "../../database/entity/models";
 import DataBase from "../../database/data-source";
-import {savePersonal, exportExcel, registersFiltered, personalFiltered, sendExcel, saveAuth, getAuth, deleteAuth, getPersonalWhitId} from "../utils/adminPanel.utils"
+import {savePersonal, exportExcel, registersFiltered, personalFiltered, sendExcel, saveAuth, getAuthOrCreate, deleteAuth, getPersonalWhitId} from "../utils/adminPanel.utils"
 import {areEmptyFieldsInPersonal, passwordValidations} from "../validators/personal.validator"
 import {getEmailWhitUserId} from "../helpers/email.helpers"
 import * as fs from 'fs';
@@ -57,7 +57,7 @@ export const getUpdatePersonal = async (req:Request, res:Response)=>{
         let personalRepository = DataBase.getRepository(Personal)
         let personal = await personalRepository.findOneBy({id: personalId})
         if (personal) {
-            let auth = await getAuth(personal)
+            let auth = await getAuthOrCreate(personal)
             let email = auth.email
             let phone = auth.phone
             res.render("adminPersonalUpdate",{personal, email, phone})
@@ -138,7 +138,7 @@ export const postUpdatePersonal = async (req:Request, res:Response)=>{
                 if (validation.status) {
                     await savePersonal(personalToUpdate, name, dni, position, admin, dailyEntries)
                     if (admin) {
-                        let auth = await getAuth(personalToUpdate)
+                        let auth = await getAuthOrCreate(personalToUpdate)
                         await saveAuth(personalToUpdate,auth,email,password,phone)
                     }else{
                         await deleteAuth(personalToUpdate)

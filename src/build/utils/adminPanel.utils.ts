@@ -60,12 +60,17 @@ export const deleteAuth = async (personal:Personal)=>{
     }
 }
 
-export const getAuth = async (personal:Personal):Promise<Auth> => {
+export const getAuthOrCreate = async (personal:Personal):Promise<Auth> => {
     let authRepository = DataBase.getRepository(Auth)
     let auth = await authRepository.findOneBy({personal})
     if (auth === null) {
         auth = new Auth
     }
+    return auth
+}
+export const getAuthOrNull = async (personal:Personal):Promise<Auth|null> => {
+    let authRepository = DataBase.getRepository(Auth)
+    let auth = await authRepository.findOneBy({personal})
     return auth
 }
 
@@ -154,12 +159,13 @@ export const personalFiltered = async(input:string, select:string)=>{
 }
 
 export const sendExcel = async(excelPath:string, emailAdmin:string)=>{
+
     const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
     secure: true, // Use `true` for port 465, `false` for all other ports
     auth: {
-        user: process.env.EMAIL_USER,
+        user: process.env.EMAIL_SYSTEM,
         pass: process.env.EMAIL_PASS,
     },
     });
@@ -169,7 +175,7 @@ export const sendExcel = async(excelPath:string, emailAdmin:string)=>{
         const fileName = excelPath.split("\\").pop()
         // send mail with defined transport object
         const info = await transporter.sendMail({
-            from: `"VidelaSpect 👁‍🗨" <${process.env.EMAIL_USER}>`, // sender address
+            from: `"VidelaSpect 👁‍🗨" <${process.env.EMAIL_SYSTEM}>`, // sender address
             to: `${emailAdmin}`, // list of receivers
             subject: "Hola Administrador, su registro está listo ✔", // Subject line
             text: "👁‍🗨", // plain text body
@@ -181,7 +187,7 @@ export const sendExcel = async(excelPath:string, emailAdmin:string)=>{
                 },
             ]
         });
-
+        
         console.log("Message sent: %s", info.messageId);
     }
 
