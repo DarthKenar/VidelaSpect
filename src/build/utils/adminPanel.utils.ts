@@ -3,11 +3,13 @@ import DataBase from "../../database/data-source"
 import { Auth, Personal, Registro } from "../../database/entity/models"
 import {Like} from 'typeorm';
 import {encryptPass} from "../helpers/password.helpers"
-import { ValidationClass } from "../interfaces/interfaces"
+import { Validation, ValidationClass } from "../interfaces/interfaces"
 const nodemailer = require("nodemailer");
 const PATH = require("path")
 var xl = require('excel4node');
 import fs from "fs"
+import { emailIsNotEmpty, listIsNotEmpty } from "../validators/adminProfile.validator";
+import { getEmailWhitUserId } from "../helpers/email.helpers";
 
 const formalizeTitle = (title:string)=>{
     switch (title) {
@@ -202,3 +204,21 @@ export const getPersonalWhitId = async(id:number):Promise<Personal|null>=>{
     return personal
 }
 
+export const validateAndHandleExcelExport = async(validation:ValidationClass, list:any[], emailOption:boolean, userId:any, input:string, select:string):Promise<ValidationClass>=>{
+    validation = listIsNotEmpty(validation, list)
+    if (emailOption) {
+        let email = await getEmailWhitUserId(userId)
+        validation = emailIsNotEmpty(validation, email)
+        if (validation.status && email) {
+            let excelPath = await exportExcel(list,input,select)
+            await sendExcel(excelPath, email)
+            validation.addMessage("El archivo excel se ha enviado correctamente. Por favor revise su casilla de correo no deseado.","success")
+        }
+    }else{
+        if (validation.status) {
+            await exportExcel(list,input,select)
+            validation.addMessage("El archivo excel se ha descargado correctamente.","success")
+        }
+    }
+    return validation
+}
