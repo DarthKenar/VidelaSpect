@@ -1,0 +1,25 @@
+{{>backToProfile}}
+<div class="p-10">
+    {{>username}}
+</div>
+{{>messages}}
+<div class="flex flex-col items-center justify-center m-auto gap-2 max-w-md">
+    <form action="/admin/profile/email/send" method="post">
+        <label class="form-control w-full max-w-md">
+            <div class="label">
+                <span class="label-text">Email actual</span>
+            </div>
+            <input class="input input-bordered w-[28rem] max-w-md" value="{{email}}" type="text" disabled>
+        </label>
+        <label class="form-control w-full max-w-md">
+            <div class="label">
+                <span class="label-text">Nuevo email</span>
+            </div>
+            <input  name="email" id="email" class="input input-bordered w-full max-w-md" value="{{personal.email}}" type="text">
+        </label>
+        <div class="py-5 flex justify-end">
+            <button class="btn btn-outline btn-sm" type="submit">Actualizar</button>
+        </div>
+        
+    </form>
+</div>
