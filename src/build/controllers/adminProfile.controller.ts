@@ -1,10 +1,12 @@
 import e, { Request, Response } from "express";
-import { getAuthOrCreate, getAuthOrNull, getPersonalWhitId } from "../utils/adminPanel.utils";
+import { getAuthOrCreate, getPersonalWhitId } from "../utils/adminPanel.utils";
 import { ValidationClass } from "../interfaces/interfaces";
 import DataBase from "../../database/data-source";
 import { passwordValidations, comparePassValidation } from "../validators/personal.validator";
 import { emailValidations } from "../validators/adminProfile.validator"
+import { getListFileNamesOnDir } from "../utils/adminProfile.utils"
 import { encryptPass } from "../helpers/bcrypt.helpers";
+import path from "path";
 
 export const getProfile = async (req:Request, res:Response) => {
     let personal = await getPersonalWhitId(req.cookies.userId)
@@ -78,8 +80,20 @@ export const postProfilePassword = async (req:Request, res:Response) => {
         }else{
             res.render("adminProfilePassword", {personal, messages: validation.messages, passwordOld, password, password2})
         }
-        
     }else{
+        validation.addMessage("No se encontró el usuario, por favor inicie sesión nuevamente.", "error")
+        res.render("error", {messages: validation.messages})
+    }
+}
+
+export const getProfileImage = async (req:Request, res:Response) => {
+    let personal = await getPersonalWhitId(req.cookies.userId)
+    if (personal) {
+        let filenamesList = getListFileNamesOnDir(path.join(__dirname, "../../public/images"))
+        console.log(filenamesList)
+        res.render("adminProfileImage", {personal, filenamesList: filenamesList})
+    }else{
+        let validation = new ValidationClass
         validation.addMessage("No se encontró el usuario, por favor inicie sesión nuevamente.", "error")
         res.render("error", {messages: validation.messages})
     }

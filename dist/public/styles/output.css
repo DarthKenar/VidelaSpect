@@ -3195,6 +3195,11 @@ details.collapse summary::-webkit-details-marker {
   margin-bottom: 2.5rem;
 }
 
+.my-16 {
+  margin-top: 4rem;
+  margin-bottom: 4rem;
+}
+
 .mb-10 {
   margin-bottom: 2.5rem;
 }
@@ -3271,6 +3276,10 @@ details.collapse summary::-webkit-details-marker {
   height: 6.125rem;
 }
 
+.h-\[64px\] {
+  height: 64px;
+}
+
 .h-\[70\%\] {
   height: 70%;
 }
@@ -3331,6 +3340,10 @@ details.collapse summary::-webkit-details-marker {
   width: 60%;
 }
 
+.w-\[64px\] {
+  width: 64px;
+}
+
 .w-\[90\%\] {
   width: 90%;
 }
@@ -3387,6 +3400,10 @@ details.collapse summary::-webkit-details-marker {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.grid-cols-5 {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
 .flex-row {
   flex-direction: row;
 }
@@ -3433,6 +3450,10 @@ details.collapse summary::-webkit-details-marker {
 
 .gap-1 {
   gap: 0.25rem;
+}
+
+.gap-10 {
+  gap: 2.5rem;
 }
 
 .gap-2 {
@@ -3517,6 +3538,11 @@ details.collapse summary::-webkit-details-marker {
   padding-bottom: 2.5rem;
 }
 
+.py-20 {
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+
 .py-4 {
   padding-top: 1rem;
   padding-bottom: 1rem;
@@ -3525,6 +3551,16 @@ details.collapse summary::-webkit-details-marker {
 .py-5 {
   padding-top: 1.25rem;
   padding-bottom: 1.25rem;
+}
+
+.py-1 {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+.py-16 {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
 }
 
 .pb-4 {
