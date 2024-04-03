@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
-
 import { Auth, Personal, Registro } from "../../database/entity/models";
 import DataBase from "../../database/data-source";
-import {savePersonal, exportExcel, registersFiltered, personalFiltered, sendExcel, saveAuth, getAuth, deleteAuth} from "../utils/adminPanel.utils"
+import {savePersonal, exportExcel, registersFiltered, personalFiltered, sendExcel, saveAuth, getAuth, deleteAuth, getPersonalWhitId} from "../utils/adminPanel.utils"
 import {areEmptyFieldsInPersonal, passwordValidations} from "../validators/personal.validator"
 import {getEmailWhitUserId} from "../helpers/email.helpers"
 import * as fs from 'fs';
@@ -12,7 +11,14 @@ const PATH = require("path")
 
 export const getPanel = async (req:Request, res:Response)=>{
     try{
-        res.render("adminPanel")
+        let personal = await getPersonalWhitId(req.cookies.userId)
+        if(personal){
+            res.render("adminPanel",{personal})
+        }else{
+            let validation = new ValidationClass()
+            validation.addMessage("No se encontró el usuario, por favor inicie sesión nuevamente.","error")
+            res.render("error",{messages: validation.messages})
+        }
     }catch(err){
         console.log(err)
         res.render("error", {messages: error})

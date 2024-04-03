@@ -8,11 +8,11 @@ const PATH = require("path")
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser')
 import { verifyToken } from "./middlewares/verifyToken.middleware"
-import { if_eq,  } from "./helpers/handlebars.helpers"
+import { if_eq, capitalizeFirstLetter } from "./helpers/handlebars.helpers"
 
 //Handlebars config
     var hbs = exphbs.create({
-        helpers: {if_eq}
+        helpers: {if_eq, capitalizeFirstLetter}
     });
     app.engine('handlebars', hbs.engine);
     app.set('view engine', 'handlebars');
@@ -41,8 +41,8 @@ app.use('/personal', routerPersonal)
 const routerAdminPanel = require('./routes/adminPanel.routes');
 if(process.env.NODE_ENV="test"){app.use('/admin/panel', routerAdminPanel)}else{app.use('/admin/panel', verifyToken, routerAdminPanel)}
 
-const routerAdminOptions = require('./routes/admin.routes');
-if(process.env.NODE_ENV="test"){app.use('/admin/options/profile', routerAdminOptions)}else{app.use('/admin/options/profile', verifyToken, routerAdminOptions)}
+const routerAdminProfile = require('./routes/adminProfile.routes');
+if(process.env.NODE_ENV="test"){app.use('/admin/profile', routerAdminProfile)}else{app.use('/admin/profile', verifyToken, routerAdminProfile)}
 //...
 
 app.use("/",(req:Request, res:Response)=>{

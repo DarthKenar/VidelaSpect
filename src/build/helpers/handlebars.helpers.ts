@@ -7,3 +7,7 @@ export const if_eq = function(this: any, a: string, b: string, opts: any) {
         return opts.inverse(this);
     }
 }
+
+export const capitalizeFirstLetter = function(str: string){
+    return str.charAt(0).toUpperCase()
+}

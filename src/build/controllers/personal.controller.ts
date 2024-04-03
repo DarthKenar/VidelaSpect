@@ -142,16 +142,16 @@ export const postRegistroPassword = async (req:Request, res:Response)=>{
     let personal = await personalRepository.findOneBy({id: userId})
     let password = String(req.body.password)
     if (personal) {
-        let validation = new ValidationClass
+        
         if(await comparePass(password, await getPassWhitPersonal(personal))){
             const token = jwt.sign({id: personal.id}, process.env.TOKEN_SECRET, {
                 expiresIn: 60 * 60 * 1
             })
-            validation.addMessage("Bienvenido a su panel de administrador.","info")
             res.cookie('token', token, { httpOnly: true })
             res.cookie("userId", userId, { httpOnly: true })
-            res.render("adminPanel", {personal, messages: validation.messages})
+            res.render("adminPanel", {personal})
         }else{
+            let validation = new ValidationClass
             validation.addMessage("La contraseña ingresada no es correcta.","warning")
             res.render("registroPassword", {personal, messages: validation.messages})
         }

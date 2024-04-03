@@ -187,3 +187,10 @@ export const sendExcel = async(excelPath:string, emailAdmin:string)=>{
 
     main(excelPath, emailAdmin).catch(console.error);
 }
+
+export const getPersonalWhitId = async(id:number):Promise<Personal|null>=>{
+    let userId = id
+    let personalRepository = DataBase.getRepository(Personal)
+    let personal = await personalRepository.findOneBy({id: userId})
+    return personal
+}
