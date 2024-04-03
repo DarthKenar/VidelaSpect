@@ -15,7 +15,7 @@ import {
     getPanelRegistersFiltered,
     getPanelPersonalExcel,
     getPanelRegisterExcel
-} from "../controllers/admin.controller"
+} from "../controllers/adminPanel.controller"
 
 //GET
 //muestra el panel
