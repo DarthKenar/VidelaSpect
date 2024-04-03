@@ -2,7 +2,7 @@ import { config } from "dotenv";
 import DataBase from "../../database/data-source"
 import { Auth, Personal, Registro } from "../../database/entity/models"
 import {Like} from 'typeorm';
-import {encryptPass} from "./../helpers/password.helpers"
+import {encryptPass} from "../helpers/password.helpers"
 const nodemailer = require("nodemailer");
 const PATH = require("path")
 var xl = require('excel4node');

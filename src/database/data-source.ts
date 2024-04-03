@@ -1,7 +1,7 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm"
 import { Personal, Registro, Auth, PersonalUi} from "./entity/models"
-import { saveAuth, savePersonal } from "../build/utils/admin.utils";
+import { saveAuth, savePersonal } from "../build/utils/adminPanel.utils";
 
 const PATH = require("path")
 

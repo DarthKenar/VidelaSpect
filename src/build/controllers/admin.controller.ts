@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 
 import { Auth, Personal, Registro } from "../../database/entity/models";
 import DataBase from "../../database/data-source";
-import {savePersonal, exportExcel, registersFiltered, personalFiltered, sendExcel, saveAuth, getAuth, deleteAuth} from "../utils/admin.utils"
+import {savePersonal, exportExcel, registersFiltered, personalFiltered, sendExcel, saveAuth, getAuth, deleteAuth} from "../utils/adminPanel.utils"
 import {areEmptyFieldsInPersonal, passwordValidations} from "../validators/personal.validator"
 import {getEmailWhitUserId} from "../helpers/email.helpers"
 import * as fs from 'fs';
