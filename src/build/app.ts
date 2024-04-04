@@ -43,6 +43,9 @@ app.use('/admin/panel', verifyToken, routerAdminPanel)
 
 const routerAdminProfile = require('./routes/adminProfile.routes');
 app.use('/admin/profile', verifyToken, routerAdminProfile)
+
+const routerAdminOptions = require('./routes/adminOptions.routes');
+app.use('/admin/options', verifyToken, routerAdminOptions)
 //...
 
 app.use("/",(req:Request, res:Response)=>{

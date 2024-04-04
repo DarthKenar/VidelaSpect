@@ -91,12 +91,14 @@ export class PersonalUi {
 }
 
 @Entity()
-export class GeneralOptions {
+export class AiOptions {
 
     @PrimaryGeneratedColumn()
     id: number
 
     @Column()
-    ia: boolean
+    status: boolean
     
+    @Column()
+    accuracy: number
 }

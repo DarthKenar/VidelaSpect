@@ -1,6 +1,6 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm"
-import { Personal, Registro, Auth, PersonalUi} from "./entity/models"
+import { Personal, Registro, Auth, PersonalUi, AiOptions} from "./entity/models"
 import { saveAuth, savePersonal } from "../build/utils/adminPanel.utils";
 
 const PATH = require("path")
@@ -15,6 +15,15 @@ async function createBasicPersonal(){
     }
 }
 
+async function createInitialOptions() {
+    const generalOptionsRepository = DataBase.getRepository(AiOptions);
+    let options = await generalOptionsRepository.findOneBy({id: 1});
+    if (!options) {
+        options = generalOptionsRepository.create({id:1, status: true, accuracy: 0.8});
+        await generalOptionsRepository.save(options);
+    }
+}
+
 function getDataSource(): DataSource {
     switch (process.env.NODE_ENV) {
         case "production":
@@ -24,7 +33,7 @@ function getDataSource(): DataSource {
                 database: PATH.join(__dirname, "../database/productiondatabase.sqlite"),
                 synchronize: false,
                 logging: false,
-                entities: [Personal, Registro, Auth, PersonalUi],
+                entities: [Personal, Registro, Auth, PersonalUi, AiOptions],
                 migrations: [],
                 subscribers: [], 
             });
@@ -37,13 +46,14 @@ function getDataSource(): DataSource {
                 database: PATH.join(__dirname, "../database/devdatabase.sqlite"),
                 synchronize: true,
                 logging: false,
-                entities: [Personal, Registro, Auth, PersonalUi],
+                entities: [Personal, Registro, Auth, PersonalUi, AiOptions],
                 migrations: [],
                 subscribers: [], 
             });
             dataDev.initialize()
                 .then(async ()=>{
                     await createBasicPersonal()
+                    await createInitialOptions()
                 })
             return dataDev
         case "test":
@@ -53,7 +63,7 @@ function getDataSource(): DataSource {
                 database: PATH.join(__dirname, "../database/testdatabase.sqlite"),
                 synchronize: true,
                 logging: false,
-                entities: [Personal, Registro, Auth, PersonalUi],
+                entities: [Personal, Registro, Auth, PersonalUi, AiOptions],
                 migrations: [],
                 subscribers: [], 
             });
