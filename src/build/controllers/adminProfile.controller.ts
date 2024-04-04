@@ -3,10 +3,11 @@ import { getAuthOrCreate, getPersonalWhitId } from "../utils/adminPanel.utils";
 import { ValidationClass } from "../interfaces/interfaces";
 import DataBase from "../../database/data-source";
 import { passwordValidations, comparePassValidation } from "../validators/personal.validator";
-import { emailValidations, existImageSelected, imageOnList } from "../validators/adminProfile.validator"
+import { emailValidations, existImageSelected, imageOnList, isNotSingleAccount } from "../validators/adminProfile.validator"
 import { getListFileNamesOnDir, getPersonalUiOrCreate } from "../utils/adminProfile.utils"
 import { encryptPass } from "../helpers/bcrypt.helpers";
 import path from "path";
+import { clearCookies } from "../utils/personal.utils";
 
 export const getProfile = async (req:Request, res:Response) => {
     let personal = await getPersonalWhitId(req.cookies.userId)
@@ -119,6 +120,29 @@ export const postProfileImage = async (req:Request, res:Response) => {
             validation.addMessage("Imagen actualizada correctamente.", "success")
         }
         res.render("adminProfileImage", {personal, personalUi, messages: validation.messages, filenamesList})
+    }else{
+        validation.addMessage("No se encontró el usuario, por favor inicie sesión nuevamente.", "error")
+        res.render("error", {messages: validation.messages})
+    }
+}
+
+export const postDeleteAccount = async (req:Request, res:Response) => {
+    let personal = await getPersonalWhitId(req.cookies.userId)
+    let validation = new ValidationClass
+    if (personal) {
+        let personalUi = await getPersonalUiOrCreate(personal)
+        let auth = await getAuthOrCreate(personal)
+        validation = await isNotSingleAccount(validation)
+        if(validation.status){
+            await DataBase.manager.remove(auth)
+            await DataBase.manager.remove(personalUi)
+            await DataBase.manager.remove(personal)
+            clearCookies(res)
+            validation.addMessage("La cuenta se ha eliminado correctamente.", "success")
+            res.render("error", {messages: validation.messages})
+        }else{
+            res.render("adminProfile", {personal, personalUi, messages: validation.messages})
+        }
     }else{
         validation.addMessage("No se encontró el usuario, por favor inicie sesión nuevamente.", "error")
         res.render("error", {messages: validation.messages})

@@ -1,3 +1,5 @@
+import DataBase from "../../database/data-source";
+import { Personal } from "../../database/entity/models";
 import { ValidationClass } from "../interfaces/interfaces";
 import { getListFileNamesOnDir } from "../utils/adminProfile.utils";
 import path from "path";
@@ -8,7 +10,6 @@ const emailValidFormat = (validation: ValidationClass, email: string) => {
         validation.status = false
         validation.addMessage("El email no tiene un formato válido", "warning")
     }
-    console.log(validation.status)
     return validation
 }
 
@@ -62,11 +63,19 @@ export const existImageSelected = (validation: ValidationClass, imageName: strin
 
 export const imageOnList = (validation: ValidationClass, imageName: string):ValidationClass => {
     let filenamesList = getListFileNamesOnDir(path.join(__dirname, "../../public/images"))
-    console.log(filenamesList)
-    console.log(imageName)
     if (!filenamesList.includes(imageName)) {
         validation.status = false
         validation.addMessage("La imagen seleccionada no se encuentra en la lista de imágenes.", "warning")
+    }
+    return validation
+}
+
+export const isNotSingleAccount = async (validation: ValidationClass):Promise<ValidationClass> => {
+    let personalRepository = DataBase.getRepository(Personal)
+    let personalList = await personalRepository.find()
+    if (personalList.length === 1) {
+        validation.status = false
+        validation.addMessage("No puede eliminar la única cuenta de administrador.", "warning")
     }
     return validation
 }

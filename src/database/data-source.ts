@@ -7,7 +7,7 @@ const PATH = require("path")
 
 async function createBasicPersonal(){
     let existsPersonal:boolean = await DataBase.getRepository(Personal).existsBy({dni:"00000000"})
-    if(!existsPersonal){
+    if(!existsPersonal && process.env.FIRST_ACCOUNT === "true"){
         let personal = new Personal;
         await savePersonal(personal,"administrador","00000000","admin",true,0)
         let auth = new Auth

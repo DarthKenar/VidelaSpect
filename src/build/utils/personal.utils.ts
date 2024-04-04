@@ -80,7 +80,7 @@ export async function getPassWhitPersonal(personal:Personal):Promise<string>{
   }
 }
 
-export const clearCookies = async(res:Response) => {
-  await res.clearCookie('token');
-  await res.clearCookie('userId');
+export const clearCookies = (res:Response) => {
+  res.clearCookie('token');
+  res.clearCookie('userId');
 }
