@@ -179,7 +179,7 @@ export const sendExcel = async(validation:ValidationClass ,excelPath:string, ema
         port: 465,
         secure: true, // Use `true` for port 465, `false` for all other ports
         auth: {
-            user: process.env.EMAIL_SYSTEM,
+            user: process.env.EMAIL_ADMIN,
             pass: process.env.EMAIL_PASS,
         },
         });
@@ -187,7 +187,7 @@ export const sendExcel = async(validation:ValidationClass ,excelPath:string, ema
         const fileName = excelPath.split("\\").pop()
         // send mail with defined transport object
         const info = await transporter.sendMail({
-            from: `"VidelaSpect 👁‍🗨" <${process.env.EMAIL_SYSTEM}>`, // sender address
+            from: `"VidelaSpect 👁‍🗨" <${process.env.EMAIL_ADMIN}>`, // sender address
             to: `${emailAdmin}`, // list of receivers
             subject: "Hola Administrador, su registro está listo ✔", // Subject line
             text: "👁‍🗨", // plain text body

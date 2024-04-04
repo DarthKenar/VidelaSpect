@@ -12,7 +12,7 @@ export function verifyToken(req:Request, res:Response, next:NextFunction){
             validation.addMessage("Usted no tiene permisos de administrador para acceder a esta sección.", "error")
             return res.render("error", {messages: validation.messages})
         }else{
-            const decoded = jwt.verify(token, process.env.TOKEN_SECRET)
+            const decoded = jwt.verify(token, process.env.JWT_TOKEN_KEY)
             next()
         }
     }catch (error) {

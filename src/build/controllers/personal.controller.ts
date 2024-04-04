@@ -144,7 +144,7 @@ export const postRegistroPassword = async (req:Request, res:Response)=>{
     if (personal) {
         let personalUi = await getPersonalUiOrCreate(personal)
         if(await comparePass(password, await getPassWhitPersonal(personal))){
-            const token = jwt.sign({id: personal.id}, process.env.TOKEN_SECRET, {
+            const token = jwt.sign({id: personal.id}, process.env.JWT_TOKEN_KEY, {
                 expiresIn: 60 * 60 * 1
             })
             res.cookie('token', token, { httpOnly: true })
