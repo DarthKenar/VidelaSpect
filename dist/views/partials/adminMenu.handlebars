@@ -8,11 +8,15 @@
   <div class="flex-none gap-2">
     {{>username}}
     <div class="dropdown dropdown-end">
-      <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+      <div tabindex="0" role="button" class="btn btn-circle avatar">
         <div class="w-10 rounded-full">
           <div class="user-profile">
             <span class="user-initials">
-              {{capitalizeFirstLetter personal.name}}
+              {{#if personalUi.profile_image_name}}
+                <img src="/images/{{personalUi.profile_image_name}}" alt="{{personalUi.profile_image_name}}" class="rounded-full w-10 h-10">
+              {{else}}
+                {{capitalizeFirstLetter personal.name}}
+              {{/if}}
             </span>
           </div>
         </div>

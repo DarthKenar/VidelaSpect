@@ -1,4 +1,6 @@
 import { ValidationClass } from "../interfaces/interfaces";
+import { getListFileNamesOnDir } from "../utils/adminProfile.utils";
+import path from "path";
 
 const emailValidFormat = (validation: ValidationClass, email: string) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -50,3 +52,21 @@ export const listIsNotEmpty = (validation: ValidationClass, list: any[]) => {
     return validation;
 }
 
+export const existImageSelected = (validation: ValidationClass, imageName: string):ValidationClass => {
+    if (!imageName) {
+        validation.status = false
+        validation.addMessage("Por favor seleccione una imagen.", "warning")
+    }
+    return validation
+}
+
+export const imageOnList = (validation: ValidationClass, imageName: string):ValidationClass => {
+    let filenamesList = getListFileNamesOnDir(path.join(__dirname, "../../public/images"))
+    console.log(filenamesList)
+    console.log(imageName)
+    if (!filenamesList.includes(imageName)) {
+        validation.status = false
+        validation.addMessage("La imagen seleccionada no se encuentra en la lista de imágenes.", "warning")
+    }
+    return validation
+}

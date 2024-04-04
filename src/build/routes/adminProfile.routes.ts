@@ -8,7 +8,7 @@ import {
     getProfileImage,
     postProfileEmail,
     postProfilePassword,
-    // postProfileImage
+    postProfileImage
 } from "../controllers/adminProfile.controller"
 
 //GET
@@ -20,6 +20,6 @@ routerProfile.get("/image", getProfileImage)
 //POST
 routerProfile.post("/email/send", postProfileEmail)
 routerProfile.post("/password/send", postProfilePassword)
-// routerProfile.post("/image/send", postProfileImage)
+routerProfile.post("/image/send", postProfileImage)
 
 module.exports = routerProfile;

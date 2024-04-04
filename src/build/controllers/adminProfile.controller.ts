@@ -3,15 +3,16 @@ import { getAuthOrCreate, getPersonalWhitId } from "../utils/adminPanel.utils";
 import { ValidationClass } from "../interfaces/interfaces";
 import DataBase from "../../database/data-source";
 import { passwordValidations, comparePassValidation } from "../validators/personal.validator";
-import { emailValidations } from "../validators/adminProfile.validator"
-import { getListFileNamesOnDir } from "../utils/adminProfile.utils"
+import { emailValidations, existImageSelected, imageOnList } from "../validators/adminProfile.validator"
+import { getListFileNamesOnDir, getPersonalUiOrCreate } from "../utils/adminProfile.utils"
 import { encryptPass } from "../helpers/bcrypt.helpers";
 import path from "path";
 
 export const getProfile = async (req:Request, res:Response) => {
     let personal = await getPersonalWhitId(req.cookies.userId)
     if (personal) {
-        res.render("adminProfile", {personal})
+        let personalUi = await getPersonalUiOrCreate(personal)
+        res.render("adminProfile", {personal, personalUi})
     }else{
         let validation = new ValidationClass
         validation.addMessage("No se encontró el usuario, por favor inicie sesión nuevamente.", "error")
@@ -89,11 +90,32 @@ export const postProfilePassword = async (req:Request, res:Response) => {
 export const getProfileImage = async (req:Request, res:Response) => {
     let personal = await getPersonalWhitId(req.cookies.userId)
     if (personal) {
+        let personalUi = await getPersonalUiOrCreate(personal)
         let filenamesList = getListFileNamesOnDir(path.join(__dirname, "../../public/images"))
-        console.log(filenamesList)
-        res.render("adminProfileImage", {personal, filenamesList: filenamesList})
+        res.render("adminProfileImage", {personal, personalUi, filenamesList})
     }else{
         let validation = new ValidationClass
+        validation.addMessage("No se encontró el usuario, por favor inicie sesión nuevamente.", "error")
+        res.render("error", {messages: validation.messages})
+    }
+}
+
+export const postProfileImage = async (req:Request, res:Response) => {
+    let personal = await getPersonalWhitId(req.cookies.userId)
+    let imageName = String(req.body.imageName)
+    let validation = new ValidationClass
+    if (personal) {
+        let personalUi = await getPersonalUiOrCreate(personal)
+        let filenamesList = getListFileNamesOnDir(path.join(__dirname, "../../public/images"))
+        validation = existImageSelected(validation, imageName)
+        validation = imageOnList(validation, imageName)
+        if (validation.status) {
+            personalUi.profile_image_name = imageName
+            await DataBase.manager.save(personalUi)
+            validation.addMessage("Imagen actualizada correctamente.", "success")
+        }
+        res.render("adminProfileImage", {personal, personalUi, messages: validation.messages, filenamesList})
+    }else{
         validation.addMessage("No se encontró el usuario, por favor inicie sesión nuevamente.", "error")
         res.render("error", {messages: validation.messages})
     }

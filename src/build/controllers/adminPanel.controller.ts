@@ -1,19 +1,20 @@
 import { Request, Response } from "express";
 import { Auth, Personal, Registro } from "../../database/entity/models";
 import DataBase from "../../database/data-source";
-import {savePersonal, exportExcel, registersFiltered, personalFiltered, sendExcel, saveAuth, getAuthOrCreate, deleteAuth, getPersonalWhitId, validateAndHandleExcelExport} from "../utils/adminPanel.utils"
+import {savePersonal, registersFiltered, personalFiltered, sendExcel, saveAuth, getAuthOrCreate, deleteAuth, getPersonalWhitId, validateAndHandleExcelExport} from "../utils/adminPanel.utils"
 import {areEmptyFieldsInPersonal, passwordValidations} from "../validators/personal.validator"
 import * as fs from 'fs';
 import {error} from "../interfaces/interfaces"
 import { ValidationClass } from "../interfaces/interfaces";
-import { emailIsNotEmpty, listIsNotEmpty } from "../validators/adminProfile.validator";
+import { getPersonalUiOrCreate } from "../utils/adminProfile.utils";
 const PATH = require("path")
 
 export const getPanel = async (req:Request, res:Response)=>{
     try{
         let personal = await getPersonalWhitId(req.cookies.userId)
         if(personal){
-            res.render("adminPanel",{personal})
+            let personalUi = await getPersonalUiOrCreate(personal)
+            res.render("adminPanel",{personal, personalUi})
         }else{
             let validation = new ValidationClass()
             validation.addMessage("No se encontró el usuario, por favor inicie sesión nuevamente.","error")

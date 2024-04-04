@@ -1,0 +1,12 @@
+<div class="flex flex-row justify-center py-10 gap-5">
+    <div class="user-profile rounded-full bg-gray-200">
+        <span class="user-initials">
+            {{#if personalUi.profile_image_name}}
+                <img src="/images/{{personalUi.profile_image_name}}" alt="{{personalUi.profile_image_name}}" class="rounded-full w-10 h-10">
+            {{else}}
+                {{capitalizeFirstLetter personal.name}}
+            {{/if}}
+        </span>
+    </div>
+    {{>username}}
+</div>
