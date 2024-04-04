@@ -23,8 +23,9 @@ export const getProfile = async (req:Request, res:Response) => {
 export const getProfileEmail = async (req:Request, res:Response) => {
     let personal = await getPersonalWhitId(req.cookies.userId)
     if (personal) {
+        let personalUi = await getPersonalUiOrCreate(personal)
         let auth = await getAuthOrCreate(personal)
-        res.render("adminProfileEmail", {personal, email: auth.email})
+        res.render("adminProfileEmail", {personal, personalUi, email: auth.email})
     }else{
         let validation = new ValidationClass
         validation.addMessage("No se encontró el usuario, por favor inicie sesión nuevamente.", "error")
@@ -35,7 +36,8 @@ export const getProfileEmail = async (req:Request, res:Response) => {
 export const getProfilePassword = async (req:Request, res:Response) => {
     let personal = await getPersonalWhitId(req.cookies.userId)
     if (personal) {
-        res.render("adminProfilePassword", {personal})
+        let personalUi = await getPersonalUiOrCreate(personal)
+        res.render("adminProfilePassword", {personal, personalUi})
     }else{
         let validation = new ValidationClass
         validation.addMessage("No se encontró el usuario, por favor inicie sesión nuevamente.", "error")
@@ -48,6 +50,7 @@ export const postProfileEmail = async (req:Request, res:Response) => {
     let email = req.body.email
     let validation = new ValidationClass
     if (personal) {
+        let personalUi = await getPersonalUiOrCreate(personal)
         let auth = await getAuthOrCreate(personal)
         validation = emailValidations(validation, auth.email, email)
         if (validation.status) {
@@ -56,7 +59,7 @@ export const postProfileEmail = async (req:Request, res:Response) => {
             validation.addMessage("Email actualizado correctamente.", "success")
             res.render("adminProfileEmail", {personal, email: auth.email, messages: validation.messages})
         }
-        res.render("adminProfileEmail", {personal, email: auth.email, messages: validation.messages})
+        res.render("adminProfileEmail", {personal, personalUi, email: auth.email, messages: validation.messages})
     }else{
         validation.addMessage("No se encontró el usuario, por favor inicie sesión nuevamente.", "error")
         res.render("error", {messages: validation.messages})
@@ -70,6 +73,7 @@ export const postProfilePassword = async (req:Request, res:Response) => {
     let password2 = req.body.password2
     let validation = new ValidationClass
     if (personal) {
+        let personalUi = await getPersonalUiOrCreate(personal)
         let auth = await getAuthOrCreate(personal)
         validation = await comparePassValidation(validation, passwordOld, auth.password)
         validation = passwordValidations(validation, password, password2)
@@ -79,7 +83,7 @@ export const postProfilePassword = async (req:Request, res:Response) => {
             validation.addMessage("Contraseña actualizada correctamente.", "success")
             res.render("adminProfile", {personal, messages: validation.messages})
         }else{
-            res.render("adminProfilePassword", {personal, messages: validation.messages, passwordOld, password, password2})
+            res.render("adminProfilePassword", {personal, personalUi, messages: validation.messages, passwordOld, password, password2})
         }
     }else{
         validation.addMessage("No se encontró el usuario, por favor inicie sesión nuevamente.", "error")
