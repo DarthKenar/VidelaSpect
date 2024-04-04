@@ -172,20 +172,18 @@ export const personalFiltered = async(input:string, select:string)=>{
     return personal
 }
 
-export const sendExcel = async(excelPath:string, emailAdmin:string)=>{
-
-    const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true, // Use `true` for port 465, `false` for all other ports
-    auth: {
-        user: process.env.EMAIL_SYSTEM,
-        pass: process.env.EMAIL_PASS,
-    },
-    });
-
-    // async..await is not allowed in global scope, must use a wrapper
-    async function main(excelPath:string, emailAdmin:string) {
+export const sendExcel = async(validation:ValidationClass ,excelPath:string, emailAdmin:string)=>{
+    try {
+        const transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 465,
+        secure: true, // Use `true` for port 465, `false` for all other ports
+        auth: {
+            user: process.env.EMAIL_SYSTEM,
+            pass: process.env.EMAIL_PASS,
+        },
+        });
+    
         const fileName = excelPath.split("\\").pop()
         // send mail with defined transport object
         const info = await transporter.sendMail({
@@ -203,9 +201,13 @@ export const sendExcel = async(excelPath:string, emailAdmin:string)=>{
         });
         
         console.log("Message sent: %s", info.messageId);
+        validation.addMessage("El archivo excel se ha enviado correctamente. Por favor revise su casilla de correo no deseado.","success")
+        return validation
+    } catch (err) {
+        console.log(err)
+        validation.addMessage("No se pudo enviar el archivo excel, por favor compruebe su conexión a internet.","warning")
+        return validation
     }
-
-    main(excelPath, emailAdmin).catch(console.error);
 }
 
 export const getPersonalWhitId = async(id:number):Promise<Personal|null>=>{
@@ -222,8 +224,7 @@ export const validateAndHandleExcelExport = async(validation:ValidationClass, li
         validation = emailIsNotEmpty(validation, email)
         if (validation.status && email) {
             let excelPath = await exportExcel(list,input,select)
-            await sendExcel(excelPath, email)
-            validation.addMessage("El archivo excel se ha enviado correctamente. Por favor revise su casilla de correo no deseado.","success")
+            validation = await sendExcel(validation, excelPath, email)
         }
     }else{
         if (validation.status) {

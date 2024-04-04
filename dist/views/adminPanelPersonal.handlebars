@@ -28,7 +28,7 @@
         <input name='email' id="email" type="checkbox" checked="checked" class="checkbox checkbox-primary" />
       </label>
       <label class="cursor-pointer label flex justify-center">
-        <a hx-get="/admin/panel/personal/excel" hx-trigger="click" hx-target="#search_results" hx-include="[name='select'], [name='input'], [name='email']" class="btn btn-outline btn-primary btn-sm" title="Descargar/Enviar Excel de Personal">
+        <a hx-get="/admin/panel/personal/excel" hx-trigger="click" hx-target="#search_results" hx-include="[name='select'], [name='input'], [name='email']" class="btn btn-outline btn-primary btn-sm" title="Descargar/Enviar Excel de Personal" id="downloadOrSendBtn" onclick="disabledButton('')">
           SOLICITAR
         </a>
       </label>
@@ -93,3 +93,4 @@
     </tfoot>
   </table>
 </div>
+<script src="/js/adminPanelPersonalRegistros.js"></script>
