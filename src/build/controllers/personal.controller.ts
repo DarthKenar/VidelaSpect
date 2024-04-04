@@ -1,16 +1,16 @@
 import { Request, Response } from "express";
 import DataBase from "../../database/data-source";
 import { Personal, Registro } from "../../database/entity/models";
-import { saveImage, registerPersonal, getTodaysRegisterCountById, isPar, getDate, getPassWhitPersonal, formalizeMinutes } from "../utils/personal.utils"
-import {error} from "../interfaces/interfaces"
-import { ValidationClass , Image} from "../interfaces/interfaces";
+import { saveImage, registerPersonal, getTodaysRegisterCountById, isPar, getDate, getPassWhitPersonal, formalizeMinutes, clearCookies } from "../utils/personal.utils"
+import { ValidationClass , Image, error} from "../interfaces/interfaces";
 import {comparePass} from "../helpers/bcrypt.helpers"
+import { getPersonalUiOrCreate } from "../utils/adminProfile.utils";
+
 const jwt = require("jsonwebtoken")
 
 export const getRegistroDNI = async (req:Request, res:Response)=>{
     try{
-        res.clearCookie('token');
-        res.clearCookie('userId');
+        clearCookies(res)
         res.render("registroDNI")
     }catch(err){
         console.log(err)
@@ -25,7 +25,7 @@ export const postRegistroDNI = async (req:Request, res:Response)=>{
             let personalRepository = DataBase.getRepository(Personal)
             let personal = await personalRepository.findOneBy({dni})
             if(personal){
-                if(personal.admin === false){
+                if(!personal.admin){
                     let ahora = new Date
                     let cantidadDeRegistros = await getTodaysRegisterCountById(personal,ahora)
                     if(isPar(cantidadDeRegistros) && cantidadDeRegistros < personal.dailyEntries){
@@ -142,14 +142,14 @@ export const postRegistroPassword = async (req:Request, res:Response)=>{
     let personal = await personalRepository.findOneBy({id: userId})
     let password = String(req.body.password)
     if (personal) {
-        
+        let personalUi = await getPersonalUiOrCreate(personal)
         if(await comparePass(password, await getPassWhitPersonal(personal))){
             const token = jwt.sign({id: personal.id}, process.env.TOKEN_SECRET, {
                 expiresIn: 60 * 60 * 1
             })
             res.cookie('token', token, { httpOnly: true })
             res.cookie("userId", userId, { httpOnly: true })
-            res.render("adminPanel", {personal})
+            res.render("adminPanel", {personal, personalUi})
         }else{
             let validation = new ValidationClass
             validation.addMessage("La contraseña ingresada no es correcta.","warning")

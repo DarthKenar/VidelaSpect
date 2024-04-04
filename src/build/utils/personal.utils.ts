@@ -1,3 +1,4 @@
+import { Request, Response } from "express";
 import DataBase from "../../database/data-source";
 import { Auth, Personal, Registro } from "../../database/entity/models";
 import { Image } from "../interfaces/interfaces";
@@ -77,4 +78,9 @@ export async function getPassWhitPersonal(personal:Personal):Promise<string>{
   }else{
     return ""
   }
+}
+
+export const clearCookies = async(res:Response) => {
+  await res.clearCookie('token');
+  await res.clearCookie('userId');
 }

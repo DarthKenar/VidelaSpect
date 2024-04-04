@@ -39,10 +39,10 @@ const routerPersonal = require('./routes/personal.routes');
 app.use('/personal', routerPersonal)
 
 const routerAdminPanel = require('./routes/adminPanel.routes');
-if(process.env.NODE_ENV="test"){app.use('/admin/panel', routerAdminPanel)}else{app.use('/admin/panel', verifyToken, routerAdminPanel)}
+app.use('/admin/panel', verifyToken, routerAdminPanel)
 
 const routerAdminProfile = require('./routes/adminProfile.routes');
-if(process.env.NODE_ENV="test"){app.use('/admin/profile', routerAdminProfile)}else{app.use('/admin/profile', verifyToken, routerAdminProfile)}
+app.use('/admin/profile', verifyToken, routerAdminProfile)
 //...
 
 app.use("/",(req:Request, res:Response)=>{
