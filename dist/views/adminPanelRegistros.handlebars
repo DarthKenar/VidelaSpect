@@ -24,8 +24,8 @@
         <span class="label-text px-4">Enviar a email</span>
         <input name='email' id="email" type="checkbox" checked="checked" class="checkbox checkbox-primary" />
       </label>
-      <label class="cursor-pointer label flex justify-center">
-        <a hx-get="/admin/panel/registros/excel" hx-trigger="click" hx-target="#search_results" hx-include="[name='select'], [name='input'], [name='email']" class="btn btn-outline btn-primary btn-sm" title="Descargar/Enviar Excel de Registros" id="downloadOrSendBtn" onclick="disabledButton()">
+      <label class="label flex justify-center">
+        <a hx-get="/admin/panel/registros/excel" hx-trigger="click" hx-target="#search_results" hx-include="[name='select'], [name='input'], [name='email']" class="cursor-pointer btn btn-outline btn-primary btn-sm" title="Descargar/Enviar Excel de Registros" id="downloadOrSendBtn" hx-on::before-request="disabledButton()" hx-on::after-request="enableButton('registros')">
           SOLICITAR
         </a>
       </label>
@@ -79,4 +79,4 @@
       </div>
 </dialog>
 <script src="/js/adminPanelRegistros.js"></script>
-<script src="/js/adminPanelPersonalRegistros.js"></script>
+<script defer src="/js/adminPanelPersonalRegistros.js"></script>
