@@ -89,3 +89,14 @@ export class PersonalUi {
     personal: Personal
     
 }
+
+@Entity()
+export class GeneralOptions {
+
+    @PrimaryGeneratedColumn()
+    id: number
+
+    @Column()
+    ia: boolean
+    
+}
