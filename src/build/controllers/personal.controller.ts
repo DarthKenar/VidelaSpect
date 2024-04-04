@@ -5,7 +5,9 @@ import { saveImage, registerPersonal, getTodaysRegisterCountById, isPar, getDate
 import { ValidationClass , Image, error} from "../interfaces/interfaces";
 import {comparePass} from "../helpers/bcrypt.helpers"
 import { getPersonalUiOrCreate } from "../utils/adminProfile.utils";
-
+import { getAiOptionsOrCreate } from "../utils/adminOptions.utils";
+import { getImageClassification } from "../helpers/huggingface.helpers";
+const PORT = process.env.PORT
 const jwt = require("jsonwebtoken")
 
 export const getRegistroDNI = async (req:Request, res:Response)=>{
@@ -78,12 +80,23 @@ export const postRegistroFoto = async (req:Request, res:Response)=>{
             //
             if(confirm){
                 //Guarda la foto con el objeto {personal}
-                let data:Image|undefined = req.file 
-                if(typeof registroId === "number"){
-                    await saveImage(registroId, data)
+                let img:Image|undefined = req.file 
+                let aiOptions = await getAiOptionsOrCreate()
+                if (aiOptions.status) {
+                    let data = await getImageClassification(img)
+                    console.log(data)
+                    if(typeof registroId === "number"){
+                        await saveImage(registroId, img)
+                    }
+                    //
+                    res.json({url:`http://localhost:${PORT}/personal/foto/send/${personal.id}`})
+                }else{
+                    if(typeof registroId === "number"){
+                        await saveImage(registroId, img)
+                    }
+                    //
+                    res.json({url:`http://localhost:${PORT}/personal/foto/send/${personal.id}`})
                 }
-                //
-                res.json({url:`http://localhost:7000/personal/foto/send/${personal.id}`})
             }else{
                 if (Array.isArray(registros)) {
                     let entrada = registros[0];
