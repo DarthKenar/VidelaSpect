@@ -58,7 +58,6 @@ export const postProfileEmail = async (req:Request, res:Response) => {
             auth.email = email
             DataBase.manager.save(auth)
             validation.addMessage("Email actualizado correctamente.", "success")
-            res.render("adminProfileEmail", {personal, email: auth.email, messages: validation.messages})
         }
         res.render("adminProfileEmail", {personal, personalUi, email: auth.email, messages: validation.messages})
     }else{
