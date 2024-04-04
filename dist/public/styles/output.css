@@ -1590,6 +1590,23 @@ html {
   align-items: center;
 }
 
+.range {
+  height: 1.5rem;
+  width: 100%;
+  cursor: pointer;
+  -moz-appearance: none;
+       appearance: none;
+  -webkit-appearance: none;
+  --range-shdw: var(--fallback-bc,oklch(var(--bc)/1));
+  overflow: hidden;
+  border-radius: var(--rounded-box, 1rem);
+  background-color: transparent;
+}
+
+.range:focus {
+  outline: none;
+}
+
 .select {
   display: inline-flex;
   cursor: pointer;
@@ -2555,6 +2572,65 @@ details.collapse summary::-webkit-details-marker {
   }
 }
 
+.range:focus-visible::-webkit-slider-thumb {
+  --focus-shadow: 0 0 0 6px var(--fallback-b1,oklch(var(--b1)/1)) inset, 0 0 0 2rem var(--range-shdw) inset;
+}
+
+.range:focus-visible::-moz-range-thumb {
+  --focus-shadow: 0 0 0 6px var(--fallback-b1,oklch(var(--b1)/1)) inset, 0 0 0 2rem var(--range-shdw) inset;
+}
+
+.range::-webkit-slider-runnable-track {
+  height: 0.5rem;
+  width: 100%;
+  border-radius: var(--rounded-box, 1rem);
+  background-color: var(--fallback-bc,oklch(var(--bc)/0.1));
+}
+
+.range::-moz-range-track {
+  height: 0.5rem;
+  width: 100%;
+  border-radius: var(--rounded-box, 1rem);
+  background-color: var(--fallback-bc,oklch(var(--bc)/0.1));
+}
+
+.range::-webkit-slider-thumb {
+  position: relative;
+  height: 1.5rem;
+  width: 1.5rem;
+  border-radius: var(--rounded-box, 1rem);
+  border-style: none;
+  --tw-bg-opacity: 1;
+  background-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-bg-opacity)));
+  appearance: none;
+  -webkit-appearance: none;
+  top: 50%;
+  color: var(--range-shdw);
+  transform: translateY(-50%);
+  --filler-size: 100rem;
+  --filler-offset: 0.6rem;
+  box-shadow: 0 0 0 3px var(--range-shdw) inset,
+      var(--focus-shadow, 0 0),
+      calc(var(--filler-size) * -1 - var(--filler-offset)) 0 0 var(--filler-size);
+}
+
+.range::-moz-range-thumb {
+  position: relative;
+  height: 1.5rem;
+  width: 1.5rem;
+  border-radius: var(--rounded-box, 1rem);
+  border-style: none;
+  --tw-bg-opacity: 1;
+  background-color: var(--fallback-b1,oklch(var(--b1)/var(--tw-bg-opacity)));
+  top: 50%;
+  color: var(--range-shdw);
+  --filler-size: 100rem;
+  --filler-offset: 0.5rem;
+  box-shadow: 0 0 0 3px var(--range-shdw) inset,
+      var(--focus-shadow, 0 0),
+      calc(var(--filler-size) * -1 - var(--filler-offset)) 0 0 var(--filler-size);
+}
+
 @keyframes rating-pop {
   0% {
     transform: translateY(-0.125em);
@@ -2838,6 +2914,21 @@ details.collapse summary::-webkit-details-marker {
         0 0 0 2px var(--tglbg) inset;
 }
 
+.toggle-primary:focus-visible {
+  outline-color: var(--fallback-p,oklch(var(--p)/1));
+}
+
+.toggle-primary:checked,
+    .toggle-primary[checked="true"],
+    .toggle-primary[aria-checked="true"] {
+  border-color: var(--fallback-p,oklch(var(--p)/var(--tw-border-opacity)));
+  --tw-border-opacity: 0.1;
+  --tw-bg-opacity: 1;
+  background-color: var(--fallback-p,oklch(var(--p)/var(--tw-bg-opacity)));
+  --tw-text-opacity: 1;
+  color: var(--fallback-pc,oklch(var(--pc)/var(--tw-text-opacity)));
+}
+
 .toggle:disabled {
   cursor: not-allowed;
   --tw-border-opacity: 1;
@@ -2959,6 +3050,54 @@ details.collapse summary::-webkit-details-marker {
   border-start-start-radius: 0;
   border-end-end-radius: inherit;
   border-start-end-radius: inherit;
+}
+
+.range-md {
+  height: 1.5rem;
+}
+
+.range-md::-webkit-slider-runnable-track {
+  height: 0.5rem;
+}
+
+.range-md::-moz-range-track {
+  height: 0.5rem;
+}
+
+.range-md::-webkit-slider-thumb {
+  height: 1.5rem;
+  width: 1.5rem;
+  --filler-offset: 0.6rem;
+}
+
+.range-md::-moz-range-thumb {
+  height: 1.5rem;
+  width: 1.5rem;
+  --filler-offset: 0.6rem;
+}
+
+.range-lg {
+  height: 2rem;
+}
+
+.range-lg::-webkit-slider-runnable-track {
+  height: 1rem;
+}
+
+.range-lg::-moz-range-track {
+  height: 1rem;
+}
+
+.range-lg::-webkit-slider-thumb {
+  height: 2rem;
+  width: 2rem;
+  --filler-offset: 1rem;
+}
+
+.range-lg::-moz-range-thumb {
+  height: 2rem;
+  width: 2rem;
+  --filler-offset: 1rem;
 }
 
 .steps-horizontal .step {
@@ -3377,6 +3516,10 @@ details.collapse summary::-webkit-details-marker {
   width: 100%;
 }
 
+.w-72 {
+  width: 18rem;
+}
+
 .max-w-\[70\%\] {
   max-width: 70%;
 }
@@ -3513,6 +3656,10 @@ details.collapse summary::-webkit-details-marker {
   border-radius: 0.75rem;
 }
 
+.rounded {
+  border-radius: 0.25rem;
+}
+
 .border-opacity-50 {
   --tw-border-opacity: 0.5;
 }
@@ -3580,6 +3727,10 @@ details.collapse summary::-webkit-details-marker {
 .py-5 {
   padding-top: 1.25rem;
   padding-bottom: 1.25rem;
+}
+
+.pb-10 {
+  padding-bottom: 2.5rem;
 }
 
 .pb-4 {
