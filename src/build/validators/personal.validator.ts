@@ -1,7 +1,7 @@
 import DataBase from "../../database/data-source"
 import { AiOptions, Personal, Registro } from "../../database/entity/models"
 import { comparePass } from "../helpers/bcrypt.helpers"
-import {ValidationClass} from "../interfaces/interfaces"
+import {AiDataClass, ValidationClass} from "../interfaces/interfaces"
 import { getDate, getTime, makeRegistrationMessageRefuse } from "../utils/personal.utils"
 
 export const areEmptyFieldsInPersonal = (validation:ValidationClass, name:string, dni:string, position:string):ValidationClass => {
@@ -101,4 +101,32 @@ export const aiValidation = async (validation:ValidationClass, data:any, aiOptio
         validation.addMessage("No se pudo obtener información de la imagen.","error")
     }
     return validation
+}
+
+export const makeAiData = (data:any):AiDataClass[]=>{
+    console.log("makeAiData")
+    let replaceLabel = (label:string):string =>{
+        let newLabel = label
+        switch (label) {
+            case "Human Face":
+                newLabel = "Rostro humano"
+                break;
+            case "Empty Place":
+                newLabel = "Lugar vacío"
+                break;
+            case "Inanimate Object":
+                newLabel = "Objeto inanimado"
+                break;
+        }
+        console.log(newLabel)
+        return newLabel
+    }
+
+    let aiData:AiDataClass[] = []
+    for (let index = 0; index < data.length; index++) {
+        let score = data[index].score*100;
+        let label = replaceLabel(data[index].label);
+        aiData.push(new AiDataClass(score, label))
+    }
+    return aiData
 }

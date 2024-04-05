@@ -44,3 +44,17 @@ export class ValidationClass implements Validation {
         this.messages.push({message, type});
     }
 }
+interface AiData {
+    score: number;
+    label: string;
+  }
+
+export class AiDataClass implements AiData {
+    score: number;
+    label: string;
+
+    constructor(score: number, label: string) {
+        this.score = score;
+        this.label = label;
+    }
+}

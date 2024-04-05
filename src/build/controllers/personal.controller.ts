@@ -2,8 +2,8 @@ import { Request, Response } from "express";
 import DataBase from "../../database/data-source";
 import { Personal, Registro } from "../../database/entity/models";
 import { saveImage, getPassWhitPersonal, clearCookies, createRegisterWithPersonal, makeRegistrationMessage, makeRegistrationMessageRefuse, getPersonalWhitDni, getIsParRegistersQuantity } from "../utils/personal.utils"
-import { aiValidation, existDniValidation, existPersonalWhitDni, validateDailyStaffRegistration } from "../validators/personal.validator"
-import { ValidationClass , Image, error} from "../interfaces/interfaces";
+import { aiValidation, existDniValidation, existPersonalWhitDni, makeAiData, validateDailyStaffRegistration } from "../validators/personal.validator"
+import { ValidationClass , Image, error, AiDataClass} from "../interfaces/interfaces";
 import {comparePass} from "../helpers/bcrypt.helpers"
 import { getPersonalUiOrCreate } from "../utils/adminProfile.utils";
 import { getAiOptionsOrCreate } from "../utils/adminOptions.utils";
@@ -72,10 +72,13 @@ export const postRegistroFoto = async (req:Request, res:Response)=>{
                     if(validation.status){
                         await saveImage(register.id, img)
                         validation = await makeRegistrationMessage(validation, personal)
-                        res.render("registroOk",{personal, data, messages: validation.messages})
+                        let aiData:AiDataClass[] = makeAiData(data)
+                        res.render("registroOk",{personal, aiData, messages: validation.messages})
                     }else{
+                        let aiData:AiDataClass[] = makeAiData(data)
                         validation = await makeRegistrationMessageRefuse(validation, personal)
-                        res.render("registroError",{personal, messages: validation.messages})
+                        console.log(aiData)
+                        res.render("registroError",{personal, aiData:aiData, messages: validation.messages})
                     }
                 }else{
                     await saveImage(register.id, img)
