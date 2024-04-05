@@ -7,9 +7,9 @@ import { getAiOptionsOrCreate, updateAiAccuracy, updateAiStatus } from "../utils
 
 export const getOptions = async (req: Request, res: Response)=>{
     try {
-        let personal = req.personal
-        let personalUi = await getPersonalUiOrCreate(personal)
-        res.render('adminOptions', { personal, personalUi })
+        let admin = req.admin
+        let personalUi = await getPersonalUiOrCreate(admin)
+        res.render('adminOptions', { admin, personalUi })
     } catch (err) {
         console.log(err)
         res.render("error", {messages: error})
@@ -18,10 +18,10 @@ export const getOptions = async (req: Request, res: Response)=>{
 
 export const getIa = async (req: Request, res: Response)=>{
     try {
-        let personal = req.personal
-        let personalUi = await getPersonalUiOrCreate(personal)
+        let admin = req.admin
+        let personalUi = await getPersonalUiOrCreate(admin)
         let aiOptions = await getAiOptionsOrCreate()
-        res.render('adminOptionsAi', { personal, personalUi, aiOptions})
+        res.render('adminOptionsAi', { admin, personalUi, aiOptions})
     } catch (err) {
         console.log(err)
         res.render("error", {messages: error})
@@ -30,7 +30,7 @@ export const getIa = async (req: Request, res: Response)=>{
 
 export const postAiOptions = async (req: Request, res: Response)=>{
     try {
-        let personal = req.personal
+        let admin = req.admin
         let validation = new ValidationClass
         console.log(req.body.status)
         let status = req.body.status === "on" ? true : false
@@ -38,12 +38,12 @@ export const postAiOptions = async (req: Request, res: Response)=>{
         validation = await updateAiStatus(validation, status)
         validation = await updateAiAccuracy(validation, accuracy)
         if (validation.status) {
-            let personalUi = await getPersonalUiOrCreate(personal)
+            let personalUi = await getPersonalUiOrCreate(admin)
             let aiOptions = await getAiOptionsOrCreate()
-            res.render('adminOptionsAi', { personal, personalUi, aiOptions,  messages: validation.messages })
+            res.render('adminOptionsAi', { admin, personalUi, aiOptions,  messages: validation.messages })
         }else{
             validation.addMessage("No se pudo actualizar el estado de la inteligencia artificial.", "error")
-            res.render('error', { personal, messages: validation.messages })
+            res.render('error', { admin, messages: validation.messages })
         }
     } catch (err) {
         console.log(err)

@@ -11,15 +11,9 @@ const PATH = require("path")
 
 export const getPanel = async (req:Request, res:Response)=>{
     try{
-        let personal = await getPersonalWhitId(req.cookies.userId)
-        if(personal){
-            let personalUi = await getPersonalUiOrCreate(personal)
-            res.render("adminPanel",{personal, personalUi})
-        }else{
-            let validation = new ValidationClass()
-            validation.addMessage("No se encontró el usuario, por favor inicie sesión nuevamente.","error")
-            res.render("error",{messages: validation.messages})
-        }
+        let admin = req.admin
+        let personalUi = await getPersonalUiOrCreate(admin)
+        res.render("adminPanel",{admin, personalUi})
     }catch(err){
         console.log(err)
         res.render("error", {messages: error})
@@ -236,16 +230,12 @@ export const getPanelPersonalExcel = async (req:Request, res:Response)=>{
         let input = String(req.query.input)
         let select = String(req.query.select)
         let emailOption = Boolean(req.query.email)
-        let userId = req.cookies.userId
+        let admin = req.admin
         let personal = await personalFiltered(input, select)
         let validation = new ValidationClass
-        if (userId) {
-            validation = await validateAndHandleExcelExport(validation, personal, emailOption, userId, input, select)
-            res.render("adminPanelPersonalResponse",{personal, input, select, messages: validation.messages})
-        }else{
-            validation.addMessage("No se encontró el usuario, por favor inicie sesión nuevamente.","error")
-            res.render("error",{messages: validation.messages})
-        }
+        validation = await validateAndHandleExcelExport(validation, personal, emailOption, admin, input, select)
+        res.render("adminPanelPersonalResponse",{personal, input, select, messages: validation.messages})
+
     }catch(err){
         console.log(err)
         res.render("error", {messages: error})
@@ -257,16 +247,12 @@ export const getPanelRegisterExcel = async (req:Request, res:Response)=>{
         let input = String(req.query.input)
         let select = String(req.query.select)
         let emailOption = Boolean(req.query.email)
-        let userId = req.cookies.userId
+        let admin = req.admin
         let registros = await registersFiltered(input, select)
         let validation = new ValidationClass
-        if(userId) {
-            validation = await validateAndHandleExcelExport(validation, registros, emailOption, userId, input, select)
-            res.render("adminPanelRegistrosResponse",{registros, input, select, messages: validation.messages})
-        }else{
-            validation.addMessage("No se encontró el usuario, por favor inicie sesión nuevamente.","error")
-            res.render("error",{messages: validation.messages})
-        }
+        validation = await validateAndHandleExcelExport(validation, registros, emailOption, admin, input, select)
+        res.render("adminPanelRegistrosResponse",{registros, input, select, messages: validation.messages})
+
     }catch(err){
         console.log(err)
         res.render("error", {messages: error})

@@ -48,7 +48,7 @@ export const postRegistroDNI = async (req:Request, res:Response)=>{
                         }
                     }
                 }else{
-                    res.render("registroPassword",{personal})
+                    res.render("registroPassword",{admin: personal})
                 }
             }else{
                 let validation = new ValidationClass
@@ -150,23 +150,23 @@ export const getErrorTemplate = async (req:Request, res:Response)=>{
 }
 
 export const postRegistroPassword = async (req:Request, res:Response)=>{
-    let userId = Number(req.params.id)
+    let adminId = Number(req.params.id)
     let personalRepository = await DataBase.getRepository(Personal)
-    let personal = await personalRepository.findOneBy({id: userId})
+    let admin = await personalRepository.findOneBy({id: adminId})
     let password = String(req.body.password)
-    if (personal) {
-        let personalUi = await getPersonalUiOrCreate(personal)
-        if(await comparePass(password, await getPassWhitPersonal(personal))){
-            const token = jwt.sign({id: personal.id}, process.env.JWT_TOKEN_KEY, {
+    if (admin) {
+        let personalUi = await getPersonalUiOrCreate(admin)
+        if(await comparePass(password, await getPassWhitPersonal(admin))){
+            const token = jwt.sign({id: admin.id}, process.env.JWT_TOKEN_KEY, {
                 expiresIn: 60 * 60 * 1
             })
             res.cookie('token', token, { httpOnly: true })
-            res.cookie("userId", userId, { httpOnly: true })
-            res.render("adminPanel", {personal, personalUi})
+            res.cookie("adminId", adminId, { httpOnly: true })
+            res.render("adminPanel", {admin, personalUi})
         }else{
             let validation = new ValidationClass
             validation.addMessage("La contraseña ingresada no es correcta.","warning")
-            res.render("registroPassword", {personal, messages: validation.messages})
+            res.render("registroPassword", {admin, messages: validation.messages})
         }
     }
 }

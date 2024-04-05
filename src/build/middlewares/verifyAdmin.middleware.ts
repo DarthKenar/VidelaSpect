@@ -4,9 +4,9 @@ import { ValidationClass } from "../interfaces/interfaces";
 
 export async function verifyUserId(req:Request, res:Response, next:NextFunction){
     try{
-        let personal = await getPersonalWhitId(req.cookies.userId)
-        if (personal){
-            req.personal = personal
+        let admin = await getPersonalWhitId(req.cookies.adminId)
+        if (admin){
+            req.admin = admin
             next()
         }else{
             let validation = new ValidationClass
