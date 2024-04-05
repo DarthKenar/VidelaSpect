@@ -1,12 +1,15 @@
 import { Request, Response } from "express";
 import DataBase from "../../database/data-source";
 import { Personal, Registro } from "../../database/entity/models";
-import { saveImage, registerPersonal, getTodaysRegisterCountById, isPar, getDate, getPassWhitPersonal, formalizeMinutes, clearCookies } from "../utils/personal.utils"
+import { saveImage, getTodayRegistersWithPersonal, isPar, getDate, getPassWhitPersonal, clearCookies, createRegisterWithPersonal, makeRegistrationMessage, makeRegistrationMessageRefuse } from "../utils/personal.utils"
+import { validateDailyStaffRegistration } from "../validators/personal.validator"
 import { ValidationClass , Image, error} from "../interfaces/interfaces";
 import {comparePass} from "../helpers/bcrypt.helpers"
 import { getPersonalUiOrCreate } from "../utils/adminProfile.utils";
 import { getAiOptionsOrCreate } from "../utils/adminOptions.utils";
 import { getImageClassification } from "../helpers/huggingface.helpers";
+import { getPersonalWhitId } from "../utils/adminPanel.utils";
+
 const PORT = process.env.PORT
 const jwt = require("jsonwebtoken")
 
@@ -28,8 +31,7 @@ export const postRegistroDNI = async (req:Request, res:Response)=>{
             let personal = await personalRepository.findOneBy({dni})
             if(personal){
                 if(!personal.admin){
-                    let ahora = new Date
-                    let cantidadDeRegistros = await getTodaysRegisterCountById(personal,ahora)
+                    let cantidadDeRegistros = await (await getTodayRegistersWithPersonal(personal)).length
                     if(isPar(cantidadDeRegistros) && cantidadDeRegistros < personal.dailyEntries){
                         var tipoDeRegistro = "entrada"
                         res.render("registroFoto", {personal, tipoDeRegistro})
@@ -68,70 +70,28 @@ export const postRegistroDNI = async (req:Request, res:Response)=>{
 
 export const postRegistroFoto = async (req:Request, res:Response)=>{
     try{
-        let userId = req.body.userId
-        let personalRepository = await DataBase.getRepository(Personal)
-        let personal = await personalRepository.findOneBy({id: userId})
+        let personal = await getPersonalWhitId(req.body.userId)
         if(personal){
-            //CÓDIGO DE OK
-            //Ayuda a generar el mensaje al usuario
-            let fecha = new Date
-            //Registra al personal
-            let [confirm, registros, registroId] = await registerPersonal(personal, fecha)
-            //
-            if(confirm){
-                //Guarda la foto con el objeto {personal}
-                let img:Image|undefined = req.file 
+            let validation = new ValidationClass
+            validation = await validateDailyStaffRegistration(validation, personal)
+            if(validation.status){
+                let img:Image|undefined = req.file
+                let register = await createRegisterWithPersonal(personal)
                 let aiOptions = await getAiOptionsOrCreate()
                 if (aiOptions.status) {
                     let data = await getImageClassification(img)
                     console.log(data)
-                    if(typeof registroId === "number"){
-                        await saveImage(registroId, img)
-                    }
-                    //
-                    res.json({url:`http://localhost:${PORT}/personal/foto/send/${personal.id}`})
-                }else{
-                    if(typeof registroId === "number"){
-                        await saveImage(registroId, img)
-                    }
-                    //
-                    res.json({url:`http://localhost:${PORT}/personal/foto/send/${personal.id}`})
-                }
-            }else{
-                if (Array.isArray(registros)) {
-                    let entrada = registros[0];
-                    let salida = registros[registros.length-1];
-                    res.render("registroError",{personal, entrada, salida, error:`No se puede realizar un nuevo registro ya que hoy ya se han realizado las cargas correspondientes a su entrada y salida.`})
-                }
-            }
-        }
-    }catch(err){
-        console.log(err)
-        res.render("error", {error})
-    }
-}
+                    //hacer algo con la información que devuelve el modelo
 
-export const postRegistroFotoOk = async (req:Request, res:Response)=>{
-    try{
-        let userId = Number(req.params.id)
-        let personalRepository = await DataBase.getRepository(Personal)
-        let personal = await personalRepository.findOneBy({id: userId})
-        if (personal) {
-            let ahora = new Date
-            //lógica por cantidad de registros
-            //Ayuda a generar el mensaje al usuario
-            let date = new Date
-            let hours = date.getHours()
-            let minutes = date.getMinutes()
-            let minutesString = formalizeMinutes(minutes)
-            //
-            let cantidadDeRegistros = await getTodaysRegisterCountById(personal,ahora)
-            if(!(isPar(cantidadDeRegistros))){
-                let tipoDeRegistro = "entrada"
-                res.render("registroOk",{personal, message:`Se ha registrado correctamente su ${tipoDeRegistro} a las: ${hours}:${minutesString}`, farewell:"Esperamos que tenga una excelente jornada laboral."})
+                    await saveImage(register.id, img)
+                }else{
+                    await saveImage(register.id, img)
+                    validation = await makeRegistrationMessage(validation, personal)
+                }
+                res.render("registroOk",{personal, messages: validation.messages})
             }else{
-                let tipoDeRegistro = "salida"
-                res.render("registroOk",{personal, message:`Se ha registrado correctamente su ${tipoDeRegistro} a las: ${hours}:${minutesString}`, farewell:"Gracias por registrar su salida, que tenga buenos días."})
+                validation = await makeRegistrationMessageRefuse(validation, personal)
+                res.render("registroError",{personal, messages: validation.messages})
             }
         }
     }catch(err){

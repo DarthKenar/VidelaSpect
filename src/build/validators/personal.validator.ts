@@ -1,5 +1,8 @@
+import DataBase from "../../database/data-source"
+import { Personal, Registro } from "../../database/entity/models"
 import { comparePass } from "../helpers/bcrypt.helpers"
 import {ValidationClass} from "../interfaces/interfaces"
+import { getDate, getTime } from "../utils/personal.utils"
 
 export const areEmptyFieldsInPersonal = (validation:ValidationClass, name:string, dni:string, position:string):ValidationClass => {
     if (name.length === 0 || dni.length === 0 || position.length === 0) {
@@ -47,3 +50,15 @@ export const comparePassValidation = async (validation:ValidationClass, password
     }
     return validation
 }
+
+export const validateDailyStaffRegistration = async(validation: ValidationClass, personal:Personal):Promise<ValidationClass>=>{
+    let dateTime = new Date
+    let date = getDate(dateTime)
+    let registroRepository = await DataBase.getRepository(Registro)
+    let registers = await registroRepository.findBy({personal_id:personal.id,date:date})
+    if(registers.length === personal.dailyEntries){
+      validation.status = false
+      validation.addMessage("No se puede realizar un nuevo registro ya que hoy ya se han realizado las cargas correspondientes a su entrada y salida.", "warning")
+    }
+    return validation
+  }

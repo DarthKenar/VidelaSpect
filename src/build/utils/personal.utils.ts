@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import DataBase from "../../database/data-source";
 import { Auth, Personal, Registro } from "../../database/entity/models";
-import { Image } from "../interfaces/interfaces";
+import { Image, ValidationClass } from "../interfaces/interfaces";
 const fs = require('fs');
 // Escribe el buffer en un archivo
 
@@ -30,29 +30,26 @@ export async function saveImage(registroId:number, image:Image|undefined){
     }
 }
 
-export async function registerPersonal(personal:Personal, dateTime:Date){
+export const createRegisterWithPersonal = async (personal:Personal):Promise<Registro>=>{
+  let registerRepository = DataBase.getRepository(Registro)
+  let dateTime = new Date
   let date = getDate(dateTime)
   let time = getTime(dateTime)
-  let registroRepository = await DataBase.getRepository(Registro)
-  let registros = await registroRepository.findBy({personal_id:personal.id,date:date})
-  if(registros.length === personal.dailyEntries){
-    return [false,registros]
-  }else{
-    let registroNuevo = new Registro
-    registroNuevo.date = date
-    registroNuevo.time = time
-    registroNuevo.personal_id = personal.id
-    registroNuevo.personal_name = personal.name
-    registroNuevo = await registroRepository.save(registroNuevo)
-    return [true, registros, registroNuevo.id]
-  }
+  let registerNew = new Registro
+  registerNew.personal_id = personal.id
+  registerNew.personal_name = personal.name
+  registerNew.date = date
+  registerNew.time = time
+  registerNew = await registerRepository.save(registerNew)
+  return registerNew
 }
 
-export async function getTodaysRegisterCountById(personal:Personal, ahora:Date):Promise<number> {
-  let fecha = getDate(ahora)
+export async function getTodayRegistersWithPersonal(personal:Personal):Promise<Registro[]> {
+  let dateTime = new Date
+  let fecha = getDate(dateTime)
   let registroRepository = await DataBase.getRepository(Registro)
-  let registros = await registroRepository.findBy({personal_id:personal.id,date:fecha})
-  return registros.length
+  let registers = await registroRepository.findBy({personal_id:personal.id,date:fecha})
+  return registers
 } 
 
 export function getDate(ahora:Date):string {
@@ -83,4 +80,28 @@ export async function getPassWhitPersonal(personal:Personal):Promise<string>{
 export const clearCookies = (res:Response) => {
   res.clearCookie('token');
   res.clearCookie('userId');
+}
+
+export const makeRegistrationMessage = async (validation:ValidationClass, personal:Personal)=>{
+  let date = new Date
+  let hours = date.getHours()
+  let minutes = date.getMinutes()
+  let minutesString = formalizeMinutes(minutes)
+  let cantidadDeRegistros = await (await getTodayRegistersWithPersonal(personal)).length
+  if(!(isPar(cantidadDeRegistros))){
+      var tipoDeRegistro = "entrada" 
+  }else{
+      var tipoDeRegistro = "salida"
+  }
+  validation.addMessage(`Se ha registrado correctamente su ${tipoDeRegistro} a las: ${hours}:${minutesString} <br> Esperamos que tenga una excelente jornada laboral.`, "success")
+  return validation
+}
+
+export const makeRegistrationMessageRefuse = async (validation:ValidationClass, personal:Personal):Promise<ValidationClass>=>{
+    //obtengo la cantidad de registros totales y los agrego al mensaje de validación
+    let registers = await getTodayRegistersWithPersonal(personal)
+    let entrada = registers[0];
+    let salida = registers[registers.length-1];
+    validation.addMessage(`No se puede realizar un nuevo registro ya que hoy ya se han realizado las cargas correspondientes a su entrada y salida. <br> Entrada: ${entrada} <br> Salida: ${salida} `, "warning")
+    return validation
 }

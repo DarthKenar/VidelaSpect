@@ -63,19 +63,13 @@ btnEnviar.addEventListener("click", async ()=>{
     // Convertir dataURL a Blob
     let response = await fetch(data);
     let blob = await response.blob();
-
     // Enviar Blob a un servidor
     let formData = new FormData();
     formData.append("image", blob, "image.png");
     formData.append("userId",personalId.value)
-    fetch("http://localhost:7000/personal/foto/send", {
+    fetch("/personal/foto/send", {
       method: "POST",
       body: formData,
-    })
-    .then((response) => response.text())
-    .then(text => {
-      const data = JSON.parse(text);
-      window.location.href = data.url;
     })
     .catch((error) => console.error(error));
   }else{
