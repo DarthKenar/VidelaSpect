@@ -5,7 +5,7 @@ var activador = false
 const video = document.querySelector(".video");
 const canvas = document.querySelector(".canvas");
 const personalId = document.getElementById("personalId")
-
+let form = document.getElementById('imageForm');
 //tomar foto
 const btnFoto = document.querySelector(".start-btn");
 
@@ -13,7 +13,7 @@ const btnFoto = document.querySelector(".start-btn");
 const photo = document.querySelector(".photo");
 
 //enviar datos de foto
-const btnEnviar = document.querySelector("#enviar");
+const btnEnviar = document.getElementById('enviar');
 
 //constrains
 /*
@@ -50,6 +50,8 @@ const handleSucces = (stream) => {
 getVideo();
 
 //4. ----------> Button y foto
+let input = document.getElementById('imageUpload');
+
 btnFoto.addEventListener("click", () => {
   activador = true
   let context = canvas.getContext("2d");
@@ -60,19 +62,20 @@ btnFoto.addEventListener("click", () => {
 
 btnEnviar.addEventListener("click", async ()=>{
   if(activador){
+    console.log("Se ha sacado una foto.")
     // Convertir dataURL a Blob
     let response = await fetch(data);
     let blob = await response.blob();
-    // Enviar Blob a un servidor
-    let formData = new FormData();
-    formData.append("image", blob, "image.png");
-    formData.append("userId",personalId.value)
-    fetch("/personal/foto/send", {
-      method: "POST",
-      body: formData,
-    })
-    .catch((error) => console.error(error));
+    // Crear un objeto File a partir del Blob
+    let file = new File([blob], "image.png", {type: "image/png"});
+    // Asignar el objeto File al campo de entrada de archivo del formulario
+    let dt = new DataTransfer();
+    dt.items.add(file);
+    input.files = dt.files;
+    // Enviar el formulario
+    form.submit();
   }else{
     console.log("Todavía no se ha sacado una foto.")
   }
 });
+

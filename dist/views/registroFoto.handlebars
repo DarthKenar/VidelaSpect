@@ -1,21 +1,17 @@
-{{#if personal}}
-    <menu class="flex justify-between my-10">
-        <a href="/personal/dni" class="btn btn-ghost">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-corner-up-left"><polyline points="9 14 4 9 9 4"></polyline><path d="M20 20v-7a4 4 0 0 0-4-4H4"></path></svg>
-            VOLVER
-        </a>
-        <div>
-            <h1 class="pt-4 pb-4 text-center w-full font-semibold text-5xl">Bienvenido/a {{personal.name}}</h1>
-            <h2 class="m-auto text-center">Está registrando su <span class="underline font-bold text-lg">{{tipoDeRegistro}}.</span></h2>
-        </div>
-        <input id="personalId" value="{{personal.id}}" type="text" hidden>
-        <a href=""></a>
-    </menu>
-{{/if}}
+<menu class="flex justify-between my-10">
+    <a href="/personal/dni" class="btn btn-ghost">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-corner-up-left"><polyline points="9 14 4 9 9 4"></polyline><path d="M20 20v-7a4 4 0 0 0-4-4H4"></path></svg>
+        VOLVER
+    </a>
+    <div>
+        <h1 class="pt-4 pb-4 text-center w-full font-semibold text-5xl">Bienvenido/a {{personal.name}}</h1>
+        <h2 class="m-auto text-center">Está registrando su <span class="underline font-bold text-lg">{{tipoDeRegistro}}.</span></h2>
+    </div>
+    <a href=""></a>
+</menu>
 <div class="flex flex-col justify-center w-[90%] h-[90%] cam-container m-auto">
     <div class="flex flex-row">
         <div class="grid flex-grow h-[80%] card bg-base-100 rounded-box place-items-center mt-[5%]">
-            
             <div class="video-wrap mb-[4.25rem]">
                 <video class="video rounded-xl"></video>
             </div>
@@ -24,19 +20,23 @@
         <div class="grid flex-grow h-[80%] card bg-base-100 rounded-box place-items-center mt-[5%]">
             <div class="canvas-wrap ">
                 <canvas class="canvas rounded-xl" width="426" height="240">
-                    <img
-                    src=""
-                    class="photo"
-                    alt="photo"
-                    />
+                    <form id="imageForm" method="post" action="/personal/foto/send" enctype="multipart/form-data">
+                        <input name="userId" id="userId" value="{{personal.id}}" type="text" hidden>
+                        <input type="file" id="imageUpload" name="image" style="display: none;">
+                        <img
+                        src=""
+                        class="photo"
+                        alt="photo"                    
+                        />
+                    </form>
                 </canvas>
             </div>
             <div class="join mt-5">
-                <button class="start-btn btn btn-outline join-item">
+                <button type="button" class="start-btn btn btn-outline join-item">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-camera"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
                     FOTO
                 </button>
-                <button id="enviar" class="start-btn btn btn-outline join-item">ENVIAR</button>
+                <button type="submit" id="enviar" class="start-btn btn btn-outline join-item">ENVIAR</button>
             </div>
         </div>
     </div>
@@ -47,7 +47,6 @@
             <li class="step">Finalizar registro</li>
         </ul>
     </div>
-
 </div>
 <script defer src="/js/registroFoto.js"></script>
 

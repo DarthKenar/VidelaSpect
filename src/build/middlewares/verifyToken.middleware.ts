@@ -11,7 +11,6 @@ export function verifyToken(req:Request, res:Response, next:NextFunction){
             return res.render("error", {messages: validation.messages})
         }else{
             const decoded = jwt.verify(token, process.env.JWT_TOKEN_KEY)
-            console.log(decoded)
             next()
         }
     }catch (error) {

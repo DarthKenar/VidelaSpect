@@ -102,6 +102,6 @@ export const makeRegistrationMessageRefuse = async (validation:ValidationClass, 
     let registers = await getTodayRegistersWithPersonal(personal)
     let entrada = registers[0];
     let salida = registers[registers.length-1];
-    validation.addMessage(`No se puede realizar un nuevo registro ya que hoy ya se han realizado las cargas correspondientes a su entrada y salida. <br> Entrada: ${entrada.time} <br> Salida: ${salida.time} `, "warning")
+    validation.addMessage(`No se puede realizar un nuevo registro ya que hoy ya se han realizado las cargas correspondientes a su entrada y salida. <br> Entrada: ${entrada} <br> Salida: ${salida} `, "warning")
     return validation
 }

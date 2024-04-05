@@ -10,7 +10,6 @@ import { getAiOptionsOrCreate } from "../utils/adminOptions.utils";
 import { getImageClassification } from "../helpers/huggingface.helpers";
 import { getPersonalWhitId } from "../utils/adminPanel.utils";
 
-const PORT = process.env.PORT
 const jwt = require("jsonwebtoken")
 
 export const getRegistroDNI = async (req:Request, res:Response)=>{
@@ -70,6 +69,7 @@ export const postRegistroDNI = async (req:Request, res:Response)=>{
 
 export const postRegistroFoto = async (req:Request, res:Response)=>{
     try{
+        console.log(req.body.userId)
         let personal = await getPersonalWhitId(req.body.userId)
         if(personal){
             let validation = new ValidationClass
@@ -88,6 +88,7 @@ export const postRegistroFoto = async (req:Request, res:Response)=>{
                     await saveImage(register.id, img)
                     validation = await makeRegistrationMessage(validation, personal)
                 }
+                console.log("registroOk")
                 res.render("registroOk",{personal, messages: validation.messages})
             }else{
                 validation = await makeRegistrationMessageRefuse(validation, personal)
