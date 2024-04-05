@@ -133,7 +133,6 @@ export const exportExcel = async(objectList:Personal[]|Registro[],input:string, 
     }
 
     let excelPath:string;
-
     if (objectList[0] instanceof Personal) {
         excelPath = PATH.join(__dirname, `../../database/excel/personal.xlsx`)
     }else{
@@ -183,7 +182,6 @@ export const sendExcel = async(validation:ValidationClass ,excelPath:string, ema
             pass: process.env.EMAIL_PASS,
         },
         });
-    
         const fileName = excelPath.split("\\").pop()
         // send mail with defined transport object
         const info = await transporter.sendMail({
@@ -199,7 +197,6 @@ export const sendExcel = async(validation:ValidationClass ,excelPath:string, ema
                 },
             ]
         });
-        
         console.log("Message sent: %s", info.messageId);
         validation.addMessage("El archivo excel se ha enviado correctamente. Por favor revise su casilla de correo no deseado.","success")
         return validation

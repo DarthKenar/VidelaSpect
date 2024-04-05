@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import DataBase from "../../database/data-source";
 import { Personal, Registro } from "../../database/entity/models";
-import { saveImage, getTodayRegistersWithPersonal, isPar, getDate, getPassWhitPersonal, clearCookies, createRegisterWithPersonal, makeRegistrationMessage, makeRegistrationMessageRefuse } from "../utils/personal.utils"
-import { validateDailyStaffRegistration } from "../validators/personal.validator"
+import { saveImage, getPassWhitPersonal, clearCookies, createRegisterWithPersonal, makeRegistrationMessage, makeRegistrationMessageRefuse, getPersonalWhitDni, getIsParRegistersQuantity } from "../utils/personal.utils"
+import { existDniValidation, existPersonalWhitDni, validateDailyStaffRegistration } from "../validators/personal.validator"
 import { ValidationClass , Image, error} from "../interfaces/interfaces";
 import {comparePass} from "../helpers/bcrypt.helpers"
 import { getPersonalUiOrCreate } from "../utils/adminProfile.utils";
@@ -24,42 +24,30 @@ export const getRegistroDNI = async (req:Request, res:Response)=>{
 
 export const postRegistroDNI = async (req:Request, res:Response)=>{
     try{
-        if(req.body.dni){
-            let dni:string = req.body.dni.toString()
-            let personalRepository = DataBase.getRepository(Personal)
-            let personal = await personalRepository.findOneBy({dni})
+        let validation = new ValidationClass
+        let dni = req.body.dni
+        validation = existDniValidation(validation, dni)
+        validation = await existPersonalWhitDni(validation, dni)
+        if (validation.status) {
+            let personal = await getPersonalWhitDni(dni)
             if(personal){
                 if(!personal.admin){
-                    let cantidadDeRegistros = await (await getTodayRegistersWithPersonal(personal)).length
-                    if(isPar(cantidadDeRegistros) && cantidadDeRegistros < personal.dailyEntries){
-                        var tipoDeRegistro = "entrada"
-                        res.render("registroFoto", {personal, tipoDeRegistro})
-                    }else if(!isPar(cantidadDeRegistros) && cantidadDeRegistros < personal.dailyEntries){
-                        var tipoDeRegistro = "salida"
-                        res.render("registroFoto", {personal, tipoDeRegistro})
-                    }else{
-                        let ahora = new Date
-                        let fecha = getDate(ahora)
-                        let registroRepository = DataBase.getRepository(Registro)
-                        let registros = await registroRepository.findBy({personal_id:personal.id,date:fecha})
-                        if (Array.isArray(registros)) {
-                            let entrada = registros[0];
-                            let salida = registros[registros.length-1];
-                            res.render("registroError",{personal, entrada, salida, error:`No se puede realizar un nuevo registro ya que hoy ya se han realizado las cargas para su entrada y salida de la escuela.`})
+                    validation = await validateDailyStaffRegistration(validation, personal)
+                    if (validation.status) {
+                        if(await getIsParRegistersQuantity(personal)){
+                            var tipoDeRegistro = "entrada"
+                            res.render("registroFoto", {personal, tipoDeRegistro})
+                        }else if(!await getIsParRegistersQuantity(personal)){
+                            var tipoDeRegistro = "salida"
+                            res.render("registroFoto", {personal, tipoDeRegistro})
                         }
+                    }else{
+                        res.render("registroError",{personal, messages: validation.messages})
                     }
                 }else{
                     res.render("registroPassword",{admin: personal})
                 }
-            }else{
-                let validation = new ValidationClass
-                validation.addMessage(`El número de DNI - ${dni} no está registrado en el sistema. Contacte al administrador.`, "error")
-                res.render("registroDNI",{messages: validation.messages})
             }
-        }else{
-            let validation = new ValidationClass
-            validation.addMessage("El número de DNI no fue ingresado.","error")
-            res.render("registroDNI",{messages: validation.messages})
         }
     }catch(err){
         console.log(err)
@@ -81,15 +69,17 @@ export const postRegistroFoto = async (req:Request, res:Response)=>{
                 if (aiOptions.status) {
                     let data = await getImageClassification(img)
                     console.log(data)
+                    //TODO:
                     //hacer algo con la información que devuelve el modelo
+                    //validaciones de ia?
 
                     await saveImage(register.id, img)
+                    res.render("registroOk",{personal, messages: validation.messages})
                 }else{
                     await saveImage(register.id, img)
                     validation = await makeRegistrationMessage(validation, personal)
+                    res.render("registroOk",{personal, messages: validation.messages})
                 }
-                console.log("registroOk")
-                res.render("registroOk",{personal, messages: validation.messages})
             }else{
                 validation = await makeRegistrationMessageRefuse(validation, personal)
                 res.render("registroError",{personal, messages: validation.messages})

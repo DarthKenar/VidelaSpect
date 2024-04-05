@@ -93,7 +93,7 @@ export const makeRegistrationMessage = async (validation:ValidationClass, person
   }else{
       var tipoDeRegistro = "salida"
   }
-  validation.addMessage(`Se ha registrado correctamente su ${tipoDeRegistro} a las: ${hours}:${minutesString} <br> Esperamos que tenga una excelente jornada laboral.`, "success")
+  validation.addMessage(`Se ha registrado correctamente su ${tipoDeRegistro} a las: ${hours}:${minutesString} \nEsperamos que tenga una excelente jornada laboral.`, "success")
   return validation
 }
 
@@ -102,6 +102,17 @@ export const makeRegistrationMessageRefuse = async (validation:ValidationClass, 
     let registers = await getTodayRegistersWithPersonal(personal)
     let entrada = registers[0];
     let salida = registers[registers.length-1];
-    validation.addMessage(`No se puede realizar un nuevo registro ya que hoy ya se han realizado las cargas correspondientes a su entrada y salida. <br> Entrada: ${entrada} <br> Salida: ${salida} `, "warning")
+    validation.addMessage(`No se puede realizar un nuevo registro ya que hoy ya se han realizado las cargas correspondientes a su entrada y salida. \nEntrada: ${entrada.time} \nSalida: ${salida.time} `, "warning")
     return validation
+}
+
+export const getPersonalWhitDni = async (dni:string):Promise<Personal|null>=>{
+  let personalRepository = await DataBase.getRepository(Personal)
+  let personal = await personalRepository.findOneBy({dni})
+  return personal
+}
+
+export const getIsParRegistersQuantity = async (personal:Personal):Promise<boolean>=>{
+  let cantidadDeRegistros = await (await getTodayRegistersWithPersonal(personal)).length
+  return isPar(cantidadDeRegistros) && cantidadDeRegistros < personal.dailyEntries
 }

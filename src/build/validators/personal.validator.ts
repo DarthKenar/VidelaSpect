@@ -2,7 +2,7 @@ import DataBase from "../../database/data-source"
 import { Personal, Registro } from "../../database/entity/models"
 import { comparePass } from "../helpers/bcrypt.helpers"
 import {ValidationClass} from "../interfaces/interfaces"
-import { getDate, getTime } from "../utils/personal.utils"
+import { getDate, getTime, makeRegistrationMessageRefuse } from "../utils/personal.utils"
 
 export const areEmptyFieldsInPersonal = (validation:ValidationClass, name:string, dni:string, position:string):ValidationClass => {
     if (name.length === 0 || dni.length === 0 || position.length === 0) {
@@ -58,7 +58,25 @@ export const validateDailyStaffRegistration = async(validation: ValidationClass,
     let registers = await registroRepository.findBy({personal_id:personal.id,date:date})
     if(registers.length === personal.dailyEntries){
       validation.status = false
-      validation.addMessage("No se puede realizar un nuevo registro ya que hoy ya se han realizado las cargas correspondientes a su entrada y salida.", "warning")
+      validation = await makeRegistrationMessageRefuse(validation, personal)
     }
     return validation
   }
+
+export const existDniValidation = (validation:ValidationClass, dni:string):ValidationClass=>{
+    if (!dni) {
+        validation.status = false
+        validation.addMessage("Por favor ingrese un número de DNI.","warning")
+    }
+    return validation
+}
+
+export const existPersonalWhitDni = async (validation:ValidationClass, dni:string):Promise<ValidationClass>=>{
+    let personalRepository = await DataBase.getRepository(Personal)
+    let personal = await personalRepository.findOneBy({dni})
+    if (!personal) {
+        validation.status = false
+        validation.addMessage(`El número de DNI - ${dni} no está registrado en el sistema. Contacte al administrador.`,"error")
+    }
+    return validation
+}
