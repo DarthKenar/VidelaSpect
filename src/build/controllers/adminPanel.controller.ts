@@ -233,7 +233,7 @@ export const getPanelPersonalExcel = async (req:Request, res:Response)=>{
         let admin = req.admin
         let personal = await personalFiltered(input, select)
         let validation = new ValidationClass
-        validation = await validateAndHandleExcelExport(validation, personal, emailOption, admin, input, select)
+        validation = await validateAndHandleExcelExport(validation, personal, emailOption, admin.id, input, select)
         res.render("adminPanelPersonalResponse",{personal, input, select, messages: validation.messages})
 
     }catch(err){
@@ -250,7 +250,7 @@ export const getPanelRegisterExcel = async (req:Request, res:Response)=>{
         let admin = req.admin
         let registros = await registersFiltered(input, select)
         let validation = new ValidationClass
-        validation = await validateAndHandleExcelExport(validation, registros, emailOption, admin, input, select)
+        validation = await validateAndHandleExcelExport(validation, registros, emailOption, admin.id, input, select)
         res.render("adminPanelRegistrosResponse",{registros, input, select, messages: validation.messages})
 
     }catch(err){

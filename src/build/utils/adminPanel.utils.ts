@@ -220,6 +220,7 @@ export const getPersonalWhitId = async(id:number):Promise<Personal|null>=>{
 export const validateAndHandleExcelExport = async(validation:ValidationClass, list:any[], emailOption:boolean, userId:any, input:string, select:string):Promise<ValidationClass>=>{
     validation = listIsNotEmpty(validation, list)
     if (emailOption) {
+        console.log(userId)
         let email = await getEmailWhitUserId(userId)
         validation = emailIsNotEmpty(validation, email)
         if (validation.status && email) {
