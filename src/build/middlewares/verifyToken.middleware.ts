@@ -1,8 +1,6 @@
-require('dotenv').config();
 const jwt = require("jsonwebtoken")
 import { NextFunction, Request, Response } from "express";
 import { ValidationClass } from "../interfaces/interfaces";
-
 
 export function verifyToken(req:Request, res:Response, next:NextFunction){
     try{
@@ -13,6 +11,7 @@ export function verifyToken(req:Request, res:Response, next:NextFunction){
             return res.render("error", {messages: validation.messages})
         }else{
             const decoded = jwt.verify(token, process.env.JWT_TOKEN_KEY)
+            console.log(decoded)
             next()
         }
     }catch (error) {

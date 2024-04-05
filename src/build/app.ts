@@ -9,6 +9,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser')
 import { verifyToken } from "./middlewares/verifyToken.middleware"
 import { if_eq, capitalizeFirstLetter } from "./helpers/handlebars.helpers"
+import { verifyUserId } from "./middlewares/verifyUserId.middleware";
 
 //Handlebars config
     var hbs = exphbs.create({
@@ -45,7 +46,7 @@ const routerAdminProfile = require('./routes/adminProfile.routes');
 app.use('/admin/profile', verifyToken, routerAdminProfile)
 
 const routerAdminOptions = require('./routes/adminOptions.routes');
-app.use('/admin/options', verifyToken, routerAdminOptions)
+app.use('/admin/options', verifyToken, verifyUserId, routerAdminOptions)
 //...
 
 app.use("/",(req:Request, res:Response)=>{
