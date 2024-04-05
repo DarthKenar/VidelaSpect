@@ -57,7 +57,6 @@ export const postRegistroDNI = async (req:Request, res:Response)=>{
 
 export const postRegistroFoto = async (req:Request, res:Response)=>{
     try{
-        console.log(req.body.userId)
         let personal = await getPersonalWhitId(req.body.userId)
         if(personal){
             let validation = new ValidationClass
