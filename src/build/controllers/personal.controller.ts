@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import DataBase from "../../database/data-source";
 import { Personal, Registro } from "../../database/entity/models";
 import { saveImage, getPassWhitPersonal, clearCookies, createRegisterWithPersonal, makeRegistrationMessage, makeRegistrationMessageRefuse, getPersonalWhitDni, getIsParRegistersQuantity } from "../utils/personal.utils"
-import { existDniValidation, existPersonalWhitDni, validateDailyStaffRegistration } from "../validators/personal.validator"
+import { aiValidation, existDniValidation, existPersonalWhitDni, validateDailyStaffRegistration } from "../validators/personal.validator"
 import { ValidationClass , Image, error} from "../interfaces/interfaces";
 import {comparePass} from "../helpers/bcrypt.helpers"
 import { getPersonalUiOrCreate } from "../utils/adminProfile.utils";
@@ -68,12 +68,15 @@ export const postRegistroFoto = async (req:Request, res:Response)=>{
                 if (aiOptions.status) {
                     let data = await getImageClassification(img)
                     console.log(data)
-                    //TODO:
-                    //hacer algo con la información que devuelve el modelo
-                    //validaciones de ia?
-
-                    await saveImage(register.id, img)
-                    res.render("registroOk",{personal, messages: validation.messages})
+                    validation = await aiValidation(validation, data, aiOptions)
+                    if(validation.status){
+                        await saveImage(register.id, img)
+                        validation = await makeRegistrationMessage(validation, personal)
+                        res.render("registroOk",{personal, data, messages: validation.messages})
+                    }else{
+                        validation = await makeRegistrationMessageRefuse(validation, personal)
+                        res.render("registroError",{personal, messages: validation.messages})
+                    }
                 }else{
                     await saveImage(register.id, img)
                     validation = await makeRegistrationMessage(validation, personal)

@@ -1,5 +1,5 @@
 import DataBase from "../../database/data-source"
-import { Personal, Registro } from "../../database/entity/models"
+import { AiOptions, Personal, Registro } from "../../database/entity/models"
 import { comparePass } from "../helpers/bcrypt.helpers"
 import {ValidationClass} from "../interfaces/interfaces"
 import { getDate, getTime, makeRegistrationMessageRefuse } from "../utils/personal.utils"
@@ -77,6 +77,28 @@ export const existPersonalWhitDni = async (validation:ValidationClass, dni:strin
     if (!personal) {
         validation.status = false
         validation.addMessage(`El número de DNI - ${dni} no está registrado en el sistema. Contacte al administrador.`,"error")
+    }
+    return validation
+}
+
+export const aiValidation = async (validation:ValidationClass, data:any, aiOptions:AiOptions):Promise<ValidationClass>=>{
+    if (data) {
+        console.log(data)
+        for (let index = 0; index < data.length; index++) {
+            let score = data[index].score;
+            let label = data[index].label;
+            if (label === "Human Face") {
+                if (score*100 < aiOptions.accuracy) {
+                    validation.status = false
+                    validation.addMessage("La imagen no contiene un rostro humano.","error")
+                }else{
+                    validation.addMessage("La imagen contiene un rostro humano.","success")
+                }
+            }
+        }
+    }else{
+        validation.status = false
+        validation.addMessage("No se pudo obtener información de la imagen.","error")
     }
     return validation
 }
