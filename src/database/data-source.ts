@@ -1,6 +1,6 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm"
-import { Personal, Registro, Auth, PersonalUi, AiOptions} from "./entity/models"
+import { Personal, UserInOutRecords, Auth, PersonalUi, AiOptions} from "./entity/models"
 import { saveAuth, savePersonal } from "../build/utils/adminPanel.utils";
 
 const PATH = require("path")
@@ -33,7 +33,7 @@ function getDataSource(): DataSource {
                 database: PATH.join(__dirname, "../database/productiondatabase.sqlite"),
                 synchronize: false,
                 logging: false,
-                entities: [Personal, Registro, Auth, PersonalUi, AiOptions],
+                entities: [Personal, UserInOutRecords, Auth, PersonalUi, AiOptions],
                 migrations: [],
                 subscribers: [], 
             });
@@ -46,7 +46,7 @@ function getDataSource(): DataSource {
                 database: PATH.join(__dirname, "../database/devdatabase.sqlite"),
                 synchronize: true,
                 logging: false,
-                entities: [Personal, Registro, Auth, PersonalUi, AiOptions],
+                entities: [Personal, UserInOutRecords, Auth, PersonalUi, AiOptions],
                 migrations: [],
                 subscribers: [], 
             });
@@ -63,7 +63,7 @@ function getDataSource(): DataSource {
                 database: PATH.join(__dirname, "../database/testdatabase.sqlite"),
                 synchronize: true,
                 logging: false,
-                entities: [Personal, Registro, Auth, PersonalUi, AiOptions],
+                entities: [Personal, UserInOutRecords, Auth, PersonalUi, AiOptions],
                 migrations: [],
                 subscribers: [], 
             });

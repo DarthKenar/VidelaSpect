@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import DataBase from "../../database/data-source";
-import { Personal, Registro } from "../../database/entity/models";
-import { saveImage, getPassWhitPersonal, clearCookies, createRegisterWithPersonal, makeRegistrationMessage, makeRegistrationMessageRefuse, getPersonalWhitDni, getIsParRegistersQuantity } from "../utils/personal.utils"
-import { aiValidation, existDniValidation, existPersonalWhitDni, makeAiData, validateDailyStaffRegistration } from "../validators/personal.validator"
+import { Personal, UserInOutRecords } from "../../database/entity/models";
+import { saveImage, getPassWhitPersonal, clearCookies, createRegisterWithPersonal, makeRegistrationMessage, makeRegistrationMessageRefuse, getPersonalWhitDni, getIsParRegistersQuantity, makeAiData} from "../utils/personal.utils"
+import { validateHumanFaceInImage, validateExistDni, validateExistPersonalWhitDni, validateDailyStaffRegistration } from "../validators/personal.validator"
 import { ValidationClass , Image, error, AiDataClass} from "../interfaces/interfaces";
 import {comparePass} from "../helpers/bcrypt.helpers"
 import { getPersonalUiOrCreate } from "../utils/adminProfile.utils";
@@ -26,8 +26,8 @@ export const postRegistroDNI = async (req:Request, res:Response)=>{
     try{
         let validation = new ValidationClass
         let dni = req.body.dni
-        validation = existDniValidation(validation, dni)
-        validation = await existPersonalWhitDni(validation, dni)
+        validation = validateExistDni(validation, dni)
+        validation = await validateExistPersonalWhitDni(validation, dni)
         if (validation.status) {
             let personal = await getPersonalWhitDni(dni)
             if(personal){
@@ -70,7 +70,7 @@ export const postRegistroFoto = async (req:Request, res:Response)=>{
                 if (aiOptions.status) {
                     let data = await getImageClassification(img)
                     console.log(data)
-                    validation = await aiValidation(validation, data, aiOptions)
+                    validation = await validateHumanFaceInImage(validation, data, aiOptions)
                     if(validation.status){
                         await saveImage(register.id, img)
                         validation = await makeRegistrationMessage(validation, personal)

@@ -1,11 +1,11 @@
 import { response } from "express"
 import DataBase from "../../database/data-source"
-import { AiOptions, Personal, Registro } from "../../database/entity/models"
+import { AiOptions, Personal, UserInOutRecords } from "../../database/entity/models"
 import { comparePass } from "../helpers/bcrypt.helpers"
 import {AiDataClass, ValidationClass} from "../interfaces/interfaces"
-import { getDate, getTime, makeRegistrationMessageRefuse } from "../utils/personal.utils"
+import { getDate, makeRegistrationMessageRefuse } from "../utils/personal.utils"
 
-export const areEmptyFieldsInPersonal = (validation:ValidationClass, name:string, dni:string, position:string):ValidationClass => {
+export const validateAreEmptyFieldsInPersonal = (validation:ValidationClass, name:string, dni:string, position:string):ValidationClass => {
     if (name.length === 0 || dni.length === 0 || position.length === 0) {
         validation.status = false
         validation.addMessage("Por favor completa los campos requeridos.","warning")
@@ -13,7 +13,7 @@ export const areEmptyFieldsInPersonal = (validation:ValidationClass, name:string
     return validation
 }
 
-export const arePasswordsEqual = (validation:ValidationClass, password:string, password2:string):ValidationClass=>{
+export const validateArePasswordsEqual = (validation:ValidationClass, password:string, password2:string):ValidationClass=>{
     if (password !== password2) {
         validation.status = false
         validation.addMessage("Las contraseñas no coinciden.","warning")
@@ -21,7 +21,7 @@ export const arePasswordsEqual = (validation:ValidationClass, password:string, p
     return validation
 }
 
-export const arePasswordsEmpty = (validation:ValidationClass, password:string, password2:string):ValidationClass=>{
+export const validateArePasswordsEmpty = (validation:ValidationClass, password:string, password2:string):ValidationClass=>{
     if (password === "" || password2 === "") {
         validation.status = false
         validation.addMessage("Las contraseñas no pueden estar vacías","warning")
@@ -29,7 +29,7 @@ export const arePasswordsEmpty = (validation:ValidationClass, password:string, p
     return validation
 }
 
-export const arePasswordsMinLength = (validation:ValidationClass, password:string, password2:string, len:number):ValidationClass=>{
+export const validateArePasswordsMinLength = (validation:ValidationClass, password:string, password2:string, len:number):ValidationClass=>{
     if (password.length < len || password2.length < len) {
         validation.status = false
         validation.addMessage(`Las contraseñas debe tener al menos ${len} caracteres.`,"warning")
@@ -37,14 +37,14 @@ export const arePasswordsMinLength = (validation:ValidationClass, password:strin
     return validation
 }
 
-export const passwordValidations = (validation:ValidationClass,password:string, password2:string):ValidationClass=>{
-    validation = arePasswordsEmpty(validation, password, password2)
-    validation = arePasswordsEqual(validation, password, password2)
-    validation = arePasswordsMinLength(validation, password, password2, 8)
+export const validatePassword = (validation:ValidationClass,password:string, password2:string):ValidationClass=>{
+    validation = validateArePasswordsEmpty(validation, password, password2)
+    validation = validateArePasswordsEqual(validation, password, password2)
+    validation = validateArePasswordsMinLength(validation, password, password2, 8)
     return validation
 }
 
-export const comparePassValidation = async (validation:ValidationClass, passwordOld:string, passwordInDb:string):Promise<ValidationClass>=>{
+export const validateComparePass = async (validation:ValidationClass, passwordOld:string, passwordInDb:string):Promise<ValidationClass>=>{
     if(!await comparePass(passwordOld, passwordInDb)) {
         validation.status = false
         validation.addMessage("La contraseña actual es incorrecta.","warning")
@@ -55,7 +55,7 @@ export const comparePassValidation = async (validation:ValidationClass, password
 export const validateDailyStaffRegistration = async(validation: ValidationClass, personal:Personal):Promise<ValidationClass>=>{
     let dateTime = new Date
     let date = getDate(dateTime)
-    let registroRepository = await DataBase.getRepository(Registro)
+    let registroRepository = await DataBase.getRepository(UserInOutRecords)
     let registers = await registroRepository.findBy({personal_id:personal.id,date:date})
     if(registers.length === personal.dailyEntries){
       validation.status = false
@@ -64,7 +64,7 @@ export const validateDailyStaffRegistration = async(validation: ValidationClass,
     return validation
   }
 
-export const existDniValidation = (validation:ValidationClass, dni:string):ValidationClass=>{
+export const validateExistDni = (validation:ValidationClass, dni:string):ValidationClass=>{
     if (!dni) {
         validation.status = false
         validation.addMessage("Por favor ingrese un número de DNI.","warning")
@@ -72,7 +72,7 @@ export const existDniValidation = (validation:ValidationClass, dni:string):Valid
     return validation
 }
 
-export const existPersonalWhitDni = async (validation:ValidationClass, dni:string):Promise<ValidationClass>=>{
+export const validateExistPersonalWhitDni = async (validation:ValidationClass, dni:string):Promise<ValidationClass>=>{
     let personalRepository = await DataBase.getRepository(Personal)
     let personal = await personalRepository.findOneBy({dni})
     if (!personal) {
@@ -82,7 +82,7 @@ export const existPersonalWhitDni = async (validation:ValidationClass, dni:strin
     return validation
 }
 
-export const aiValidation = async (validation:ValidationClass, data:any, aiOptions:AiOptions):Promise<ValidationClass>=>{
+export const validateHumanFaceInImage = async (validation:ValidationClass, data:any, aiOptions:AiOptions):Promise<ValidationClass>=>{
     if (data) {
         console.log(data)
         for (let index = 0; index < data.length; index++) {
@@ -104,44 +104,3 @@ export const aiValidation = async (validation:ValidationClass, data:any, aiOptio
     return validation
 }
 
-export const makeAiData = (data:any):AiDataClass=>{
-
-    let replaceLabel = (label:string):string =>{
-        let newLabel = label
-        switch (label) {
-            case "Human Face":
-                newLabel = "Rostro humano"
-                break;
-            case "Empty Place":
-                newLabel = "Lugar vacío"
-                break;
-            case "Inanimate Object":
-                newLabel = "Objeto inanimado"
-                break;
-        }
-        return newLabel
-    }
-
-    var score: number = 0
-    var label: string = "Error"
-    var response:string = "No se pudo obtener información de la imagen."
-
-    for (let index = 0; index < data.length; index++) {
-        if (data[index].label === "Human Face") {
-            score = Math.round(data[index].score*100)
-            label = replaceLabel(data[index].label);
-            if (index === 0) {
-                response = "Muchas gracias por completar el registro."
-            }
-        }
-        if (data[index].label === "Empty Place" && index === 0) {
-            response = "En la foto pareciera figurar un lugar vacío. Por favor, acérquese a la cámara."
-        }
-        if (data[index].label === "Inanimate Object" && index === 0) {
-            response = "En la foto pareciera figurar un objeto inanimado. Por favor, acérquese a la cámara."
-        }
-    }
-
-    let aiData = (new AiDataClass(score, replaceLabel(label), response))
-    return aiData
-}

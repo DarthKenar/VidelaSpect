@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import DataBase from "../../database/data-source";
-import { Auth, Personal, Registro } from "../../database/entity/models";
-import { Image, ValidationClass } from "../interfaces/interfaces";
+import { Auth, Personal, UserInOutRecords } from "../../database/entity/models";
+import { AiDataClass, Image, ValidationClass } from "../interfaces/interfaces";
 const fs = require('fs');
 // Escribe el buffer en un archivo
 
@@ -30,12 +30,12 @@ export async function saveImage(registroId:number, image:Image|undefined){
     }
 }
 
-export const createRegisterWithPersonal = async (personal:Personal):Promise<Registro>=>{
-  let registerRepository = DataBase.getRepository(Registro)
+export const createRegisterWithPersonal = async (personal:Personal):Promise<UserInOutRecords>=>{
+  let registerRepository = DataBase.getRepository(UserInOutRecords)
   let dateTime = new Date
   let date = getDate(dateTime)
   let time = getTime(dateTime)
-  let registerNew = new Registro
+  let registerNew = new UserInOutRecords
   registerNew.personal_id = personal.id
   registerNew.personal_name = personal.name
   registerNew.date = date
@@ -44,10 +44,10 @@ export const createRegisterWithPersonal = async (personal:Personal):Promise<Regi
   return registerNew
 }
 
-export async function getTodayRegistersWithPersonal(personal:Personal):Promise<Registro[]> {
+export async function getTodayRegistersWithPersonal(personal:Personal):Promise<UserInOutRecords[]> {
   let dateTime = new Date
   let fecha = getDate(dateTime)
-  let registroRepository = await DataBase.getRepository(Registro)
+  let registroRepository = await DataBase.getRepository(UserInOutRecords)
   let registers = await registroRepository.findBy({personal_id:personal.id,date:fecha})
   return registers
 } 
@@ -115,4 +115,46 @@ export const getPersonalWhitDni = async (dni:string):Promise<Personal|null>=>{
 export const getIsParRegistersQuantity = async (personal:Personal):Promise<boolean>=>{
   let cantidadDeRegistros = await (await getTodayRegistersWithPersonal(personal)).length
   return isPar(cantidadDeRegistros) && cantidadDeRegistros < personal.dailyEntries
+}
+
+export const makeAiData = (data:any):AiDataClass=>{
+
+  let replaceLabel = (label:string):string =>{
+      let newLabel = label
+      switch (label) {
+          case "Human Face":
+              newLabel = "Rostro humano"
+              break;
+          case "Empty Place":
+              newLabel = "Lugar vacío"
+              break;
+          case "Inanimate Object":
+              newLabel = "Objeto inanimado"
+              break;
+      }
+      return newLabel
+  }
+
+  var score: number = 0
+  var label: string = "Error"
+  var response:string = "No se pudo obtener información de la imagen."
+
+  for (let index = 0; index < data.length; index++) {
+      if (data[index].label === "Human Face") {
+          score = Math.round(data[index].score*100)
+          label = replaceLabel(data[index].label);
+          if (index === 0) {
+              response = "Muchas gracias por completar el registro."
+          }
+      }
+      if (data[index].label === "Empty Place" && index === 0) {
+          response = "En la foto pareciera figurar un lugar vacío. Por favor, acérquese a la cámara."
+      }
+      if (data[index].label === "Inanimate Object" && index === 0) {
+          response = "En la foto pareciera figurar un objeto inanimado. Por favor, acérquese a la cámara."
+      }
+  }
+
+  let aiData = (new AiDataClass(score, replaceLabel(label), response))
+  return aiData
 }

@@ -1,13 +1,14 @@
-import e, { Request, Response } from "express";
-import { getAuthOrCreate, getPersonalWhitId } from "../utils/adminPanel.utils";
+import { Request, Response } from "express";
+import { getAuthOrCreate } from "../utils/adminPanel.utils";
 import { ValidationClass } from "../interfaces/interfaces";
-import DataBase from "../../database/data-source";
-import { passwordValidations, comparePassValidation } from "../validators/personal.validator";
-import { emailValidations, existImageSelected, imageOnList, isNotSingleAccount } from "../validators/adminProfile.validator"
+import { validatePassword, validateComparePass } from "../validators/personal.validator";
+import { validateExistImageSelected, validateImageOnList, validateIsNotSingleAccount } from "../validators/adminProfile.validator"
 import { getListFileNamesOnDir, getPersonalUiOrCreate } from "../utils/adminProfile.utils"
 import { encryptPass } from "../helpers/bcrypt.helpers";
-import path from "path";
 import { clearCookies } from "../utils/personal.utils";
+import { emailValidations } from "../validators/general.validator";
+import DataBase from "../../database/data-source";
+import path from "path";
 
 export const getProfile = async (req:Request, res:Response) => {
     let admin = req.admin
@@ -52,8 +53,8 @@ export const postProfilePassword = async (req:Request, res:Response) => {
     let validation = new ValidationClass
     let personalUi = await getPersonalUiOrCreate(admin)
     let auth = await getAuthOrCreate(admin)
-    validation = await comparePassValidation(validation, passwordOld, auth.password)
-    validation = passwordValidations(validation, password, password2)
+    validation = await validateComparePass(validation, passwordOld, auth.password)
+    validation = validatePassword(validation, password, password2)
     if (validation.status) {
         auth.password = await encryptPass(password)
         DataBase.manager.save(auth)
@@ -77,8 +78,8 @@ export const postProfileImage = async (req:Request, res:Response) => {
     let validation = new ValidationClass
     let personalUi = await getPersonalUiOrCreate(admin)
     let filenamesList = getListFileNamesOnDir(path.join(__dirname, "../../public/images"))
-    validation = existImageSelected(validation, imageName)
-    validation = imageOnList(validation, imageName)
+    validation = validateExistImageSelected(validation, imageName)
+    validation = validateImageOnList(validation, imageName)
     if (validation.status) {
         personalUi.profile_image_name = imageName
         await DataBase.manager.save(personalUi)
@@ -92,7 +93,7 @@ export const postDeleteAccount = async (req:Request, res:Response) => {
     let validation = new ValidationClass
     let personalUi = await getPersonalUiOrCreate(admin)
     let auth = await getAuthOrCreate(admin)
-    validation = await isNotSingleAccount(validation)
+    validation = await validateIsNotSingleAccount(validation)
     if(validation.status){
         await DataBase.manager.remove(auth)
         await DataBase.manager.remove(personalUi)

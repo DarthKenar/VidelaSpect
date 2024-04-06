@@ -1,6 +1,5 @@
-import { config } from "dotenv";
 import DataBase from "../../database/data-source"
-import { Auth, Personal, Registro } from "../../database/entity/models"
+import { Auth, Personal, UserInOutRecords } from "../../database/entity/models"
 import {Like} from 'typeorm';
 import {encryptPass} from "../helpers/bcrypt.helpers"
 import { ValidationClass } from "../interfaces/interfaces"
@@ -8,10 +7,10 @@ const nodemailer = require("nodemailer");
 const PATH = require("path")
 var xl = require('excel4node');
 import fs from "fs"
-import { emailIsNotEmpty, listIsNotEmpty } from "../validators/adminProfile.validator";
+import { validateEmailIsNotEmpty, validateListIsNotEmpty } from "../validators/adminProfile.validator";
 
 
-const formalizeTitle = (title:string)=>{
+export const formalizeTitle = (title:string)=>{
     switch (title) {
         case "id":
             return "ID"
@@ -38,7 +37,7 @@ const formalizeTitle = (title:string)=>{
     }
 }
 
-const getEmailWhitUserId = async (userId:number):Promise<string|null>=>{
+export const getEmailWhitUserId = async (userId:number):Promise<string|null>=>{
     let personalRepository = DataBase.getRepository(Personal)
     let user = await personalRepository.findOneBy({id:userId})
     if (user) {
@@ -88,7 +87,7 @@ export const getAuthOrNull = async (personal:Personal):Promise<Auth|null> => {
     return auth
 }
 
-export const exportExcel = async(objectList:Personal[]|Registro[],input:string, select:string):Promise<string>=>{
+export const exportExcel = async(objectList:Personal[]|UserInOutRecords[],input:string, select:string):Promise<string>=>{
     
     var wb = new xl.Workbook();
     var ws = wb.addWorksheet(`${typeof objectList}`);
@@ -144,8 +143,8 @@ export const exportExcel = async(objectList:Personal[]|Registro[],input:string, 
 }
 
 export const registersFiltered = async(input:string, select:string)=>{
-    let registrations:Registro[];
-    let registroRepository = DataBase.getRepository(Registro)
+    let registrations:UserInOutRecords[];
+    let registroRepository = DataBase.getRepository(UserInOutRecords)
     if(select === "personal_name"){
         registrations = await registroRepository.findBy({personal_name: Like(`%${input}%`)});
     }else if(select === "fecha"){
@@ -214,21 +213,3 @@ export const getPersonalWhitId = async(id:number):Promise<Personal|null>=>{
     return personal
 }
 
-export const validateAndHandleExcelExport = async(validation:ValidationClass, list:any[], emailOption:boolean, userId:any, input:string, select:string):Promise<ValidationClass>=>{
-    validation = listIsNotEmpty(validation, list)
-    if (emailOption) {
-        console.log(userId)
-        let email = await getEmailWhitUserId(userId)
-        validation = emailIsNotEmpty(validation, email)
-        if (validation.status && email) {
-            let excelPath = await exportExcel(list,input,select)
-            validation = await sendExcel(validation, excelPath, email)
-        }
-    }else{
-        if (validation.status) {
-            await exportExcel(list,input,select)
-            validation.addMessage("El archivo excel se ha descargado correctamente.","success")
-        }
-    }
-    return validation
-}

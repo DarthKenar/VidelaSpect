@@ -1,8 +1,8 @@
 import { Request, Response } from "express"
 import { getPersonalUiOrCreate } from "../utils/adminProfile.utils"
 import { error, ValidationClass } from "../interfaces/interfaces"
-import { getAiOptionsOrCreate, updateAiAccuracy, updateAiStatus } from "../utils/adminOptions.utils"
-
+import { getAiOptionsOrCreate } from "../utils/adminOptions.utils"
+import { aiValidations } from "../validators/general.validator"
 
 export const getOptions = async (req: Request, res: Response)=>{
     try {
@@ -34,8 +34,7 @@ export const postAiOptions = async (req: Request, res: Response)=>{
         console.log(req.body.status)
         let status = req.body.status === "on" ? true : false
         let accuracy = req.body.accuracy
-        validation = await updateAiStatus(validation, status)
-        validation = await updateAiAccuracy(validation, accuracy)
+        validation = await aiValidations(validation, status, accuracy)
         if (validation.status) {
             let personalUi = await getPersonalUiOrCreate(admin)
             let aiOptions = await getAiOptionsOrCreate()

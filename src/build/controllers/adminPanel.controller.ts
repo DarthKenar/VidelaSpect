@@ -1,10 +1,11 @@
 import { Request, Response } from "express";
-import { Auth, Personal, Registro } from "../../database/entity/models";
+import { Auth, Personal, UserInOutRecords } from "../../database/entity/models";
 import DataBase from "../../database/data-source";
-import {savePersonal, registersFiltered, personalFiltered, sendExcel, saveAuth, getAuthOrCreate, deleteAuth, getPersonalWhitId, validateAndHandleExcelExport} from "../utils/adminPanel.utils"
-import {areEmptyFieldsInPersonal, passwordValidations} from "../validators/personal.validator"
+import { savePersonal, registersFiltered, personalFiltered, saveAuth, getAuthOrCreate, deleteAuth } from "../utils/adminPanel.utils"
+import { validateAndHandleExcelExport } from "../validators/adminPanel.validator"
+import  { validateAreEmptyFieldsInPersonal, validatePassword }  from "../validators/personal.validator"
 import * as fs from 'fs';
-import {error} from "../interfaces/interfaces"
+import { error } from "../interfaces/interfaces"
 import { ValidationClass } from "../interfaces/interfaces";
 import { getPersonalUiOrCreate } from "../utils/adminProfile.utils";
 const PATH = require("path")
@@ -32,8 +33,8 @@ export const getPanelPersonal = async (req:Request, res:Response)=>{
 }
 
 export const getPanelRegisters = async (req:Request, res:Response)=>{
-    let registroRepository = DataBase.getRepository(Registro)
-    let registros:Registro[] = await registroRepository.find()
+    let registroRepository = DataBase.getRepository(UserInOutRecords)
+    let registros:UserInOutRecords[] = await registroRepository.find()
     res.render("adminPanelRegistros",{registros})
 }
 
@@ -77,9 +78,9 @@ export const postCreatePersonal = async (req:Request, res:Response)=>{
         let password2:string = req.body.password2
         // Validaciones
         let validation = new ValidationClass()
-        validation = areEmptyFieldsInPersonal(validation, name, dni, position)
+        validation = validateAreEmptyFieldsInPersonal(validation, name, dni, position)
         if(admin) {
-            validation = passwordValidations(validation, password, password2)
+            validation = validatePassword(validation, password, password2)
         }
         // Acciones
         if (validation.status) {
@@ -125,9 +126,9 @@ export const postUpdatePersonal = async (req:Request, res:Response)=>{
             let validation = new ValidationClass()
             if (!personalToUpdate.admin) {
                 // Validaciones
-                validation = areEmptyFieldsInPersonal(validation, name, dni, position)
+                validation = validateAreEmptyFieldsInPersonal(validation, name, dni, position)
                 if(admin) {
-                    validation = passwordValidations(validation, password, password2)
+                    validation = validatePassword(validation, password, password2)
                 }
                 // Acciones
                 if (validation.status) {
@@ -186,9 +187,9 @@ export const getPanelRegisterPhoto = async (req:Request, res:Response)=>{
                 res.sendFile(fotoPath,(err)=>{console.log(err)})
             }else{
                 let validation = new ValidationClass
-                let registroRepository = DataBase.getRepository(Registro)
-                let registros:Registro[] = await registroRepository.find()
-                let registro:Registro|null = await registroRepository.findOneBy({id:registroId})
+                let registroRepository = DataBase.getRepository(UserInOutRecords)
+                let registros:UserInOutRecords[] = await registroRepository.find()
+                let registro:UserInOutRecords|null = await registroRepository.findOneBy({id:registroId})
                 if(registro){
                     validation.addMessage(`La foto buscada de ${registro.personal_name} no se encuentra.`,"error")
                     res.render("adminPanelRegistros",{registros, messages: validation.messages})

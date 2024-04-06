@@ -4,7 +4,7 @@ import { ValidationClass } from "../interfaces/interfaces";
 import { getListFileNamesOnDir } from "../utils/adminProfile.utils";
 import path from "path";
 
-const emailValidFormat = (validation: ValidationClass, email: string) => {
+export const ValidateEmailFormat = (validation: ValidationClass, email: string):ValidationClass => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!regex.test(email)) {
         validation.status = false
@@ -13,7 +13,7 @@ const emailValidFormat = (validation: ValidationClass, email: string) => {
     return validation
 }
 
-const emailMinLength = (validation: ValidationClass, email: string) => {
+export const validateEmailMinLength = (validation: ValidationClass, email: string):ValidationClass => {
     const maxLength = 50;
     if (email.length > maxLength) {
         validation.status = false;
@@ -22,7 +22,7 @@ const emailMinLength = (validation: ValidationClass, email: string) => {
     return validation;
 };
 
-const emailSameOldAndNew = (validation: ValidationClass, emailOld:string, emailNew: string) => {
+export const validateEmailSameOldAndNew = (validation: ValidationClass, emailOld:string, emailNew: string):ValidationClass => {
     if (emailOld.toLowerCase() === emailNew.toLowerCase()) {
         validation.status = false;
         validation.addMessage("El nuevo correo electrónico es igual al anterior. No se realizaron cambios", "warning")
@@ -30,22 +30,17 @@ const emailSameOldAndNew = (validation: ValidationClass, emailOld:string, emailN
     return validation;
 };
 
-export const emailValidations = (validation: ValidationClass, emailOld: string, emailNew:string): ValidationClass => {
-    validation = emailSameOldAndNew(validation, emailOld, emailNew)
-    validation = emailValidFormat(validation, emailNew)
-    validation = emailMinLength(validation, emailNew)
-    return validation
-};
 
-export const emailIsNotEmpty = (validation: ValidationClass, email: string|null) => {
+
+export const validateEmailIsNotEmpty = (validation: ValidationClass, email: string|null):ValidationClass => {
     if (email === "" || email === null) {
         validation.status = false;
-        validation.addMessage("Antes de intentar enviar un archivo por favor agregue un correo electrónico a su cuenta.", "warning")
+        validation.addMessage("Por favor agregue un correo electrónico.", "warning")
     }
     return validation;
 }
 
-export const listIsNotEmpty = (validation: ValidationClass, list: any[]) => {
+export const validateListIsNotEmpty = (validation: ValidationClass, list: any[]) => {
     if (list.length === 0) {
         validation.status = false;
         validation.addMessage("No hay registros disponibles.", "warning")
@@ -53,7 +48,7 @@ export const listIsNotEmpty = (validation: ValidationClass, list: any[]) => {
     return validation;
 }
 
-export const existImageSelected = (validation: ValidationClass, imageName: string):ValidationClass => {
+export const validateExistImageSelected = (validation: ValidationClass, imageName: string):ValidationClass => {
     if (!imageName) {
         validation.status = false
         validation.addMessage("Por favor seleccione una imagen.", "warning")
@@ -61,7 +56,7 @@ export const existImageSelected = (validation: ValidationClass, imageName: strin
     return validation
 }
 
-export const imageOnList = (validation: ValidationClass, imageName: string):ValidationClass => {
+export const validateImageOnList = (validation: ValidationClass, imageName: string):ValidationClass => {
     let filenamesList = getListFileNamesOnDir(path.join(__dirname, "../../public/images"))
     if (!filenamesList.includes(imageName)) {
         validation.status = false
@@ -70,7 +65,7 @@ export const imageOnList = (validation: ValidationClass, imageName: string):Vali
     return validation
 }
 
-export const isNotSingleAccount = async (validation: ValidationClass):Promise<ValidationClass> => {
+export const validateIsNotSingleAccount = async (validation: ValidationClass):Promise<ValidationClass> => {
     let personalRepository = DataBase.getRepository(Personal)
     let personalList = await personalRepository.find()
     if (personalList.length === 1) {
