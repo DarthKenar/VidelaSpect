@@ -48,6 +48,8 @@ export const postRegistroDNI = async (req:Request, res:Response)=>{
                     res.render("registroPassword",{admin: personal})
                 }
             }
+        }else{
+            res.render("registroError",{messages: validation.messages})
         }
     }catch(err){
         console.log(err)
