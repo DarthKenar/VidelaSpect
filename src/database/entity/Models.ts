@@ -4,6 +4,7 @@ import {
     Column,
     OneToOne,
     JoinColumn,
+    Unique,
 } from "typeorm"
 
 @Entity()
@@ -18,6 +19,7 @@ export class Personal {
     @Column()
     name: string
 
+    @Unique(["dni"])
     @Column()
     dni: string
 
