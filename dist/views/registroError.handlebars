@@ -1,11 +1,23 @@
-<dialog id="my_modal_3" class="modal">
-      <div class="modal-box">
-         <form method="dialog">
-         <a href="/personal/dni" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</a>
-         </form>
-         <h3 class="font-bold text-lg">{{personal.name}}</h3>
-        <textarea class="py-4 w-full resize-none h-32"  readonly >{{#with messages.[0]}}{{message}}{{/with}}</textarea>
-      </div>
+<dialog id="my_modal_3" class="modal max-w-[50%] m-auto">
+    <div class="modal-box max-w-[50%] p-10 glass">
+        <form method="dialog">
+            <a href="/personal/dni" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</a>
+        </form>
+        <h3 class="font-bold text-lg">{{personal.name}}</h3>
+        <p class="py-4 w-full resize-none" {{#unless data}}class="h-20"{{/unless}}  readonly >{{#with messages.[0]}}{{message}}{{/with}}</p>
+        <p>{{aiData.response}}</p>
+        {{#if aiData}}
+            <div class="w-full flex flex-col items-center justify-center gap-10">
+                  <h2>Coincidencia con rostro humano:</h2>
+                  <div class="avatar">
+                  <div class="w-24 rounded">
+                        <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                  </div>
+                  </div>
+                  <div class="radial-progress" style="--value:{{aiData.score}}; --size:12rem; --thickness: 2rem;" role="progressbar">{{aiData.score}}%</div>
+            </div>
+        {{/if}}
+    </div>
 </dialog>
 <script>
 document.addEventListener("DOMContentLoaded", function() {
@@ -13,3 +25,15 @@ var dialog = document.getElementById("my_modal_3");
 dialog.showModal();
 });
 </script>
+<section class="w-full h-full flex flex-col items-center justify-items-center justify-center">
+    <div class="h-[80%]">
+        <svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+    </div>
+    <div class="h-[5%]">
+        <ul class="steps mt-5">
+            <li class="step step-primary">Ingresar DNI</li>
+            <li class="step step-primary">Sacar foto</li>
+            <li class="step">Finalizar registro</li>
+        </ul>
+    </div>
+</section>

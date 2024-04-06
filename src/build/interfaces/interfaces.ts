@@ -47,14 +47,17 @@ export class ValidationClass implements Validation {
 interface AiData {
     score: number;
     label: string;
+    response: string;
   }
 
 export class AiDataClass implements AiData {
     score: number;
     label: string;
+    response: string;
 
-    constructor(score: number, label: string) {
+    constructor(score: number, label: string, response: string) {
         this.score = score;
         this.label = label;
+        this.response = response;
     }
 }

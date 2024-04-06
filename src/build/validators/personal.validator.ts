@@ -1,3 +1,4 @@
+import { response } from "express"
 import DataBase from "../../database/data-source"
 import { AiOptions, Personal, Registro } from "../../database/entity/models"
 import { comparePass } from "../helpers/bcrypt.helpers"
@@ -90,7 +91,7 @@ export const aiValidation = async (validation:ValidationClass, data:any, aiOptio
             if (label === "Human Face") {
                 if (score*100 < aiOptions.accuracy) {
                     validation.status = false
-                    validation.addMessage("La imagen no contiene un rostro humano.","error")
+                    validation.addMessage("La imagen no coincide con un rostro humano.","error")
                 }else{
                     validation.addMessage("La imagen contiene un rostro humano.","success")
                 }
@@ -103,8 +104,8 @@ export const aiValidation = async (validation:ValidationClass, data:any, aiOptio
     return validation
 }
 
-export const makeAiData = (data:any):AiDataClass[]=>{
-    console.log("makeAiData")
+export const makeAiData = (data:any):AiDataClass=>{
+
     let replaceLabel = (label:string):string =>{
         let newLabel = label
         switch (label) {
@@ -118,15 +119,29 @@ export const makeAiData = (data:any):AiDataClass[]=>{
                 newLabel = "Objeto inanimado"
                 break;
         }
-        console.log(newLabel)
         return newLabel
     }
 
-    let aiData:AiDataClass[] = []
+    var score: number = 0
+    var label: string = "Error"
+    var response:string = "No se pudo obtener información de la imagen."
+
     for (let index = 0; index < data.length; index++) {
-        let score = data[index].score*100;
-        let label = replaceLabel(data[index].label);
-        aiData.push(new AiDataClass(score, label))
+        if (data[index].label === "Human Face") {
+            score = Math.round(data[index].score*100)
+            label = replaceLabel(data[index].label);
+            if (index === 0) {
+                response = "Muchas gracias por completar el registro."
+            }
+        }
+        if (data[index].label === "Empty Place" && index === 0) {
+            response = "En la foto pareciera figurar un lugar vacío. Por favor, acérquese a la cámara."
+        }
+        if (data[index].label === "Inanimate Object" && index === 0) {
+            response = "En la foto pareciera figurar un objeto inanimado. Por favor, acérquese a la cámara."
+        }
     }
+
+    let aiData = (new AiDataClass(score, replaceLabel(label), response))
     return aiData
 }

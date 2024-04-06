@@ -1,4 +1,3 @@
-import { getPersonalWhitId } from "../utils/adminPanel.utils"
 import { Request, Response } from "express"
 import { getPersonalUiOrCreate } from "../utils/adminProfile.utils"
 import { error, ValidationClass } from "../interfaces/interfaces"

@@ -1,20 +1,21 @@
-<dialog id="my_modal_3" class="modal">
-    <div class="modal-box">
+<dialog id="my_modal_3" class="modal max-w-[50%] m-auto">
+    <div class="modal-box max-w-[50%] p-10 glass">
         <form method="dialog">
             <a href="/personal/dni" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</a>
         </form>
         <h3 class="font-bold text-lg">{{personal.name}}</h3>
-        <textarea class="py-4 w-full resize-none" {{#unless data}}class="h-20"{{/unless}}  readonly >{{#with messages.[0]}}{{message}}{{/with}}</textarea>
+        <p class="py-4 w-full resize-none" {{#unless data}}class="h-20"{{/unless}}  readonly >{{#with messages.[0]}}{{message}}{{/with}}</p>
+        <p>{{aiData.response}}</p>
         {{#if aiData}}
-            {{#each aiData}}
-                <h2>{{this.label}}</h2>
-                <div class="avatar">
-                    <div class="w-24 rounded">
+            <div class="w-full flex flex-col items-center justify-center gap-10">
+                  <h2>Coincidencia con rostro humano:</h2>
+                  <div class="avatar">
+                  <div class="w-24 rounded">
                         <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-                    </div>
-                </div>
-                <div class="radial-progress" style="--value:{{this.score}}; --size:12rem; --thickness: 2rem;" role="progressbar">{{this.score}}%</div>
-            {{/each}}
+                  </div>
+                  </div>
+                  <div class="radial-progress" style="--value:{{aiData.score}}; --size:12rem; --thickness: 2rem;" role="progressbar">{{aiData.score}}%</div>
+            </div>
         {{/if}}
     </div>
 </dialog>
@@ -26,7 +27,7 @@ dialog.showModal();
 </script>
 <section class="w-full h-full flex flex-col items-center justify-items-center justify-center">
     <div class="h-[80%]">
-        <svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
     </div>
     <div class="h-[5%]">
         <ul class="steps mt-5">
