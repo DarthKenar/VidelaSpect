@@ -2,7 +2,7 @@ import { response } from "express"
 import DataBase from "../../database/data-source"
 import { AiOptions, Personal, UserInOutRecords } from "../../database/entity/models"
 import { comparePass } from "../helpers/bcrypt.helpers"
-import {AiDataClass, ValidationClass} from "../interfaces/interfaces"
+import { ValidationClass} from "../interfaces/interfaces"
 import { getDate, makeRegistrationMessageRefuse } from "../utils/personal.utils"
 
 export const validateAreEmptyFieldsInPersonal = (validation:ValidationClass, name:string, dni:string, position:string):ValidationClass => {
@@ -37,12 +37,7 @@ export const validateArePasswordsMinLength = (validation:ValidationClass, passwo
     return validation
 }
 
-export const validatePassword = (validation:ValidationClass,password:string, password2:string):ValidationClass=>{
-    validation = validateArePasswordsEmpty(validation, password, password2)
-    validation = validateArePasswordsEqual(validation, password, password2)
-    validation = validateArePasswordsMinLength(validation, password, password2, 8)
-    return validation
-}
+
 
 export const validateComparePass = async (validation:ValidationClass, passwordOld:string, passwordInDb:string):Promise<ValidationClass>=>{
     if(!await comparePass(passwordOld, passwordInDb)) {

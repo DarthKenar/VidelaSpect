@@ -1,3 +1,5 @@
+import DataBase from "../../database/data-source"
+import { Personal } from "../../database/entity/models"
 import { ValidationClass } from "../interfaces/interfaces"
 import { exportExcel, getEmailWhitUserId, sendExcel } from "../utils/adminPanel.utils"
 import { validateEmailIsNotEmpty, validateListIsNotEmpty } from "./adminProfile.validator"
@@ -20,3 +22,24 @@ export const validateAndHandleExcelExport = async(validation:ValidationClass, li
     }
     return validation
 }
+
+export const validatePersonWithDniDoesNotExist = async (validation:ValidationClass, dni:string)=>{
+    let personalRepository = await DataBase.getRepository(Personal)
+    let personal = await personalRepository.findOneBy({dni})
+    if (personal) {
+        validation.status = false
+        validation.addMessage(`Ya existe un usuario con un dni ${dni} registrado en el sistema.`,"error")
+    }
+    return validation
+}
+
+export const validateDniFormat = (validation:ValidationClass, dni:string): ValidationClass => {
+    const dniRegex = /^[0-9]{8}$/;
+    if(!dniRegex.test(dni)){
+        validation.status = false
+        validation.addMessage(`El dni no tiene un formato válido, por favor revise la información y vuelva a intentarlo.`,"error")
+    }
+    return validation
+}
+
+

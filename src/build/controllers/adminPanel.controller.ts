@@ -2,12 +2,13 @@ import { Request, Response } from "express";
 import { Auth, Personal, UserInOutRecords } from "../../database/entity/models";
 import DataBase from "../../database/data-source";
 import { savePersonal, registersFiltered, personalFiltered, saveAuth, getAuthOrCreate, deleteAuth } from "../utils/adminPanel.utils"
-import { validateAndHandleExcelExport } from "../validators/adminPanel.validator"
-import  { validateAreEmptyFieldsInPersonal, validatePassword }  from "../validators/personal.validator"
+import { validateAndHandleExcelExport, validateDniFormat, validatePersonWithDniDoesNotExist } from "../validators/adminPanel.validator"
+import  { validateAreEmptyFieldsInPersonal }  from "../validators/personal.validator"
 import * as fs from 'fs';
 import { error } from "../interfaces/interfaces"
 import { ValidationClass } from "../interfaces/interfaces";
 import { getPersonalUiOrCreate } from "../utils/adminProfile.utils";
+import { validatePassword } from "../validators/general.validator";
 const PATH = require("path")
 
 export const getPanel = async (req:Request, res:Response)=>{
@@ -79,6 +80,7 @@ export const postCreatePersonal = async (req:Request, res:Response)=>{
         // Validaciones
         let validation = new ValidationClass()
         validation = validateAreEmptyFieldsInPersonal(validation, name, dni, position)
+        validation = await validatePersonWithDniDoesNotExist(validation, dni)
         if(admin) {
             validation = validatePassword(validation, password, password2)
         }
@@ -126,6 +128,7 @@ export const postUpdatePersonal = async (req:Request, res:Response)=>{
             let validation = new ValidationClass()
             if (!personalToUpdate.admin) {
                 // Validaciones
+                validation = await validateDniFormat(validation, dni)
                 validation = validateAreEmptyFieldsInPersonal(validation, name, dni, position)
                 if(admin) {
                     validation = validatePassword(validation, password, password2)

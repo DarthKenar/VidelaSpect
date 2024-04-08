@@ -1,15 +1,15 @@
 import { Request, Response } from "express";
 import { getAuthOrCreate } from "../utils/adminPanel.utils";
 import { ValidationClass } from "../interfaces/interfaces";
-import { validatePassword, validateComparePass } from "../validators/personal.validator";
+
+import { validateComparePass } from "../validators/personal.validator";
 import { validateExistImageSelected, validateImageOnList, validateIsNotSingleAccount } from "../validators/adminProfile.validator"
 import { getListFileNamesOnDir, getPersonalUiOrCreate } from "../utils/adminProfile.utils"
 import { encryptPass } from "../helpers/bcrypt.helpers";
 import { clearCookies } from "../utils/personal.utils";
-import { emailValidations } from "../validators/general.validator";
+import { emailValidations, validatePassword } from "../validators/general.validator";
 import DataBase from "../../database/data-source";
 import path from "path";
-
 export const getProfile = async (req:Request, res:Response) => {
     let admin = req.admin
     let personalUi = await getPersonalUiOrCreate(admin)
