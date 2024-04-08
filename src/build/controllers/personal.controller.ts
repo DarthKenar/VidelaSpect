@@ -67,12 +67,10 @@ export const postRegistroFoto = async (req:Request, res:Response)=>{
             let img:Image|undefined = req.file
             validation = validateImageSize(validation, img)
             if(validation.status){
-                
                 let register = await createRegisterWithPersonal(personal)
                 let aiOptions = await getAiOptionsOrCreate()
                 if (aiOptions.status) {
                     let data = await getImageClassification(img)
-                    console.log(data)
                     validation = await validateHumanFaceInImage(validation, data, aiOptions)
                     if(validation.status){
                         await saveImage(register.id, img)
