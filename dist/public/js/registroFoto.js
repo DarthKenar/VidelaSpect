@@ -1,4 +1,12 @@
 "use strict";
+
+function disabledButton(){
+  console.log("disabledButton")
+  var downloadOrSendBtn = document.getElementById('join-send')
+  downloadOrSendBtn.outerHTML = '<button class="btn"><span class="loading loading-spinner"></span>Espere</button>'
+}
+
+
 var data;
 var activador = false
 //capturar video ó imagen
@@ -63,6 +71,7 @@ btnFoto.addEventListener("click", () => {
 btnEnviar.addEventListener("click", async ()=>{
   if(activador){
     console.log("Se ha sacado una foto.")
+    disabledButton()
     // Convertir dataURL a Blob
     let response = await fetch(data);
     let blob = await response.blob();
@@ -74,6 +83,7 @@ btnEnviar.addEventListener("click", async ()=>{
     input.files = dt.files;
     // Enviar el formulario
     form.submit();
+    
   }else{
     console.log("Todavía no se ha sacado una foto.")
   }
