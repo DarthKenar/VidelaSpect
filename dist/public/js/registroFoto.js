@@ -3,7 +3,7 @@
 function disabledButton(){
   console.log("disabledButton")
   var downloadOrSendBtn = document.getElementById('join-send')
-  downloadOrSendBtn.outerHTML = '<button class="btn"><span class="loading loading-spinner"></span>Espere</button>'
+  downloadOrSendBtn.outerHTML = '<button class="btn btn-outline"><span class="loading loading-spinner"></span>Espere</button>'
 }
 
 
