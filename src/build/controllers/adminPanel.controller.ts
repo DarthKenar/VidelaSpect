@@ -129,6 +129,7 @@ export const postUpdatePersonal = async (req:Request, res:Response)=>{
             if (!personalToUpdate.admin) {
                 // Validaciones
                 validation = await validateDniFormat(validation, dni)
+                validation = await validatePersonWithDniDoesNotExist(validation, dni, personalToUpdate)
                 validation = validateAreEmptyFieldsInPersonal(validation, name, dni, position)
                 if(admin) {
                     validation = validatePassword(validation, password, password2)

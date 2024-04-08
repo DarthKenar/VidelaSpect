@@ -72,7 +72,7 @@ export const validateExistPersonalWhitDni = async (validation:ValidationClass, d
     let personal = await personalRepository.findOneBy({dni})
     if (!personal) {
         validation.status = false
-        validation.addMessage(`El número de DNI - ${dni} no está registrado en el sistema. Contacte al administrador.`,"error")
+        validation.addMessage(`El número de DNI - ${dni} no está registrado en el sistema. Contacte al administrador.`,"warning")
     }
     return validation
 }

@@ -23,12 +23,18 @@ export const validateAndHandleExcelExport = async(validation:ValidationClass, li
     return validation
 }
 
-export const validatePersonWithDniDoesNotExist = async (validation:ValidationClass, dni:string)=>{
+export const validatePersonWithDniDoesNotExist = async (validation:ValidationClass, dni:string, personalToUpdate?:Personal)=>{
     let personalRepository = await DataBase.getRepository(Personal)
     let personal = await personalRepository.findOneBy({dni})
-    if (personal) {
+    if (personal && personalToUpdate === undefined) {
         validation.status = false
-        validation.addMessage(`Ya existe un usuario con un dni ${dni} registrado en el sistema.`,"error")
+        validation.addMessage(`Ya existe un usuario con un dni ${dni} registrado en el sistema.`,"warning")
+    }
+    if(personalToUpdate && personal){
+        if (!(personalToUpdate.dni === personal.dni)) {
+            validation.status = false
+            validation.addMessage(`Ya existe un usuario con un dni ${dni} registrado en el sistema.`,"warning")
+        }
     }
     return validation
 }
@@ -37,7 +43,7 @@ export const validateDniFormat = (validation:ValidationClass, dni:string): Valid
     const dniRegex = /^[0-9]{8}$/;
     if(!dniRegex.test(dni)){
         validation.status = false
-        validation.addMessage(`El dni no tiene un formato válido, por favor revise la información y vuelva a intentarlo.`,"error")
+        validation.addMessage(`El dni no tiene un formato válido, por favor revise la información y vuelva a intentarlo.`,"warning")
     }
     return validation
 }
