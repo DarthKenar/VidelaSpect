@@ -1,14 +1,15 @@
 import { Request, Response } from "express";
 import DataBase from "../../database/data-source";
-import { Personal, UserInOutRecords } from "../../database/entity/models";
+import { Personal } from "../../database/entity/models";
 import { saveImage, getPassWhitPersonal, clearCookies, createRegisterWithPersonal, makeRegistrationMessage, makeRegistrationMessageRefuse, getPersonalWhitDni, getIsParRegistersQuantity, makeAiData} from "../utils/personal.utils"
-import { validateHumanFaceInImage, validateExistDni, validateExistPersonalWhitDni, validateDailyStaffRegistration } from "../validators/personal.validator"
+import { validateHumanFaceInImage, validateExistDni, validateExistPersonalWhitDni, validateDailyStaffRegistration, validateImageSize } from "../validators/personal.validator"
 import { ValidationClass , Image, error, AiDataClass} from "../interfaces/interfaces";
 import {comparePass} from "../helpers/bcrypt.helpers"
 import { getPersonalUiOrCreate } from "../utils/adminProfile.utils";
 import { getAiOptionsOrCreate } from "../utils/adminOptions.utils";
 import { getImageClassification } from "../helpers/huggingface.helpers";
 import { getPersonalWhitId } from "../utils/adminPanel.utils";
+import { validateImageOnList } from "../validators/adminProfile.validator";
 
 const jwt = require("jsonwebtoken")
 
@@ -63,8 +64,10 @@ export const postRegistroFoto = async (req:Request, res:Response)=>{
         if(personal){
             let validation = new ValidationClass
             validation = await validateDailyStaffRegistration(validation, personal)
+            let img:Image|undefined = req.file
+            validation = validateImageSize(validation, img)
             if(validation.status){
-                let img:Image|undefined = req.file
+                
                 let register = await createRegisterWithPersonal(personal)
                 let aiOptions = await getAiOptionsOrCreate()
                 if (aiOptions.status) {

@@ -2,7 +2,7 @@ import { response } from "express"
 import DataBase from "../../database/data-source"
 import { AiOptions, Personal, UserInOutRecords } from "../../database/entity/models"
 import { comparePass } from "../helpers/bcrypt.helpers"
-import { ValidationClass} from "../interfaces/interfaces"
+import { Image, ValidationClass} from "../interfaces/interfaces"
 import { getDate, makeRegistrationMessageRefuse } from "../utils/personal.utils"
 
 export const validateAreEmptyFieldsInPersonal = (validation:ValidationClass, name:string, dni:string, position:string):ValidationClass => {
@@ -99,3 +99,10 @@ export const validateHumanFaceInImage = async (validation:ValidationClass, data:
     return validation
 }
 
+export const validateImageSize = (validation:ValidationClass, img:Image|undefined):ValidationClass=>{
+    if (img && img.size < 100) {
+        validation.status = false
+        validation.addMessage("No hay una imagen para procesar, por favor acérquese a la cámara.","error")
+    }
+    return validation
+}
