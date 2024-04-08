@@ -113,8 +113,8 @@ export const getPersonalWhitDni = async (dni:string):Promise<Personal|null>=>{
 }
 
 export const getIsParRegistersQuantity = async (personal:Personal):Promise<boolean>=>{
-  let cantidadDeRegistros = await (await getTodayRegistersWithPersonal(personal)).length
-  return isPar(cantidadDeRegistros) && cantidadDeRegistros < personal.dailyEntries
+  let recordsQuantity = await (await getTodayRegistersWithPersonal(personal)).length
+  return isPar(recordsQuantity) && recordsQuantity < personal.dailyEntries
 }
 
 export const makeAiData = (data:any):AiDataClass=>{

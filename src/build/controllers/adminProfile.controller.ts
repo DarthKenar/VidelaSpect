@@ -10,6 +10,7 @@ import { clearCookies } from "../utils/personal.utils";
 import { emailValidations, validatePassword } from "../validators/general.validator";
 import DataBase from "../../database/data-source";
 import path from "path";
+
 export const getProfile = async (req:Request, res:Response) => {
     let admin = req.admin
     let personalUi = await getPersonalUiOrCreate(admin)
