@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import DataBase from "../../database/data-source";
-import { Auth, Personal, UserInOutRecords } from "../../database/entity/models";
+import { AiOptions, Auth, Personal, UserInOutRecords } from "../../database/entity/models";
 import { AiDataClass, Image, ValidationClass } from "../interfaces/interfaces";
 const fs = require('fs');
 // Escribe el buffer en un archivo
@@ -117,7 +117,7 @@ export const getIsParRegistersQuantity = async (personal:Personal):Promise<boole
   return isPar(recordsQuantity) && recordsQuantity < personal.dailyEntries
 }
 
-export const makeAiData = (data:any):AiDataClass=>{
+export const makeAiData = (data:any, aiOptions:AiOptions):AiDataClass=>{
 
   let replaceLabel = (label:string):string =>{
       let newLabel = label
@@ -138,9 +138,9 @@ export const makeAiData = (data:any):AiDataClass=>{
   var score: number = 0
   var label: string = "Error"
   var response:string = "No se pudo obtener información de la imagen."
-
+  
   for (let index = 0; index < data.length; index++) {
-      if (data[index].label === "Human Face") {
+      if (data[index].label === "Human Face" && data[index].score*100 > aiOptions.accuracy) {
           score = Math.round(data[index].score*100)
           label = replaceLabel(data[index].label);
           if (index === 0) {

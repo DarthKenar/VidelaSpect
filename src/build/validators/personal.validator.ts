@@ -1,4 +1,3 @@
-import { response } from "express"
 import DataBase from "../../database/data-source"
 import { AiOptions, Personal, UserInOutRecords } from "../../database/entity/models"
 import { comparePass } from "../helpers/bcrypt.helpers"

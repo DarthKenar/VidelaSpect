@@ -75,10 +75,10 @@ export const postRegistroFoto = async (req:Request, res:Response)=>{
                     if(validation.status){
                         await saveImage(register.id, img)
                         validation = await makeRegistrationMessage(validation, personal)
-                        let aiData:AiDataClass = makeAiData(data)
+                        let aiData:AiDataClass = makeAiData(data, aiOptions)
                         res.render("registroOk",{personal, aiData, messages: validation.messages})
                     }else{
-                        let aiData:AiDataClass = makeAiData(data)
+                        let aiData:AiDataClass = makeAiData(data, aiOptions)
                         validation = await makeRegistrationMessageRefuse(validation, personal)
                         console.log(aiData)
                         res.render("registroError",{personal, aiData:aiData, messages: validation.messages})
