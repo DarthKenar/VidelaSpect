@@ -48,3 +48,14 @@ export const postAiOptions = async (req: Request, res: Response)=>{
         res.render("error", {messages: error})
     }
 }
+
+export const getRegisterDelete = async (req: Request, res: Response)=>{
+    try {
+        let admin = req.admin
+        let personalUi = await getPersonalUiOrCreate(admin)
+        res.render('adminOptionsRegisterDelete', { admin, personalUi})
+    } catch (err) {
+        console.log(err)
+        res.render("error", {messages: error})
+    }
+}
