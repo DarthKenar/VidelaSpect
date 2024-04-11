@@ -9,7 +9,6 @@ import { getPersonalUiOrCreate } from "../utils/adminProfile.utils";
 import { getAiOptionsOrCreate } from "../utils/adminOptions.utils";
 import { getImageClassification } from "../helpers/huggingface.helpers";
 import { getPersonalWhitId } from "../utils/adminPanel.utils";
-import { validateImageOnList } from "../validators/adminProfile.validator";
 
 const jwt = require("jsonwebtoken")
 

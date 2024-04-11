@@ -4,14 +4,30 @@
 
 <div class="flex flex-col items-center justify-center m-auto gap-2 ">
     <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text mb-10 block"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-    <form id="autoPanel" action="/admin/options/records/del/send" method="post" style="border-radius: var(--rounded-btn, 0.5rem/* 8px */);" class="p-10 border-2 border-primary flex flex-col justify-center items-center gap-10 hidden">
+    
+    <section id="autoPanel" class="p-10 border-2 borderDaisy border-primary flex flex-col justify-center items-center gap-10 hidden">
         <h2 class="text-xl font-semibold">CONTROLES <span class="text-primary font-bold">AUTOMÁTICOS</span> DE ELIMINACIÓN DE REGISTROS</h2>
-        <button class="btn btn-outline btn-error">Eliminar Registro</button>
-    </form>
-    <form id="manualPanel" action="/admin/options/records/del/send" method="post" style="border-radius: var(--rounded-btn, 0.5rem/* 8px */);" class="p-10 border-2 border-primary flex flex-col justify-center items-center gap-10">
+        <form action="/admin/options/records/del/send" method="post" >
+            <button class="btn btn-outline btn-error">Eliminar Registro</button>
+        </form>
+    </section>
+
+    <section id="manualPanel" class="p-10 border-2 borderDaisy border-primary flex flex-col justify-center items-center gap-10">
         <h2 class="text-xl font-semibold">CONTROLES <span class="text-primary font-bold">MANUALES</span> DE ELIMINACIÓN DE REGISTROS</h2>
-        <button class="btn btn-outline btn-error">Eliminar Registro</button>
-    </form>
+        <form action="" class="flex flex-col items-center justify-center w-full borderDaisy border border-red-500 gap-5 p-5">
+            <div class="flex flex-row items-center justify-between gap-5">
+                Desde: <input class="border border-primary borderDaisy p-2" value="22-04-2018" min="2018-01-01" max="2018-12-31" type="date" name="startDate" id="">
+                Hasta: <input class="border border-primary borderDaisy p-2" value="2018-07-22" min="2018-01-01" max="2018-12-31" type="date" name="endDate" id="">
+            </div>
+            <button class="btn btn-outline btn-error">Eliminar</button>
+        </form>
+        {{>timelineRecords}}
+        <form  action="/admin/options/records/del/send" method="post" >
+            <button type="submit" class="btn btn-outline btn-error">Eliminar Todo</button>
+        </form>
+    </section>
+
+    
 
     <div class="btm-nav btm-nav-lg">
         <button id="autoPanelBtn" onclick="showAutoPanel()">
