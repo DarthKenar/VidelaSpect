@@ -49,9 +49,32 @@ body {
     100% {opacity: 0;}
 }
 
+
 .vanish {
     animation-name: fadeOut;
     animation-duration: 5s; /* Ajusta la duración a tus necesidades */
+    animation-fill-mode: forwards; /* El elemento mantendrá el estilo del último keyframe después de la animación */
+}
+
+@keyframes fadeOutLinear {
+    0% {opacity: 1;}
+    100% {opacity: 0;}
+}
+
+.vanish-linear {
+    animation-name: fadeOutLinear;
+    animation-duration: .300s; /* Ajusta la duración a tus necesidades */
+    animation-fill-mode: forwards; /* El elemento mantendrá el estilo del último keyframe después de la animación */
+}
+
+@keyframes fadeIn {
+    0% {opacity: 0;}
+    100% {opacity: 1;}
+}
+
+.appear-linear {
+    animation-name: fadeInLinear;
+    animation-duration: .300s; /* Ajusta la duración a tus necesidades */
     animation-fill-mode: forwards; /* El elemento mantendrá el estilo del último keyframe después de la animación */
 }
 

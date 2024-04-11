@@ -3129,6 +3129,10 @@ details.collapse summary::-webkit-details-marker {
   line-height: 1.25rem;
 }
 
+.btm-nav-lg {
+  height: 5rem;
+}
+
 .btm-nav-lg > *:where(.active) {
   border-top-width: 4px;
 }
@@ -3567,6 +3571,10 @@ details.collapse summary::-webkit-details-marker {
   margin-top: 5%;
 }
 
+.block {
+  display: block;
+}
+
 .flex {
   display: flex;
 }
@@ -3593,10 +3601,6 @@ details.collapse summary::-webkit-details-marker {
 
 .h-4 {
   height: 1rem;
-}
-
-.h-5 {
-  height: 1.25rem;
 }
 
 .h-6 {
@@ -3649,10 +3653,6 @@ details.collapse summary::-webkit-details-marker {
 
 .w-4 {
   width: 1rem;
-}
-
-.w-5 {
-  width: 1.25rem;
 }
 
 .w-52 {
@@ -3855,6 +3855,15 @@ details.collapse summary::-webkit-details-marker {
   border-radius: 0.75rem;
 }
 
+.border-2 {
+  border-width: 2px;
+}
+
+.border-primary {
+  --tw-border-opacity: 1;
+  border-color: var(--fallback-p,oklch(var(--p)/var(--tw-border-opacity)));
+}
+
 .border-opacity-50 {
   --tw-border-opacity: 0.5;
 }
@@ -3944,6 +3953,11 @@ details.collapse summary::-webkit-details-marker {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
+.text-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
 .text-4xl {
   font-size: 2.25rem;
   line-height: 2.5rem;
@@ -3993,6 +4007,11 @@ details.collapse summary::-webkit-details-marker {
 .text-neutral-content {
   --tw-text-opacity: 1;
   color: var(--fallback-nc,oklch(var(--nc)/var(--tw-text-opacity)));
+}
+
+.text-primary {
+  --tw-text-opacity: 1;
+  color: var(--fallback-p,oklch(var(--p)/var(--tw-text-opacity)));
 }
 
 .underline {
@@ -4074,6 +4093,42 @@ body {
 .vanish {
   animation-name: fadeOut;
   animation-duration: 5s;
+  /* Ajusta la duración a tus necesidades */
+  animation-fill-mode: forwards;
+  /* El elemento mantendrá el estilo del último keyframe después de la animación */
+}
+
+@keyframes fadeOutLinear {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+.vanish-linear {
+  animation-name: fadeOutLinear;
+  animation-duration: .300s;
+  /* Ajusta la duración a tus necesidades */
+  animation-fill-mode: forwards;
+  /* El elemento mantendrá el estilo del último keyframe después de la animación */
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.appear-linear {
+  animation-name: fadeInLinear;
+  animation-duration: .300s;
   /* Ajusta la duración a tus necesidades */
   animation-fill-mode: forwards;
   /* El elemento mantendrá el estilo del último keyframe después de la animación */
