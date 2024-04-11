@@ -59,3 +59,15 @@ export const getRegisterDelete = async (req: Request, res: Response)=>{
         res.render("error", {messages: error})
     }
 }
+
+export const postRegisterDelete = async (req: Request, res: Response)=>{
+    const fs = require('fs');
+
+    fs.unlink('dist/database/fotos/10.png', (error:NodeJS.ErrnoException) => {
+    if (error) {
+        console.error("Ocurrió un error al intentar eliminar el archivo: ", error);
+    } else {
+        console.log("Archivo eliminado exitosamente");
+    }
+    });
+}

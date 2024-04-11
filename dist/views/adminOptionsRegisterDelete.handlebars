@@ -4,20 +4,7 @@
 
 <div class="flex flex-col items-center justify-center m-auto gap-2 ">
     <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text mb-10"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-    <form action="/admin/options/ai/send" method="post">
-        <div class="form-control w-72 gap-10">
-            <label class="cursor-pointer label" title="Activar o desactivar IA">
-                <span class="label-text font-semibold" title="Activar o desactivar IA">Activar/Desactivar IA</span> 
-                <input id="status" name="status" type="checkbox" class="toggle toggle-primary"  {{#if aiOptions.status}}checked{{/if}}/>
-            </label>
-            <span class="countdown font-mono text-6xl">
-                <span {{#if aiOptions.status}}style="--value:{{aiOptions.accuracy}};"{{else}} style="--value:00;" {{/if}} id="accuracyValue"></span>
-            </span>
-            <input id="accuracy" name="accuracy" type="range" min="40" max="90" {{#if aiOptions.status}}value="{{aiOptions.accuracy}}"{{else}}value="40"{{/if}} class="range range-md" title="Precisión para reconocer cara humana en las fotos"/>
-            <div class="py-5 flex justify-end">
-                <button class="btn btn-outline btn-sm" type="submit">Actualizar</button>
-            </div>
-        </div>
-
+    <form action="/admin/options/records/del/send" method="post">
+        <button class="btn btn-outline btn-error">Eliminar Registro</button>
     </form>
 </div>
