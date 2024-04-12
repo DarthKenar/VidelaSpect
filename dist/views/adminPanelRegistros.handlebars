@@ -7,8 +7,8 @@
     </div>
     <select hx-get="/admin/panel/registros/search" hx-trigger="change" hx-target="#search_results" hx-include="[name='select'], [name='input']" id="select" name="select" class="select select-bordered join-item">
       <option value="personal_name" {{#if_eq select "personal_name"}} selected {{/if_eq}}>Nombre</option>
-      <option value="fecha" {{#if_eq select "fecha"}} selected {{/if_eq}}>Fecha</option>
-      <option value="hora" {{#if_eq select "hora"}} selected {{/if_eq}}>Hora</option>
+      <option value="date" {{#if_eq select "fecha"}} selected {{/if_eq}}>Fecha</option>
+      <option value="time" {{#if_eq select "hora"}} selected {{/if_eq}}>Hora</option>
     </select>
   </div>
   <a href=""></a>

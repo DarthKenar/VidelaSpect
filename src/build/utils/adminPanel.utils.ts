@@ -7,7 +7,6 @@ const nodemailer = require("nodemailer");
 const PATH = require("path")
 var xl = require('excel4node');
 import fs from "fs"
-import { validateEmailIsNotEmpty, validateListIsNotEmpty } from "../validators/adminProfile.validator";
 
 
 export const formalizeTitle = (title:string)=>{
@@ -28,10 +27,8 @@ export const formalizeTitle = (title:string)=>{
             return "ID PERSONAL"
         case "personal_name":
             return "NOMBRE"
-        case "date":
-            return "FECHA"
-        case "time":
-            return "HORA"
+        case "dateTime":
+            return "FECHA Y HORA"
         default:
             return title
     }
@@ -147,10 +144,12 @@ export const registersFiltered = async(input:string, select:string)=>{
     let registroRepository = DataBase.getRepository(UserInOutRecords)
     if(select === "personal_name"){
         registrations = await registroRepository.findBy({personal_name: Like(`%${input}%`)});
-    }else if(select === "fecha"){
-        registrations = await registroRepository.findBy({date: Like(`%${input}%`)});
-    }else if(select === "hora"){
-        registrations = await registroRepository.findBy({time: Like(`%${input}%`)});
+    }else if(select === "date"){
+        const inputDate = new Date(input);
+        registrations = await registroRepository.findBy({dateTime: inputDate});
+    }else if(select === "time"){
+        const inputDate = new Date(input);
+        registrations = await registroRepository.findBy({dateTime: inputDate});
     }else{
         registrations = await registroRepository.find()
     }

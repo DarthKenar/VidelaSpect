@@ -49,10 +49,7 @@ export class UserInOutRecords {
     personal_name: string
 
     @Column()
-    date: string;
-
-    @Column()
-    time: string;
+    dateTime: Date;
     
 }
 

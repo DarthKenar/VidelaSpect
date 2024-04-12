@@ -3,7 +3,7 @@ import DataBase from "../../database/data-source";
 import { AiOptions, Auth, Personal, UserInOutRecords } from "../../database/entity/models";
 import { AiDataClass, Image, ValidationClass } from "../interfaces/interfaces";
 const fs = require('fs');
-import { format } from "@formkit/tempo"
+import { dayEnd, dayStart, format } from "@formkit/tempo"
 // Escribe el buffer en un archivo
 
 export async function saveImage(registroId:number, image:Image|undefined){
@@ -37,26 +37,31 @@ export const createRegisterWithPersonal = async (personal:Personal):Promise<User
   let registerNew = new UserInOutRecords
   registerNew.personal_id = personal.id
   registerNew.personal_name = personal.name
-  registerNew.date = getDate(dateTime)
-  registerNew.time = getTime(dateTime)
+  registerNew.dateTime = dateTime
   registerNew = await registerRepository.save(registerNew)
   return registerNew
 }
 
 export async function getTodayRegistersWithPersonal(personal:Personal):Promise<UserInOutRecords[]> {
-  let dateTime = new Date
-  let date = getDate(dateTime)
-  let registroRepository = await DataBase.getRepository(UserInOutRecords)
-  let registers = await registroRepository.findBy({personal_id:personal.id,date:date})
-  return registers
+  console.log("Today Date en la funcion getTodayRegistersWithPersonal de personalñ.utils ")
+  let registroRepository = await DataBase.getRepository(UserInOutRecords);
+  let today = dayStart(new Date())
+  let tomorrow = dayEnd(new Date())
+  let registers = await registroRepository.createQueryBuilder("record")
+    .where("record.personal_id = :personal_id", { personal_id: personal.id })
+    .andWhere("record.dateTime >= :today", { today })
+    .andWhere("record.dateTime < :tomorrow", { tomorrow })
+    .getMany();
+  return registers;
 } 
 
+
 export function getDate(dateTime:Date):string {
-  return format(dateTime, {date: "short"})
+  return format(dateTime, "DD/MM/AAAA", "es")
 }
 
 export function getTime(dateTime:Date):string {
-  return format(dateTime, {time: "short"})
+  return format(dateTime, "HH:MM:SS", "es")
 }
 
 export const isPar = (numero:number) => numero % 2 === 0;
@@ -92,10 +97,11 @@ export const makeRegistrationMessage = async (validation:ValidationClass, person
 
 export const makeRegistrationMessageRefuse = async (validation:ValidationClass, personal:Personal):Promise<ValidationClass>=>{
     //obtengo la cantidad de registros totales y los agrego al mensaje de validación
-    let registers = await getTodayRegistersWithPersonal(personal)
-    let entrada = registers[0];
-    let salida = registers[registers.length-1];
-    validation.addMessage(`No se puede realizar un nuevo registro ya que hoy ya se han realizado las cargas correspondientes a su entrada y salida. \nEntrada: ${entrada.time} \nSalida: ${salida.time} `, "warning")
+    let records = await getTodayRegistersWithPersonal(personal)
+    console.log(records)
+    let entrada = records[0];
+    let salida = records[records.length-1];
+    validation.addMessage(`No se puede realizar un nuevo registro ya que hoy ya se han realizado las cargas correspondientes a su entrada y salida. \nEntrada: ${getTime(entrada.dateTime)} \nSalida: ${getTime(salida.dateTime)} `, "warning")
     return validation
 }
 
