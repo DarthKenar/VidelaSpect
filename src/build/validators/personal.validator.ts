@@ -83,7 +83,7 @@ export const validateHumanFaceInImage = async (validation:ValidationClass, data:
             let score = data[index].score;
             let label = data[index].label;
             if (label === "Human Face") {
-                if (score*100 < aiOptions.accuracy) {
+                if (score*100 > aiOptions.accuracy) {
                     validation.status = false
                     validation.addMessage("La imagen no coincide con un rostro humano.","error")
                 }else{
