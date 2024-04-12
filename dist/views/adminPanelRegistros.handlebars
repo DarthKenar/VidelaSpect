@@ -3,9 +3,9 @@
   <a href=""></a>
   <div class="join">
     <div>
-      <input hx-get="/admin/panel/registros/search" hx-trigger="keyup changed delay:300ms" hx-target="#search_results" hx-include="[name='select'], [name='input']" id="input" name="input" value="{{input}}" class="input input-bordered join-item" placeholder="Buscar"/>
+      <input hx-get="/admin/panel/registros/search"  hx-trigger="keyup changed delay:300ms" hx-target="#search_results" hx-include="[name='select'], [name='input']" id="input" name="input" value="{{input}}" class="input input-bordered join-item" placeholder="Buscar"/>
     </div>
-    <select hx-get="/admin/panel/registros/search" hx-trigger="change" hx-target="#search_results" hx-include="[name='select'], [name='input']" id="select" name="select" class="select select-bordered join-item">
+    <select hx-get="/admin/panel/registros/search" hx-trigger="change" hx-target="#search_results" hx-include="[name='select'], [name='input']" id="select" name="select" class="select select-bordered join-item" onchange="changeInput()">
       <option value="personal_name" {{#if_eq select "personal_name"}} selected {{/if_eq}}>Nombre</option>
       <option value="date" {{#if_eq select "fecha"}} selected {{/if_eq}}>Fecha</option>
       <option value="time" {{#if_eq select "hora"}} selected {{/if_eq}}>Hora</option>

@@ -27,4 +27,24 @@ const getImage = function(id) {
         .catch((err) => {
             console.error(err);
         });
+    
+}
+
+const changeInput = function() {
+    input = document.getElementById("input");
+    select = document.getElementById("select");
+    //Si el valor del select es date muestra un input tipo date
+    //Si el valor del select es time muestra un input tipo time
+    if (select.value == "date") {
+        input.type = "date";
+        input.setAttribute("hx-trigger", "change");
+    }else if (select.value == "time") {
+        input.type = "time";
+        input.setAttribute("hx-trigger", "change");
+    }else {
+        input.type = "text";
+        input.value = "";
+        input.setAttribute("hx-trigger", "keyup changed delay:300ms");
+    }
+    htmx.process(input);
 }
