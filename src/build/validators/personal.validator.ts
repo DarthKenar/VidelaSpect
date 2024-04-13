@@ -1,9 +1,9 @@
-import { dayStart } from "@formkit/tempo"
 import DataBase from "../../database/data-source"
-import { AiOptions, Personal, UserInOutRecords } from "../../database/entity/models"
+import { AiOptions, Personal } from "../../database/entity/models"
 import { comparePass } from "../helpers/bcrypt.helpers"
 import { Image, ValidationClass} from "../interfaces/interfaces"
 import { makeRegistrationMessageRefuse } from "../utils/personal.utils"
+import { getTodayRegistersWithPersonal } from "../utils/personal.utils"
 
 export const validateAreEmptyFieldsInPersonal = (validation:ValidationClass, name:string, dni:string, position:string):ValidationClass => {
     if (name.length === 0 || dni.length === 0 || position.length === 0) {
@@ -48,12 +48,13 @@ export const validateComparePass = async (validation:ValidationClass, passwordOl
 }
 
 export const validateDailyStaffRegistration = async(validation: ValidationClass, personal:Personal):Promise<ValidationClass>=>{
-    let registroRepository = await DataBase.getRepository(UserInOutRecords)
-    let registers = await registroRepository.findBy({personal_id:personal.id,dateTime:dayStart(new Date())})
-    if(registers.length === personal.dailyEntries){
+
+    let records = await getTodayRegistersWithPersonal(personal)
+    if(records.length >= personal.dailyEntries){
       validation.status = false
       validation = await makeRegistrationMessageRefuse(validation, personal)
     }
+    console.log(records)
     return validation
   }
 

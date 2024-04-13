@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { addDay } from "@formkit/tempo"
 import DataBase from "../../database/data-source";
 import { AiOptions, Auth, Personal, UserInOutRecords } from "../../database/entity/models";
 import { AiDataClass, Image, ValidationClass } from "../interfaces/interfaces";
@@ -21,6 +22,8 @@ export async function saveImage(registroId:number, image:Image|undefined){
               }
             })
             //TODO:
+            //Si esta activada la opción en la base de datos de eliminar la imagen, se debería eliminar la imagen guardada en la carpeta.
+            //Si no está activada la opción, no hace nada.
             //Aca estaría bueno eliminar automáticamente la carpeta pero sale un error cuando lo hago porque pareciera que se necesitan ciertos permisos.
           } else {
             console.log('Archivo guardado con éxito');
@@ -43,17 +46,17 @@ export const createRegisterWithPersonal = async (personal:Personal):Promise<User
 }
 
 export async function getTodayRegistersWithPersonal(personal:Personal):Promise<UserInOutRecords[]> {
-  console.log("Today Date en la funcion getTodayRegistersWithPersonal de personalñ.utils ")
+  let today = new Date();
+  today.setHours(0, 0, 0, 0);
+  let tomorrow = addDay(today, 1)
   let registroRepository = await DataBase.getRepository(UserInOutRecords);
-  let today = dayStart(new Date())
-  let tomorrow = dayEnd(new Date())
-  let registers = await registroRepository.createQueryBuilder("record")
-    .where("record.personal_id = :personal_id", { personal_id: personal.id })
-    .andWhere("record.dateTime >= :today", { today })
-    .andWhere("record.dateTime < :tomorrow", { tomorrow })
-    .getMany();
-  return registers;
-} 
+  let records = await registroRepository.createQueryBuilder("record")
+  .where("record.personal_id = :personal_id", { personal_id: personal.id })
+  .andWhere("record.dateTime >= :today", { today: today })
+  .andWhere("record.dateTime < :tomorrow", { tomorrow: tomorrow })
+  .getMany();
+  return records;
+}
 
 
 export function getDate(dateTime:Date):string {
