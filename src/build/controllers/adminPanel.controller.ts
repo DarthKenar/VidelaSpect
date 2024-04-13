@@ -188,14 +188,12 @@ export const getPanelRegisterPhoto = async (req:Request, res:Response)=>{
         if(registroId){
             let photoPath:string = await getPhotoPath(registroId)
             let validation = new ValidationClass
-            let registroRepository = DataBase.getRepository(UserInOutRecords)
             validation = await validatePhotoExist(validation, photoPath)
-            console.log(validation.messages)
             if (validation.status) {
                 res.sendFile(photoPath,(err)=>{console.log(err)})
             }else{
-                let records:UserInOutRecords[] = await registroRepository.find()
-                res.render("adminPanelRegistros",{registros:records, messages: validation.messages})
+                photoPath = PATH.join(__dirname, `../../database/fotos/pictureNotFound.png`)
+                res.sendFile(photoPath,(err)=>{console.log(err)})
             }  
         }
     }catch(err){

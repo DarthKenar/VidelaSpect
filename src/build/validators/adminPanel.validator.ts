@@ -50,8 +50,6 @@ export const validateDniFormat = (validation:ValidationClass, dni:string): Valid
 }
 
 export const validatePhotoExist = async (validation:ValidationClass, photoPath:string):Promise<ValidationClass>=>{
-    console.log(!photoPath, photoPath)
-    console.log(!fs.existsSync(photoPath))
     if (!photoPath|| !fs.existsSync(photoPath)) {
         validation.status = false
         validation.addMessage(`La foto buscada de no se encuentra.`,"error")
