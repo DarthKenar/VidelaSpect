@@ -79,7 +79,6 @@ export const postRegistroFoto = async (req:Request, res:Response)=>{
                     }else{
                         let aiData:AiDataClass = makeAiData(data, aiOptions)
                         validation = await makeRegistrationMessageRefuse(validation, personal)
-                        console.log(aiData)
                         res.render("registroError",{personal, aiData:aiData, messages: validation.messages})
                     }
                 }else{

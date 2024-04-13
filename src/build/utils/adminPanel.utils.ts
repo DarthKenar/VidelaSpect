@@ -212,3 +212,13 @@ export const getPersonalWhitId = async(id:number):Promise<Personal|null>=>{
     return personal
 }
 
+export const getPhotoPath = async (recordId:number):Promise<string>=>{
+    let recordRepository = DataBase.getRepository(UserInOutRecords)
+    let record = await recordRepository.findOneBy({id: recordId})
+    if (record) {
+        return PATH.join(__dirname, `../../database/fotos//${record.dateTime.getFullYear()}/${record.dateTime.getMonth()}/${recordId}.png`)
+    }else{
+        return ""
+    }
+}
+

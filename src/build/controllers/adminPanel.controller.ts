@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import { Auth, Personal, UserInOutRecords } from "../../database/entity/models";
 import DataBase from "../../database/data-source";
-import { savePersonal, registersFiltered, personalFiltered, saveAuth, getAuthOrCreate, deleteAuth } from "../utils/adminPanel.utils"
-import { validateAndHandleExcelExport, validateDniFormat, validatePersonWithDniDoesNotExist } from "../validators/adminPanel.validator"
+import { savePersonal, registersFiltered, personalFiltered, saveAuth, getAuthOrCreate, deleteAuth, getPhotoPath } from "../utils/adminPanel.utils"
+import { validateAndHandleExcelExport, validateDniFormat, validatePersonWithDniDoesNotExist, validatePhotoExist } from "../validators/adminPanel.validator"
 import  { validateAreEmptyFieldsInPersonal }  from "../validators/personal.validator"
-import * as fs from 'fs';
+
 import { error } from "../interfaces/interfaces"
 import { ValidationClass } from "../interfaces/interfaces";
 import { getPersonalUiOrCreate } from "../utils/adminProfile.utils";
@@ -185,20 +185,18 @@ export const postDeletePersonal = async (req:Request, res:Response)=>{
 export const getPanelRegisterPhoto = async (req:Request, res:Response)=>{
     try{
         let registroId = Number(req.params.id)
-        let fotoPath:string = PATH.join(__dirname, `../../database/fotos/${registroId}.png`)
         if(registroId){
-            if(fs.existsSync(fotoPath)){
-                res.sendFile(fotoPath,(err)=>{console.log(err)})
+            let photoPath:string = await getPhotoPath(registroId)
+            let validation = new ValidationClass
+            let registroRepository = DataBase.getRepository(UserInOutRecords)
+            validation = await validatePhotoExist(validation, photoPath)
+            console.log(validation.messages)
+            if (validation.status) {
+                res.sendFile(photoPath,(err)=>{console.log(err)})
             }else{
-                let validation = new ValidationClass
-                let registroRepository = DataBase.getRepository(UserInOutRecords)
-                let registros:UserInOutRecords[] = await registroRepository.find()
-                let registro:UserInOutRecords|null = await registroRepository.findOneBy({id:registroId})
-                if(registro){
-                    validation.addMessage(`La foto buscada de ${registro.personal_name} no se encuentra.`,"error")
-                    res.render("adminPanelRegistros",{registros, messages: validation.messages})
-                }
-            }
+                let records:UserInOutRecords[] = await registroRepository.find()
+                res.render("adminPanelRegistros",{registros:records, messages: validation.messages})
+            }  
         }
     }catch(err){
         console.log(err)

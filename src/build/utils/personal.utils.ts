@@ -8,13 +8,14 @@ import { dayEnd, dayStart, format } from "@formkit/tempo"
 // Escribe el buffer en un archivo
 
 export async function saveImage(registroId:number, image:Image|undefined){
+    let dateTime = new Date
     if(image){
       // ${dia},${dia}.${mes}-${horas}.${minutos}-${personal.name}`
-      fs.writeFile(`dist/database/fotos/${registroId}`+".png", image.buffer, function(err:Error) {
+      fs.writeFile(`dist/database/fotos/${dateTime.getFullYear()}/${dateTime.getMonth()}/${registroId}`+".png", image.buffer, function(err:Error) {
           if (err) {
-            console.log('Hubo un error al escribir el archivo', err);
-            fs.mkdirSync(`./dist/database/fotos/`,{recursive:true});
-            fs.writeFile(`dist/database/fotos/${registroId}`+".png", image.buffer,function(err:Error) {
+            console.log('Hubo un error al escribir el archivo, se creará la carpeta para almacenar las fotos.', err);
+            fs.mkdirSync(`./dist/database/fotos/${dateTime.getFullYear()}/${dateTime.getMonth()}/`,{recursive:true});
+            fs.writeFile(`dist/database/fotos/${dateTime.getFullYear()}/${dateTime.getMonth()}/${registroId}`+".png", image.buffer,function(err:Error) {
               if(err){
                 console.log(err)
               }else{
@@ -142,19 +143,21 @@ export const makeAiData = (data:any, aiOptions:AiOptions):AiDataClass=>{
   var response:string = "No se pudo obtener información de la imagen."
   
   for (let index = 0; index < data.length; index++) {
-      if (data[index].label === "Human Face" && data[index].score*100 > aiOptions.accuracy) {
-          score = Math.round(data[index].score*100)
-          label = replaceLabel(data[index].label);
-          if (index === 0) {
-              response = "Muchas gracias por completar el registro."
-          }
-      }
+    let score = data[index].score*100
+    if (data[index].label === "Human Face" && score > aiOptions.accuracy) {
+        score = Math.round(data[index].score*100)
+        label = replaceLabel(data[index].label);
+        if (index === 0) {
+            response = "Muchas gracias por completar el registro."
+        }
+    }else{
       if (data[index].label === "Empty Place" && index === 0) {
-          response = "En la foto pareciera figurar un lugar vacío. Por favor, acérquese a la cámara."
+        response = "En la foto pareciera figurar un lugar vacío. Por favor, acérquese a la cámara."
       }
       if (data[index].label === "Inanimate Object" && index === 0) {
           response = "En la foto pareciera figurar un objeto inanimado. Por favor, acérquese a la cámara."
       }
+    }
   }
 
   let aiData = (new AiDataClass(score, replaceLabel(label), response))
