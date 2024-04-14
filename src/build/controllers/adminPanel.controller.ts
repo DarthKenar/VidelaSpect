@@ -218,7 +218,7 @@ export const getPanelRegistersFiltered = async (req:Request, res:Response)=>{
     try{
         let input = String(req.query.input)
         let select = String(req.query.select)
-        console.log(input, select)
+        console.log(input,"aaa", select)
         console.log(typeof input, typeof select)
         let registros = await registersFiltered(input, select)
         res.render("adminPanelRegistrosResponse",{registros, input, select})

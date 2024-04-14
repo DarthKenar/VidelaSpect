@@ -33,18 +33,24 @@ const getImage = function(id) {
 const changeInput = function() {
     input = document.getElementById("input");
     select = document.getElementById("select");
-    //Si el valor del select es date muestra un input tipo date
-    //Si el valor del select es time muestra un input tipo time
-    if (select.value == "date") {
-        input.type = "date";
-        input.setAttribute("hx-trigger", "change");
+    timeGroup = document.getElementById("timeGroup");
+    dateGroup = document.getElementById("dateGroup");
+    getDataTimeBtn = document.getElementById("getDataTimeBtn");
+
+    if (select.value == "personal_name") {
+        timeGroup.classList.add("hidden");
+        dateGroup.classList.add("hidden");
+        getDataTimeBtn.classList.add("hidden");
+        input.classList.remove("hidden");
     }else if (select.value == "time") {
-        input.type = "time";
-        input.setAttribute("hx-trigger", "change");
-    }else {
-        input.type = "text";
-        input.value = "";
-        input.setAttribute("hx-trigger", "keyup changed delay:300ms");
+        timeGroup.classList.remove("hidden");
+        dateGroup.classList.add("hidden");
+        getDataTimeBtn.classList.remove("hidden");
+        input.classList.add("hidden");
+    }else if (select.value == "date") {
+        timeGroup.classList.add("hidden");
+        dateGroup.classList.remove("hidden");
+        getDataTimeBtn.classList.remove("hidden");
+        input.classList.add("hidden");
     }
-    htmx.process(input);
 }

@@ -2496,6 +2496,18 @@ details.collapse summary::-webkit-details-marker {
   outline-color: var(--fallback-bc,oklch(var(--bc)/0.2));
 }
 
+.input-primary {
+  --tw-border-opacity: 1;
+  border-color: var(--fallback-p,oklch(var(--p)/var(--tw-border-opacity)));
+}
+
+.input-primary:focus,
+    .input-primary:focus-within {
+  --tw-border-opacity: 1;
+  border-color: var(--fallback-p,oklch(var(--p)/var(--tw-border-opacity)));
+  outline-color: var(--fallback-p,oklch(var(--p)/1));
+}
+
 .input-disabled,
   .input:disabled,
   .input[disabled] {
@@ -3755,6 +3767,10 @@ details.collapse summary::-webkit-details-marker {
   margin-bottom: 4.25rem;
 }
 
+.ml-5 {
+  margin-left: 1.25rem;
+}
+
 .ml-\[0\.75rem\] {
   margin-left: 0.75rem;
 }
@@ -4051,6 +4067,10 @@ details.collapse summary::-webkit-details-marker {
   gap: 1.25rem;
 }
 
+.gap-24 {
+  gap: 6rem;
+}
+
 .overflow-x-auto {
   overflow-x: auto;
 }
@@ -4079,6 +4099,10 @@ details.collapse summary::-webkit-details-marker {
   border-width: 2px;
 }
 
+.border-l {
+  border-left-width: 1px;
+}
+
 .border-primary {
   --tw-border-opacity: 1;
   border-color: var(--fallback-p,oklch(var(--p)/var(--tw-border-opacity)));
@@ -4087,6 +4111,10 @@ details.collapse summary::-webkit-details-marker {
 .border-red-500 {
   --tw-border-opacity: 1;
   border-color: rgb(239 68 68 / var(--tw-border-opacity));
+}
+
+.border-l-inherit {
+  border-left-color: inherit;
 }
 
 .border-opacity-50 {
