@@ -6,23 +6,23 @@
     {{!-- Fechas --}}
     <div id="dateGroup" class="join-item hidden flex flex-row gap-5 justify-center items-center">
       <label for="fromDate">Desde:</label>
-      <input type="date" class="input input-bordered" id="fromDate" name="input">
+      <input type="date" class="input input-bordered" id="fromDate" name="fromDate">
       <label for="fromDate">Hasta:</label>
-      <input type="date" class="input input-bordered" id="toDate" name="input">
+      <input type="date" class="input input-bordered" id="toDate" name="toDate">
     </div>
 
     {{!-- Horarios --}}
     <div id="timeGroup" class="join-item hidden flex flex-row gap-5 justify-center items-center">
       <label for="fromTime">Desde:</label>
-      <input type="time" class="input input-bordered" id="fromTime" name="input">
+      <input type="time" class="input input-bordered" id="fromTime" name="fromTime">
       <label for="fromTime">Hasta:</label>
-      <input type="time" class="input input-bordered" id="toTime" name="input">
+      <input type="time" class="input input-bordered" id="toTime" name="toTime">
     </div>
 
     {{!-- Boton para filtrar fechas y horarios --}}
     <input id="getDataTimeBtn" type="button" class="btn join-item btn-primary btn-outline hidden ml-5" value="FILTRAR">
     {{!-- Nombres --}}
-    <input hx-get="/admin/panel/registros/search"  hx-trigger="keyup changed delay:300ms" hx-target="#search_results" hx-include="[name='select'], [name='input']" id="input" name="input" value="{{input}}" class="input input-bordered join-item border-primary input-primary " placeholder="Buscar"/>
+    <input hx-get="/admin/panel/registros/search"  hx-trigger="keyup changed delay:300ms" hx-target="#search_results" hx-include="[name='select'], [name='name']" id="name" name="name" value="{{input}}" class="input input-bordered join-item border-primary input-primary " placeholder="Buscar"/>
     <select hx-get="/admin/panel/registros/search" hx-trigger="change" hx-target="#search_results" hx-include="[name='select'], [name='input']" id="select" name="select" class="select select-bordered join-item" onchange="changeInput()">
       <option value="personal_name" {{#if_eq select "personal_name"}} selected {{/if_eq}}>Nombre</option>
       <option value="date" {{#if_eq select "fecha"}} selected {{/if_eq}}>Fecha</option>

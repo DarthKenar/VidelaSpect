@@ -216,12 +216,12 @@ export const getPanelPersonalFiltered = async (req:Request, res:Response)=>{
 
 export const getPanelRegistersFiltered = async (req:Request, res:Response)=>{
     try{
-        let input = String(req.query.input)
+        let name = String(req.query.name)
         let select = String(req.query.select)
-        console.log(input,"aaa", select)
-        console.log(typeof input, typeof select)
-        let registros = await registersFiltered(input, select)
-        res.render("adminPanelRegistrosResponse",{registros, input, select})
+        console.log(name,"aaa", select)
+        console.log(typeof name, typeof select)
+        let registros = await registersFiltered(name, select)
+        res.render("adminPanelRegistrosResponse",{registros, name, select})
     }catch(err){
         console.log(err)
         res.render("error", {messages: error})

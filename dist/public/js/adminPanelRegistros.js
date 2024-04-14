@@ -31,26 +31,26 @@ const getImage = function(id) {
 }
 
 const changeInput = function() {
-    input = document.getElementById("input");
-    select = document.getElementById("select");
-    timeGroup = document.getElementById("timeGroup");
-    dateGroup = document.getElementById("dateGroup");
-    getDataTimeBtn = document.getElementById("getDataTimeBtn");
+    let name = document.getElementById("name");
+    let select = document.getElementById("select");
+    let timeGroup = document.getElementById("timeGroup");
+    let dateGroup = document.getElementById("dateGroup");
+    let getDataTimeBtn = document.getElementById("getDataTimeBtn");
 
     if (select.value == "personal_name") {
         timeGroup.classList.add("hidden");
         dateGroup.classList.add("hidden");
         getDataTimeBtn.classList.add("hidden");
-        input.classList.remove("hidden");
+        name.classList.remove("hidden");
     }else if (select.value == "time") {
         timeGroup.classList.remove("hidden");
         dateGroup.classList.add("hidden");
         getDataTimeBtn.classList.remove("hidden");
-        input.classList.add("hidden");
+        name.classList.add("hidden");
     }else if (select.value == "date") {
         timeGroup.classList.add("hidden");
         dateGroup.classList.remove("hidden");
         getDataTimeBtn.classList.remove("hidden");
-        input.classList.add("hidden");
+        name.classList.add("hidden");
     }
 }
