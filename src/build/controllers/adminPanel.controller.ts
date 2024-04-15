@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { Auth, Personal, UserInOutRecords } from "../../database/entity/models";
 import DataBase from "../../database/data-source";
-import { savePersonal, registersFiltered, personalFiltered, saveAuth, getAuthOrCreate, deleteAuth, getPhotoPath } from "../utils/adminPanel.utils"
+import { savePersonal, registersFiltered, personalFiltered, saveAuth, getAuthOrCreate, deleteAuth, getPhotoPath, makeRecordsResponse } from "../utils/adminPanel.utils"
 import { validateAndHandleExcelExport, validateDniFormat, validatePersonWithDniDoesNotExist, validatePhotoExist } from "../validators/adminPanel.validator"
 import  { validateAreEmptyFieldsInPersonal }  from "../validators/personal.validator"
 
@@ -36,7 +36,8 @@ export const getPanelPersonal = async (req:Request, res:Response)=>{
 export const getPanelRegisters = async (req:Request, res:Response)=>{
     let registroRepository = DataBase.getRepository(UserInOutRecords)
     let registros:UserInOutRecords[] = await registroRepository.find()
-    res.render("adminPanelRegistros",{registros})
+    let recordsResponse = makeRecordsResponse(registros)
+    res.render("adminPanelRegistros",{registros:recordsResponse})
 }
 
 export const getCreatePersonal = async (req:Request, res:Response)=>{
@@ -240,7 +241,8 @@ export const getPanelRegistersFiltered = async (req:Request, res:Response)=>{
         let fromDate = String(req.query.fromDate)
         let toDate = String(req.query.toDate)
         let registros = await registersFiltered(name, select, fromTime, toTime, fromDate, toDate)
-        res.render("adminPanelRegistrosResponse",{registros, name, select})
+        let recordsResponse = makeRecordsResponse(registros)
+        res.render("adminPanelRegistrosResponse",{registros: recordsResponse, name, select})
     }catch(err){
         console.log(err)
         res.render("error", {messages: error})
@@ -261,8 +263,9 @@ export const getPanelRegisterExcel = async (req:Request, res:Response)=>{
         let emailOption = Boolean(req.query.email)
         let admin = req.admin
         let validation = new ValidationClass
+        let recordsResponse = makeRecordsResponse(registros)
         validation = await validateAndHandleExcelExport(validation, registros, emailOption, admin.id, name, select)
-        res.render("adminPanelRegistrosResponse",{registros, name, select, messages: validation.messages})
+        res.render("adminPanelRegistrosResponse",{registros: recordsResponse, name, select, messages: validation.messages})
 
     }catch(err){
         console.log(err)

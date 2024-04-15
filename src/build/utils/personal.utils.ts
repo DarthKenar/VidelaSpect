@@ -4,7 +4,7 @@ import DataBase from "../../database/data-source";
 import { AiOptions, Auth, Personal, UserInOutRecords } from "../../database/entity/models";
 import { AiDataClass, Image, ValidationClass } from "../interfaces/interfaces";
 const fs = require('fs');
-import { dayEnd, dayStart, format } from "@formkit/tempo"
+import { format } from "@formkit/tempo"
 // Escribe el buffer en un archivo
 
 export async function saveImage(registroId:number, image:Image|undefined){

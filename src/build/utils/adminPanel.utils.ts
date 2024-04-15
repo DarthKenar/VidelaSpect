@@ -3,13 +3,12 @@ import { Auth, Personal, UserInOutRecords } from "../../database/entity/models"
 import {Like} from 'typeorm';
 import { Between } from 'typeorm';
 import {encryptPass} from "../helpers/bcrypt.helpers"
-import { ValidationClass } from "../interfaces/interfaces"
-import { format } from "@formkit/tempo"
+import { Record, ValidationClass } from "../interfaces/interfaces"
 const nodemailer = require("nodemailer");
 const PATH = require("path")
 var xl = require('excel4node');
 import fs from "fs"
-
+import { format } from "@formkit/tempo"
 
 export const formalizeTitle = (title:string)=>{
     switch (title) {
@@ -252,3 +251,20 @@ export const getPhotoPath = async (recordId:number):Promise<string>=>{
     }
 }
 
+
+
+export const makeRecordsResponse = (userInOutRecords:UserInOutRecords[]):Record[]=>{
+    console.log("makeRecordsResponse")
+    let recordsList:Record[] = []
+    for (let i = 0; i < userInOutRecords.length; i++) {
+        console.log(format(userInOutRecords[i].dateTime, "DD-MM-YYYY", "es"))
+        recordsList.push({
+            id: userInOutRecords[i].id,
+            personal_id: userInOutRecords[i].personal_id,
+            personal_name: userInOutRecords[i].personal_name,
+            date: format(userInOutRecords[i].dateTime, "DD/MM/YYYY", "es"),
+            time: format(userInOutRecords[i].dateTime, "hh:mm:ss", "es")
+        })
+    }
+    return recordsList
+}

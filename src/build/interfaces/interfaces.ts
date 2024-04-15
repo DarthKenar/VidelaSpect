@@ -62,9 +62,6 @@ export class AiDataClass implements AiData {
     }
 }
 
-export interface Records {
-    record: Records[];
-  }
 
 export interface Record {
     id: number;
