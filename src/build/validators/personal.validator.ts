@@ -75,24 +75,21 @@ export const validateExistPersonalWhitDni = async (validation:ValidationClass, d
     return validation
 }
 
-export const validateHumanFaceInImage = async (validation:ValidationClass, data:any, aiOptions:AiOptions):Promise<ValidationClass>=>{
+export const validateHumanFaceInImageByAccuracy = async (validation:ValidationClass, data:any, aiOptions:AiOptions):Promise<ValidationClass>=>{
     if (data) {
-        console.log(data)
         for (let index = 0; index < data.length; index++) {
-            let score = data[index].score;
-            let label = data[index].label;
-            if (label === "Human Face") {
-                if (score*100 > aiOptions.accuracy) {
-                    validation.addMessage("La imagen contiene un rostro humano.","success")
+            if (data[index].label === "Human Face") {
+                if (Math.round(data[index].score*100) > aiOptions.accuracy) {
+                    validation.addMessage("La imagen ha superado la validación de rostro humano.","success")
                 }else{
                     validation.status = false
-                    validation.addMessage("La imagen no coincide con un rostro humano.","error")
+                    validation.addMessage("La imagen no ha superado la validación de rostro humano.","error")
                 }
             }
         }
     }else{
         validation.status = false
-        validation.addMessage("No se pudo obtener información de la imagen.","error")
+        validation.addMessage("La IA no ha podido obtener información de la foto. Si este problema persiste, por favor contemple desactivarla temporalmente o revise su conexión a internet.","error")
     }
     return validation
 }

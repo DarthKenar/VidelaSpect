@@ -3778,6 +3778,10 @@ details.collapse summary::-webkit-details-marker {
   margin-bottom: 4.25rem;
 }
 
+.ml-5 {
+  margin-left: 1.25rem;
+}
+
 .ml-\[0\.75rem\] {
   margin-left: 0.75rem;
 }
@@ -3800,10 +3804,6 @@ details.collapse summary::-webkit-details-marker {
 
 .mt-\[5\%\] {
   margin-top: 5%;
-}
-
-.ml-5 {
-  margin-left: 1.25rem;
 }
 
 .block {
