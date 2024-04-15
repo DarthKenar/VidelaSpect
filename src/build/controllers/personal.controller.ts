@@ -81,7 +81,6 @@ export const postRegistroFoto = async (req:Request, res:Response)=>{
                         res.render("registroResponse",{personal, aiData, validation})
                     }
                 }else{
-                    console.log("SIN AI validation.status TRUE - Creando registro")
                     let register = await createRegisterWithPersonal(personal)
                     await saveImage(register.id, img)
                     validation = await makeRegistrationMessage(validation, personal)

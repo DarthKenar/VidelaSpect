@@ -254,10 +254,8 @@ export const getPhotoPath = async (recordId:number):Promise<string>=>{
 
 
 export const makeRecordsResponse = (userInOutRecords:UserInOutRecords[]):Record[]=>{
-    console.log("makeRecordsResponse")
     let recordsList:Record[] = []
     for (let i = 0; i < userInOutRecords.length; i++) {
-        console.log(format(userInOutRecords[i].dateTime, "DD-MM-YYYY", "es"))
         recordsList.push({
             id: userInOutRecords[i].id,
             personal_id: userInOutRecords[i].personal_id,
