@@ -4,6 +4,7 @@ import {Like} from 'typeorm';
 import { Between } from 'typeorm';
 import {encryptPass} from "../helpers/bcrypt.helpers"
 import { ValidationClass } from "../interfaces/interfaces"
+import { format } from "@formkit/tempo"
 const nodemailer = require("nodemailer");
 const PATH = require("path")
 var xl = require('excel4node');
@@ -153,15 +154,19 @@ async function getRecordsBetweenDates(fromDate: string, toDate: string):Promise<
     return records;
 }
 async function getRecordsBetweenTimes(fromTime: string, toTime: string):Promise<UserInOutRecords[]> {
-    const from = new Date(fromTime);
-    const to = new Date(toTime);
     let userInOutRecords = DataBase.getRepository(UserInOutRecords)
-    const records = await userInOutRecords.find({
-        where: {
-            dateTime: Between(from, to)
-        }
-    });
-    console.log(records)
+    const from = new Date(`1970-01-01T${fromTime}:00`);
+    const to = new Date(`2050-01-01T${toTime}:00`);
+
+    // Crear el query builder
+    const qb = userInOutRecords.createQueryBuilder("record");
+
+    // Obtener los registros entre las horas
+    const records = await qb
+        .where(`TIME(record.dateTime) BETWEEN TIME(:from) AND TIME(:to)`, { from: from, to: to })
+        .getMany();
+
+    console.log(records, "<-- Records")
     return records;
 }
 
@@ -169,18 +174,20 @@ export const registersFiltered = async(name:string, select:string, fromTime:stri
     let userInOutRecords:UserInOutRecords[];
     let userInOutRecordsRepository = DataBase.getRepository(UserInOutRecords)
     let variables = [name, fromTime, toTime, fromDate, toDate];
-    if (variables.every(variable => variable === undefined)) {
+    if (variables.every(variable => variable === undefined || variable === null || variable === '' || variable === 'undefined')) {
         userInOutRecords = await userInOutRecordsRepository.find();
-    }
-    if(select === "personal_name"){
-        userInOutRecords = await userInOutRecordsRepository.findBy({personal_name: Like(`%${name}%`)});
-    }else if(select === "date"){
-        userInOutRecords = await getRecordsBetweenDates(fromDate,toDate)
-    }else if(select === "time"){
-        userInOutRecords = await getRecordsBetweenTimes(fromDate,toDate)
     }else{
-        userInOutRecords = await userInOutRecordsRepository.find()
+        if(select === "personal_name"){
+            userInOutRecords = await userInOutRecordsRepository.findBy({personal_name: Like(`%${name}%`)});
+        }else if(select === "date"){
+            userInOutRecords = await getRecordsBetweenDates(fromDate,toDate)
+        }else if(select === "time"){
+            userInOutRecords = await getRecordsBetweenTimes(fromDate,toDate)
+        }else{
+            userInOutRecords = await userInOutRecordsRepository.find()
+        }
     }
+    console.log(userInOutRecords)
     return userInOutRecords
 }
 
