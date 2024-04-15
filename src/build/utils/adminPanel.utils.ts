@@ -153,17 +153,16 @@ async function getRecordsBetweenDates(fromDate: string, toDate: string):Promise<
     console.log(records)
     return records;
 }
-async function getRecordsBetweenTimes(fromTime: string, toTime: string):Promise<UserInOutRecords[]> {
-    let userInOutRecords = DataBase.getRepository(UserInOutRecords)
-    const from = new Date(`1970-01-01T${fromTime}:00`);
-    const to = new Date(`2050-01-01T${toTime}:00`);
 
+async function getRecordsBetweenTimes(fromTime: string, toTime: string): Promise<UserInOutRecords[]> {
+    let userInOutRecords = DataBase.getRepository(UserInOutRecords)
+    console.log(`fromTime -- ${fromTime}, toTime ${toTime}`)
     // Crear el query builder
     const qb = userInOutRecords.createQueryBuilder("record");
 
     // Obtener los registros entre las horas
     const records = await qb
-        .where(`TIME(record.dateTime) BETWEEN TIME(:from) AND TIME(:to)`, { from: from, to: to })
+        .where(`strftime('%H:%M:%S', record.dateTime) BETWEEN :from AND :to`, { from: fromTime, to: toTime })
         .getMany();
 
     console.log(records, "<-- Records")
@@ -174,6 +173,7 @@ export const registersFiltered = async(name:string, select:string, fromTime:stri
     let userInOutRecords:UserInOutRecords[];
     let userInOutRecordsRepository = DataBase.getRepository(UserInOutRecords)
     let variables = [name, fromTime, toTime, fromDate, toDate];
+    console.log(variables)
     if (variables.every(variable => variable === undefined || variable === null || variable === '' || variable === 'undefined')) {
         userInOutRecords = await userInOutRecordsRepository.find();
     }else{
@@ -182,7 +182,8 @@ export const registersFiltered = async(name:string, select:string, fromTime:stri
         }else if(select === "date"){
             userInOutRecords = await getRecordsBetweenDates(fromDate,toDate)
         }else if(select === "time"){
-            userInOutRecords = await getRecordsBetweenTimes(fromDate,toDate)
+            console.log("TIME")
+            userInOutRecords = await getRecordsBetweenTimes(fromTime,toTime)
         }else{
             userInOutRecords = await userInOutRecordsRepository.find()
         }
