@@ -98,7 +98,7 @@ export const validateHumanFaceInImage = async (validation:ValidationClass, data:
 }
 
 export const validateImageSize = (validation:ValidationClass, img:Image|undefined):ValidationClass=>{
-    if (img && img.size < 100) {
+    if (img && img.size < 1000) {
         validation.status = false
         validation.addMessage("No hay una imagen para procesar, por favor acérquese a la cámara.","error")
     }
