@@ -36,7 +36,10 @@ const changeInput = function() {
     let timeGroup = document.getElementById("timeGroup");
     let dateGroup = document.getElementById("dateGroup");
     let getDataTimeBtn = document.getElementById("getDataTimeBtn");
-
+    let fromTime = document.getElementById("fromTime");
+    let toTime = document.getElementById("toTime");
+    let fromDate = document.getElementById("fromDate");
+    let toDate = document.getElementById("toDate");
     if (select.value == "personal_name") {
         timeGroup.classList.add("hidden");
         dateGroup.classList.add("hidden");
@@ -47,10 +50,14 @@ const changeInput = function() {
         dateGroup.classList.add("hidden");
         getDataTimeBtn.classList.remove("hidden");
         name.classList.add("hidden");
+        fromDate.value = undefined;
+        toDate.value = undefined;
     }else if (select.value == "date") {
         timeGroup.classList.add("hidden");
         dateGroup.classList.remove("hidden");
         getDataTimeBtn.classList.remove("hidden");
         name.classList.add("hidden");
+        fromTime.value = undefined;
+        toTime.value = undefined;
     }
 }

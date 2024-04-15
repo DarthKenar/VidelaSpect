@@ -20,7 +20,7 @@
     </div>
 
     {{!-- Boton para filtrar fechas y horarios --}}
-    <input id="getDataTimeBtn" type="button" class="btn join-item btn-primary btn-outline hidden ml-5" value="FILTRAR">
+    <input hx-get="/admin/panel/registros/search" hx-target="#search_results" hx-include="[name='select'], [name='fromTime'], [name='toTime'], [name='fromDate'], [name='toDate']" id="getDataTimeBtn" type="button" class="btn join-item btn-primary btn-outline hidden ml-5" value="FILTRAR">
     {{!-- Nombres --}}
     <input hx-get="/admin/panel/registros/search"  hx-trigger="keyup changed delay:300ms" hx-target="#search_results" hx-include="[name='select'], [name='name']" id="name" name="name" value="{{input}}" class="input input-bordered join-item border-primary input-primary " placeholder="Buscar"/>
     <select hx-get="/admin/panel/registros/search" hx-trigger="change" hx-target="#search_results" hx-include="[name='select'], [name='input']" id="select" name="select" class="select select-bordered join-item" onchange="changeInput()">

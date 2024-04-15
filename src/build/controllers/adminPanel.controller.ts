@@ -214,20 +214,6 @@ export const getPanelPersonalFiltered = async (req:Request, res:Response)=>{
     }
 }
 
-export const getPanelRegistersFiltered = async (req:Request, res:Response)=>{
-    try{
-        let name = String(req.query.name)
-        let select = String(req.query.select)
-        console.log(name,"aaa", select)
-        console.log(typeof name, typeof select)
-        let registros = await registersFiltered(name, select)
-        res.render("adminPanelRegistrosResponse",{registros, name, select})
-    }catch(err){
-        console.log(err)
-        res.render("error", {messages: error})
-    }
-}
-
 export const getPanelPersonalExcel = async (req:Request, res:Response)=>{
     try{
         let input = String(req.query.input)
@@ -245,16 +231,38 @@ export const getPanelPersonalExcel = async (req:Request, res:Response)=>{
     }
 }
 
+export const getPanelRegistersFiltered = async (req:Request, res:Response)=>{
+    try{
+        let name = String(req.query.name)
+        let select = String(req.query.select)
+        let fromTime = String(req.query.fromTime)
+        let toTime = String(req.query.toTime)
+        let fromDate = String(req.query.fromDate)
+        let toDate = String(req.query.toDate)
+        let registros = await registersFiltered(name, select, fromTime, toTime, fromDate, toDate)
+        res.render("adminPanelRegistrosResponse",{registros, name, select})
+    }catch(err){
+        console.log(err)
+        res.render("error", {messages: error})
+    }
+}
+
+
+
 export const getPanelRegisterExcel = async (req:Request, res:Response)=>{
     try{
-        let input = String(req.query.input)
+        let name = String(req.query.name)
         let select = String(req.query.select)
+        let fromTime = String(req.query.fromTime)
+        let toTime = String(req.query.toTime)
+        let fromDate = String(req.query.fromDate)
+        let toDate = String(req.query.toDate)
+        let registros = await registersFiltered(name, select, fromTime, toTime, fromDate, toDate)
         let emailOption = Boolean(req.query.email)
         let admin = req.admin
-        let registros = await registersFiltered(input, select)
         let validation = new ValidationClass
-        validation = await validateAndHandleExcelExport(validation, registros, emailOption, admin.id, input, select)
-        res.render("adminPanelRegistrosResponse",{registros, input, select, messages: validation.messages})
+        validation = await validateAndHandleExcelExport(validation, registros, emailOption, admin.id, name, select)
+        res.render("adminPanelRegistrosResponse",{registros, name, select, messages: validation.messages})
 
     }catch(err){
         console.log(err)
