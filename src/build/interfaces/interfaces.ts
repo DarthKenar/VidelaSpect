@@ -61,3 +61,15 @@ export class AiDataClass implements AiData {
         this.response = response;
     }
 }
+
+export interface Records {
+    record: Records[];
+  }
+
+export interface Record {
+    id: number;
+    personal_id: number;
+    personal_name: string;
+    date: string;
+    time: string;
+}
