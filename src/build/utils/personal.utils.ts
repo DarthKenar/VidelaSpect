@@ -8,7 +8,7 @@ import { dayEnd, dayStart, format } from "@formkit/tempo"
 // Escribe el buffer en un archivo
 
 export async function saveImage(registroId:number, image:Image|undefined){
-    let dateTime = new Date
+    let dateTime = createDateInTimeZone()
     if(image){
       // ${dia},${dia}.${mes}-${horas}.${minutos}-${personal.name}`
       fs.writeFile(`dist/database/fotos/${dateTime.getFullYear()}/${dateTime.getMonth()}/${registroId}`+".png", image.buffer, function(err:Error) {
@@ -35,9 +35,15 @@ export async function saveImage(registroId:number, image:Image|undefined){
     }
 }
 
+export function createDateInTimeZone() {
+  let date = new Date();
+  let offset = date.getTimezoneOffset();
+  return new Date(date.getTime() - (offset*60*1000));
+}
+
 export const createRegisterWithPersonal = async (personal:Personal):Promise<UserInOutRecords>=>{
   let registerRepository = DataBase.getRepository(UserInOutRecords)
-  let dateTime = new Date
+  let dateTime = createDateInTimeZone()
   let registerNew = new UserInOutRecords
   registerNew.personal_id = personal.id
   registerNew.personal_name = personal.name
@@ -47,7 +53,7 @@ export const createRegisterWithPersonal = async (personal:Personal):Promise<User
 }
 
 export async function getTodayRegistersWithPersonal(personal:Personal):Promise<UserInOutRecords[]> {
-  let today = new Date();
+  let today = createDateInTimeZone()
   today.setHours(0, 0, 0, 0);
   let tomorrow = addDay(today, 1)
   let registroRepository = await DataBase.getRepository(UserInOutRecords);
@@ -88,7 +94,7 @@ export const clearCookies = (res:Response) => {
 }
 
 export const makeRegistrationMessage = async (validation:ValidationClass, personal:Personal)=>{
-  let dateTime = new Date
+  let dateTime = createDateInTimeZone()
   let cantidadDeRegistros = await (await getTodayRegistersWithPersonal(personal)).length
   if(!(isPar(cantidadDeRegistros))){
       var tipoDeRegistro = "entrada" 
@@ -102,7 +108,6 @@ export const makeRegistrationMessage = async (validation:ValidationClass, person
 export const makeRegistrationMessageRefuse = async (validation:ValidationClass, personal:Personal):Promise<ValidationClass>=>{
     //obtengo la cantidad de registros totales y los agrego al mensaje de validación
     let records = await getTodayRegistersWithPersonal(personal)
-    console.log(records)
     let entrada = records[0];
     let salida = records[records.length-1];
     validation.addMessage(`No se puede realizar un nuevo registro ya que hoy ya se han realizado las cargas correspondientes a su entrada y salida. \nEntrada: ${getTime(entrada.dateTime)} \nSalida: ${getTime(salida.dateTime)} `, "warning")

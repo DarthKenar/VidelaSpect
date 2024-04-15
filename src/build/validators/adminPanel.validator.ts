@@ -8,7 +8,6 @@ import * as fs from 'fs';
 export const validateAndHandleExcelExport = async(validation:ValidationClass, list:any[], emailOption:boolean, userId:any, input:string, select:string):Promise<ValidationClass>=>{
     validation = validateListIsNotEmpty(validation, list)
     if (emailOption) {
-        console.log(userId)
         let email = await getEmailWhitUserId(userId)
         validation = validateEmailIsNotEmpty(validation, email)
         if (validation.status && email) {

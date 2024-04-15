@@ -54,7 +54,6 @@ export const validateDailyStaffRegistration = async(validation: ValidationClass,
       validation.status = false
       validation = await makeRegistrationMessageRefuse(validation, personal)
     }
-    console.log(records)
     return validation
   }
 

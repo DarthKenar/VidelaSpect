@@ -239,7 +239,6 @@ export const getPanelRegistersFiltered = async (req:Request, res:Response)=>{
         let toTime = String(req.query.toTime)
         let fromDate = String(req.query.fromDate)
         let toDate = String(req.query.toDate)
-        console.log(name, select, fromTime, toTime)
         let registros = await registersFiltered(name, select, fromTime, toTime, fromDate, toDate)
         res.render("adminPanelRegistrosResponse",{registros, name, select})
     }catch(err){
