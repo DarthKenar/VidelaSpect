@@ -8,7 +8,7 @@ const nodemailer = require("nodemailer");
 const PATH = require("path")
 var xl = require('excel4node');
 import fs from "fs"
-import { format } from "@formkit/tempo"
+import { parse, format} from "@formkit/tempo"
 
 export const formalizeTitle = (title:string)=>{
     switch (title) {
@@ -143,6 +143,7 @@ export const exportExcel = async(objectList:Personal[]|UserInOutRecords[],input:
 async function getRecordsBetweenDates(fromDate: string, toDate: string):Promise<UserInOutRecords[]> {
     const from = new Date(fromDate);
     const to = new Date(toDate);
+    console.log(from, to)
     let userInOutRecords = DataBase.getRepository(UserInOutRecords)
     const records = await userInOutRecords.find({
         where: {
@@ -154,14 +155,15 @@ async function getRecordsBetweenDates(fromDate: string, toDate: string):Promise<
 
 async function getRecordsBetweenTimes(fromTime: string, toTime: string): Promise<UserInOutRecords[]> {
     let userInOutRecords = DataBase.getRepository(UserInOutRecords)
-    // Crear el query builder
     const qb = userInOutRecords.createQueryBuilder("record");
-
-    // Obtener los registros entre las horas
+    let fromTimeLocal = parse(fromTime,"HH:mm")
+    let toTimeLocal = parse(toTime, "HH:mm")
+    let fromTimeISO = fromTimeLocal.toISOString().split('T')[1].slice(0, -1);
+    let toTimeISO = toTimeLocal.toISOString().split('T')[1].slice(0, -1);
     const records = await qb
-        .where(`strftime('%H:%M:%S', record.dateTime) BETWEEN :from AND :to`, { from: fromTime, to: toTime })
+        .where(`strftime('%H:%M:%S', record.dateTime) BETWEEN :from AND :to`, { from: fromTimeISO, to: toTimeISO })
         .getMany();
-        
+    console.log(records)
     return records;
 }
 
@@ -255,13 +257,15 @@ export const getPhotoPath = async (recordId:number):Promise<string>=>{
 
 export const makeRecordsResponse = (userInOutRecords:UserInOutRecords[]):Record[]=>{
     let recordsList:Record[] = []
+    
     for (let i = 0; i < userInOutRecords.length; i++) {
+        let date = userInOutRecords[i].dateTime
         recordsList.push({
             id: userInOutRecords[i].id,
             personal_id: userInOutRecords[i].personal_id,
             personal_name: userInOutRecords[i].personal_name,
-            date: format(userInOutRecords[i].dateTime, "DD/MM/YYYY", "es"),
-            time: format(userInOutRecords[i].dateTime, "hh:mm:ss", "es")
+            date: date.toLocaleDateString(),
+            time: date.toLocaleTimeString(),
         })
     }
     return recordsList
