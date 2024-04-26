@@ -65,13 +65,8 @@ export async function getTodayRegistersWithPersonal(personal:Personal):Promise<U
   return records;
 }
 
-
-export function getDate(dateTime:Date):string {
-  return format(dateTime, "DD/MM/AAAA", "es")
-}
-
 export function getTime(dateTime:Date):string {
-  return format(dateTime, "HH:MM:SS", "es")
+  return format(dateTime, { time: "medium" }, "es") //HH:MM:SS
 }
 
 export const isPar = (numero:number) => numero % 2 === 0;
