@@ -5,19 +5,21 @@ import { AiOptions, Auth, Personal, UserInOutRecords } from "../../database/enti
 import { AiDataClass, Image, ValidationClass } from "../interfaces/interfaces";
 const fs = require('fs');
 import { format } from "@formkit/tempo"
-import { captureRejectionSymbol } from "events";
+const PATH = require("path")
+
 // Escribe el buffer en un archivo
 
 export async function saveImage(registroId:number, image:Image|undefined, photoPath:string, dateTime:Date){
     
     if(image){
       // ${dia},${dia}.${mes}-${horas}.${minutos}-${personal.name}`
-      fs.writeFile(photoPath, image.buffer, function(err:Error) {
+      fs.writeFile(PATH.join(__dirname, photoPath), image.buffer, function(err:Error) {
           if (err) {
             console.log('Hubo un error al escribir el archivo, se creará la carpeta para almacenar las fotos.', err);
-            fs.mkdirSync(`./dist/database/fotos/${dateTime.getFullYear()}/${dateTime.getMonth()}/`,{recursive:true});
-            fs.writeFile(photoPath, image.buffer,function(err:Error) {
+            fs.mkdirSync(`./dist/database/fotos/${dateTime.getFullYear()}/${dateTime.getMonth()+1}/`,{recursive:true});
+            fs.writeFile(PATH.join(__dirname, photoPath), image.buffer,function(err:Error) {
               if(err){
+                console.log(err)
                 console.log("La carpeta para la/s imagen/es no existe.")
               }else{
                 console.log("La carpeta se ha creado correctamente.")
@@ -49,7 +51,9 @@ export const createRegisterWithPersonal = async (personal:Personal, img:Image|un
   recordNew.personal_id = personal.id
   recordNew.personal_name = personal.name
   recordNew.dateTime = dateTime
-  recordNew.photoPath = `../../database/fotos/${recordNew.dateTime.getFullYear()}/${recordNew.dateTime.getMonth()}/${personal.name}-${recordNew.id}.png`
+  recordNew.photoPath = ""
+  recordNew = await registerRepository.save(recordNew)
+  recordNew.photoPath = `../../database/fotos/${recordNew.dateTime.getFullYear()}/${recordNew.dateTime.getMonth()+1}/${personal.name}-${recordNew.id}.png`
   recordNew = await registerRepository.save(recordNew)
   await saveImage(recordNew.id, img, recordNew.photoPath, recordNew.dateTime)
   return recordNew
