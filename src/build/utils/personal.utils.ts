@@ -8,19 +8,19 @@ import { format } from "@formkit/tempo"
 import { captureRejectionSymbol } from "events";
 // Escribe el buffer en un archivo
 
-export async function saveImage(registroId:number, image:Image|undefined){
-    let dateTime = new Date()
+export async function saveImage(registroId:number, image:Image|undefined, photoPath:string, dateTime:Date){
+    
     if(image){
       // ${dia},${dia}.${mes}-${horas}.${minutos}-${personal.name}`
-      fs.writeFile(`dist/database/fotos/${dateTime.getFullYear()}/${dateTime.getMonth()}/${registroId}`+".png", image.buffer, function(err:Error) {
+      fs.writeFile(photoPath, image.buffer, function(err:Error) {
           if (err) {
             console.log('Hubo un error al escribir el archivo, se creará la carpeta para almacenar las fotos.', err);
             fs.mkdirSync(`./dist/database/fotos/${dateTime.getFullYear()}/${dateTime.getMonth()}/`,{recursive:true});
-            fs.writeFile(`dist/database/fotos/${dateTime.getFullYear()}/${dateTime.getMonth()}/${registroId}`+".png", image.buffer,function(err:Error) {
+            fs.writeFile(photoPath, image.buffer,function(err:Error) {
               if(err){
-                console.log(err)
+                console.log("La carpeta para la/s imagen/es no existe.")
               }else{
-                console.log("La carpeta se ha creado correctamente")
+                console.log("La carpeta se ha creado correctamente.")
               }
             })
             //TODO:
@@ -42,14 +42,17 @@ export function createDateInTimeZone() {
   return new Date(date.getTime() - (offset*60*1000));
 }
 
-export const createRegisterWithPersonal = async (personal:Personal):Promise<UserInOutRecords>=>{
+export const createRegisterWithPersonal = async (personal:Personal, img:Image|undefined):Promise<UserInOutRecords>=>{
   let registerRepository = DataBase.getRepository(UserInOutRecords)
-  let registerNew = new UserInOutRecords
-  registerNew.personal_id = personal.id
-  registerNew.personal_name = personal.name
-  registerNew.dateTime = new Date()
-  registerNew = await registerRepository.save(registerNew)
-  return registerNew
+  let dateTime = new Date
+  let recordNew = new UserInOutRecords
+  recordNew.personal_id = personal.id
+  recordNew.personal_name = personal.name
+  recordNew.dateTime = dateTime
+  recordNew.photoPath = `../../database/fotos/${recordNew.dateTime.getFullYear()}/${recordNew.dateTime.getMonth()}/${personal.name}-${recordNew.id}.png`
+  recordNew = await registerRepository.save(recordNew)
+  await saveImage(recordNew.id, img, recordNew.photoPath, recordNew.dateTime)
+  return recordNew
 }
 
 export async function getTodayRegistersWithPersonal(personal:Personal):Promise<UserInOutRecords[]> {

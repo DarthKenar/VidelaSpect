@@ -50,6 +50,9 @@ export class UserInOutRecords {
 
     @Column()
     dateTime: Date;
+
+    @Column()
+    photoPath: string;
     
 }
 

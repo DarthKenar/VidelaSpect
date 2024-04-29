@@ -72,8 +72,7 @@ export const postRegistroFoto = async (req:Request, res:Response)=>{
                     validation = await validateHumanFaceInImageByAccuracy(validation, data, aiOptions)
                     let aiData:AiDataClass = makeAiData(data, aiOptions, validation)
                     if(validation.status){
-                        let register = await createRegisterWithPersonal(personal)
-                        await saveImage(register.id, img)
+                        await createRegisterWithPersonal(personal, img)
                         validation = await makeRegistrationMessage(validation, personal)
                         res.render("registroResponse",{personal, aiData, validation})
                     }else{
@@ -81,8 +80,7 @@ export const postRegistroFoto = async (req:Request, res:Response)=>{
                         res.render("registroResponse",{personal, aiData, validation})
                     }
                 }else{
-                    let register = await createRegisterWithPersonal(personal)
-                    await saveImage(register.id, img)
+                    await createRegisterWithPersonal(personal, img)
                     validation = await makeRegistrationMessage(validation, personal)
                     res.render("registroResponse",{personal, validation})
                 }
