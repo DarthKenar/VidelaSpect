@@ -68,6 +68,9 @@ export const postRegistroFoto = async (req:Request, res:Response)=>{
             if(validation.status){
                 let aiOptions = await getAiOptionsOrCreate()
                 if (aiOptions.status) {
+
+                    //TODO: capturar error get ImageClassification
+
                     let data = await getImageClassification(img)
                     validation = await validateHumanFaceInImageByAccuracy(validation, data, aiOptions)
                     let aiData:AiDataClass = makeAiData(data, aiOptions, validation)
@@ -90,8 +93,9 @@ export const postRegistroFoto = async (req:Request, res:Response)=>{
             }
         }
     }catch(err){
-        console.log(err)
-        res.render("error", {error})
+        let validation = new ValidationClass
+        validation.addMessage("Ha ocurrido un error de conexión con la inteligencia artificial. Verifique su conexión a internet o contacte un administrador para solucionar el problema.","error")
+        res.render("error", {messages: validation.messages})
     }
 }
 
