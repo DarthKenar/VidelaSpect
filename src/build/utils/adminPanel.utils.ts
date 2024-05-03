@@ -9,7 +9,11 @@ var xl = require('excel4node');
 import fs from "fs"
 import { validateEmailIsNotEmpty, validateListIsNotEmpty } from "../validators/adminProfile.validator";
 
-
+/**
+ * Cambia una palabra por otra (utilizado normalmente para mejorar la presentacioón de las cabeceras del excel exportado con información de usuario) ej: Cambia "dailyEntries" por "Entradas/Salidas"
+ * @param {string} title - La palabra a traducir.
+ * @returns {string} - La palabra modificada/reemplazada.
+ */
 export const formalizeTitle = (title:string)=>{
     switch (title) {
         case "id":
@@ -36,7 +40,11 @@ export const formalizeTitle = (title:string)=>{
             return title
     }
 }
-
+/**
+ * Busca el email de un usuario y lo devuelve. Si el usuario no existe devuelve null.
+ * @param {number} userId - El Id del usuario.
+ * @returns {string|null} - El Email del usuario o nulo.
+ */
 export const getEmailWhitUserId = async (userId:number):Promise<string|null>=>{
     let personalRepository = DataBase.getRepository(Personal)
     let user = await personalRepository.findOneBy({id:userId})
@@ -48,6 +56,16 @@ export const getEmailWhitUserId = async (userId:number):Promise<string|null>=>{
     }
 }
 
+/**
+ * Guarda un nuevo objeto Personal en la base de datos.
+ * @param {Personal} personal - Instancia de Personal.
+ * @param {string} name - Nombre de la persona.
+ * @param {string} dni - Dni de la persona.
+ * @param {string} position - Posición de la persona dentro de la empresa/institución.
+ * @param {boolean} admin - Si tiene o no privilegios de administrador.
+ * @param {number} dailyEntries - Cantidad de entradas/salidas diarias posibles.
+ * @return {void}
+*/
 export const savePersonal = async (personal:Personal, name:string, dni:string, position:string, admin:boolean, dailyEntries:number)=>{
     personal.name = name
     personal.dni = dni
@@ -57,6 +75,15 @@ export const savePersonal = async (personal:Personal, name:string, dni:string, p
     await DataBase.manager.save(personal)
 }
 
+/**
+ * Guarda un nuevo objeto Auth en la base de datos para un objeto Personal asociandolo (siguiendo la logica OneToOneField) en la que un objeto Auth esta asociado a un único objeto Personal
+ * @param {Personal} personal - Instancia de Personal.
+ * @param {Auth} auth - Instancia de Auth.
+ * @param {string} email - Email del administrador.
+ * @param {string} password - Contraseña del administrador.
+ * @param {string} phone - Numero de teléfono del administrador.
+ * @return {void}
+ */
 export const saveAuth = async (personal:Personal, auth:Auth ,email:string, password:string, phone:string)=>{
     auth.personal = personal
     auth.email = email
