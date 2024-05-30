@@ -36,7 +36,7 @@ export class Personal {
 @Entity()
 export class UserInOutRecords {
 
-    //Personal o Registro puede tener cualquier número de propiedades adicionales, y que el valor de esas propiedades puede ser de cualquier tipo.
+    
     [key: string]: any;
 
     @PrimaryGeneratedColumn()
@@ -49,10 +49,10 @@ export class UserInOutRecords {
     personal_name: string
 
     @Column()
-    date: string;
+    dateTime: Date;
 
     @Column()
-    time: string;
+    photoPath: string;
     
 }
 

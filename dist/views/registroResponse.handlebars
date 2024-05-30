@@ -1,29 +1,32 @@
 <dialog id="my_modal_3" class="modal max-w-[50%] m-auto">
-    <div class="modal-box max-w-[50%] p-10 glass">
+    <div class="modal-box max-w-[70%] p-10 glass">
         <form method="dialog">
             <a href="/personal/dni" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</a>
         </form>
         <h3 class="font-bold text-lg">{{personal.name}}</h3>
-        <p class="py-4 w-full resize-none" {{#unless data}}class="h-20"{{/unless}}  readonly >{{#with messages.[0]}}{{message}}{{/with}}</p>
+        <p class="py-4 w-full resize-none" {{#unless data}}class="h-20"{{/unless}}  readonly >{{#with validation.messages.[0]}}{{message}}{{/with}}</p>
         <p>{{aiData.response}}</p>
         {{#if aiData}}
             <div class="w-full flex flex-col items-center justify-center gap-10">
-                  <h2>Coincidencia con rostro humano:</h2>
                   <div class="avatar">
-                  <div class="w-24 rounded">
-                        <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                    <div class="w-24 rounded">
+                            <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                    </div>
                   </div>
-                  </div>
+                  <h2>Coincidencia con rostro humano:</h2>
                   <div class="radial-progress" style="--value:{{aiData.score}}; --size:12rem; --thickness: 2rem;" role="progressbar">{{aiData.score}}%</div>
             </div>
         {{/if}}
     </div>
 </dialog>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-var dialog = document.getElementById("my_modal_3");
-dialog.showModal();
-});
+    setTimeout(function() {
+    window.location.href = '/personal/dni';
+    }, 5000);
+    document.addEventListener("DOMContentLoaded", function() {
+    var dialog = document.getElementById("my_modal_3");
+    dialog.showModal();
+    });
 </script>
 <section class="w-full h-full flex flex-col items-center justify-items-center justify-center">
     <div class="h-[80%]">
@@ -33,7 +36,7 @@ dialog.showModal();
         <ul class="steps mt-5">
             <li class="step step-primary">Ingresar DNI</li>
             <li class="step step-primary">Sacar foto</li>
-            <li class="step">Finalizar registro</li>
+            <li class="step {{#if validation.status}}step-primary{{/if}}">Finalizar registro</li>
         </ul>
     </div>
 </section>

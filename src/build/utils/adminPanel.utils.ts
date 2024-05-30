@@ -1,14 +1,14 @@
 import DataBase from "../../database/data-source"
 import { Auth, Personal, UserInOutRecords } from "../../database/entity/models"
 import {Like} from 'typeorm';
+import { Between } from 'typeorm';
 import {encryptPass} from "../helpers/bcrypt.helpers"
-import { ValidationClass } from "../interfaces/interfaces"
+import { Record, ValidationClass } from "../interfaces/interfaces"
 const nodemailer = require("nodemailer");
 const PATH = require("path")
 var xl = require('excel4node');
 import fs from "fs"
-import { validateEmailIsNotEmpty, validateListIsNotEmpty } from "../validators/adminProfile.validator";
-
+import { parse, format} from "@formkit/tempo"
 /**
  * Cambia una palabra por otra (utilizado normalmente para mejorar la presentacioón de las cabeceras del excel exportado con información de usuario) ej: Cambia "dailyEntries" por "Entradas/Salidas"
  * @param {string} title - La palabra a traducir.
@@ -32,10 +32,8 @@ export const formalizeTitle = (title:string)=>{
             return "ID PERSONAL"
         case "personal_name":
             return "NOMBRE"
-        case "date":
-            return "FECHA"
-        case "time":
-            return "HORA"
+        case "dateTime":
+            return "FECHA Y HORA"
         default:
             return title
     }
@@ -169,19 +167,51 @@ export const exportExcel = async(objectList:Personal[]|UserInOutRecords[],input:
     return excelPath;
 }
 
-export const registersFiltered = async(input:string, select:string)=>{
-    let registrations:UserInOutRecords[];
-    let registroRepository = DataBase.getRepository(UserInOutRecords)
-    if(select === "personal_name"){
-        registrations = await registroRepository.findBy({personal_name: Like(`%${input}%`)});
-    }else if(select === "fecha"){
-        registrations = await registroRepository.findBy({date: Like(`%${input}%`)});
-    }else if(select === "hora"){
-        registrations = await registroRepository.findBy({time: Like(`%${input}%`)});
+async function getRecordsBetweenDates(fromDate: string, toDate: string):Promise<UserInOutRecords[]> {
+    const from = new Date(fromDate);
+    const to = new Date(toDate);
+    console.log(from, to)
+    let userInOutRecords = DataBase.getRepository(UserInOutRecords)
+    const records = await userInOutRecords.find({
+        where: {
+            dateTime: Between(from, to)
+        }
+    });
+    return records;
+}
+
+async function getRecordsBetweenTimes(fromTime: string, toTime: string): Promise<UserInOutRecords[]> {
+    let userInOutRecords = DataBase.getRepository(UserInOutRecords)
+    const qb = userInOutRecords.createQueryBuilder("record");
+    let fromTimeLocal = parse(fromTime,"HH:mm")
+    let toTimeLocal = parse(toTime, "HH:mm")
+    let fromTimeISO = fromTimeLocal.toISOString().split('T')[1].slice(0, -1);
+    let toTimeISO = toTimeLocal.toISOString().split('T')[1].slice(0, -1);
+    const records = await qb
+        .where(`strftime('%H:%M:%S', record.dateTime) BETWEEN :from AND :to`, { from: fromTimeISO, to: toTimeISO })
+        .getMany();
+    console.log(records)
+    return records;
+}
+
+export const registersFiltered = async(name:string, select:string, fromTime:string, toTime:string, fromDate:string, toDate:string):Promise<UserInOutRecords[]>=>{
+    let userInOutRecords:UserInOutRecords[];
+    let userInOutRecordsRepository = DataBase.getRepository(UserInOutRecords)
+    let variables = [name, fromTime, toTime, fromDate, toDate];
+    if (variables.every(variable => variable === undefined || variable === null || variable === '' || variable === 'undefined')) {
+        userInOutRecords = await userInOutRecordsRepository.find();
     }else{
-        registrations = await registroRepository.find()
+        if(select === "personal_name"){
+            userInOutRecords = await userInOutRecordsRepository.findBy({personal_name: Like(`%${name}%`)});
+        }else if(select === "date"){
+            userInOutRecords = await getRecordsBetweenDates(fromDate,toDate)
+        }else if(select === "time"){
+            userInOutRecords = await getRecordsBetweenTimes(fromTime,toTime)
+        }else{
+            userInOutRecords = await userInOutRecordsRepository.find()
+        }
     }
-    return registrations
+    return userInOutRecords
 }
 
 export const personalFiltered = async(input:string, select:string)=>{
@@ -240,3 +270,31 @@ export const getPersonalWhitId = async(id:number):Promise<Personal|null>=>{
     return personal
 }
 
+export const getPhotoPath = async (recordId:number):Promise<string>=>{
+    let recordRepository = DataBase.getRepository(UserInOutRecords)
+    let record = await recordRepository.findOneBy({id: recordId})
+    if (record) {
+        return PATH.join(__dirname, record.photoPath) 
+        // return PATH.join(__dirname, `../../database/fotos/${record.dateTime.getFullYear()}/${record.dateTime.getMonth()}/${recordId}.png`)
+    }else{
+        return ""
+    }
+}
+
+
+
+export const makeRecordsResponse = (userInOutRecords:UserInOutRecords[]):Record[]=>{
+    let recordsList:Record[] = []
+    
+    for (let i = 0; i < userInOutRecords.length; i++) {
+        let date = userInOutRecords[i].dateTime
+        recordsList.push({
+            id: userInOutRecords[i].id,
+            personal_id: userInOutRecords[i].personal_id,
+            personal_name: userInOutRecords[i].personal_name,
+            date: date.toLocaleDateString(),
+            time: date.toLocaleTimeString(),
+        })
+    }
+    return recordsList
+}

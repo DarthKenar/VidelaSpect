@@ -2,13 +2,31 @@
   {{>backToPanel}}
   <a href=""></a>
   <div class="join">
-    <div>
-      <input hx-get="/admin/panel/registros/search" hx-trigger="keyup changed delay:300ms" hx-target="#search_results" hx-include="[name='select'], [name='input']" id="input" name="input" value="{{input}}" class="input input-bordered join-item" placeholder="Buscar"/>
+    
+    {{!-- Fechas --}}
+    <div id="dateGroup" class="join-item hidden flex flex-row gap-5 justify-center items-center">
+      <label for="fromDate">Desde:</label>
+      <input type="date" class="input input-bordered" id="fromDate" name="fromDate">
+      <label for="fromDate">Hasta:</label>
+      <input type="date" class="input input-bordered" id="toDate" name="toDate">
     </div>
-    <select hx-get="/admin/panel/registros/search" hx-trigger="change" hx-target="#search_results" hx-include="[name='select'], [name='input']" id="select" name="select" class="select select-bordered join-item">
-      <option value="personal_name" {{#if_eq select "personal_name"}} selected {{/if_eq}}>Nombre</option>
-      <option value="fecha" {{#if_eq select "fecha"}} selected {{/if_eq}}>Fecha</option>
-      <option value="hora" {{#if_eq select "hora"}} selected {{/if_eq}}>Hora</option>
+
+    {{!-- Horarios --}}
+    <div id="timeGroup" class="join-item hidden flex flex-row gap-5 justify-center items-center">
+      <label for="fromTime">Desde:</label>
+      <input type="time" class="input input-bordered" id="fromTime" name="fromTime">
+      <label for="fromTime">Hasta:</label>
+      <input type="time" class="input input-bordered" id="toTime" name="toTime">
+    </div>
+
+    {{!-- Boton para filtrar fechas y horarios --}}
+    <input hx-get="/admin/panel/registros/search" hx-target="#search_results" hx-include="[name='select'], [name='fromTime'], [name='toTime'], [name='fromDate'], [name='toDate']" id="getDataTimeBtn" type="button" class="btn join-item btn-primary btn-outline hidden ml-5" value="FILTRAR">
+    {{!-- Nombres --}}
+    <input hx-get="/admin/panel/registros/search"  hx-trigger="keyup changed delay:300ms" hx-target="#search_results" hx-include="[name='select'], [name='name']" id="name" name="name" value="{{input}}" class="input input-bordered join-item border-primary input-primary " placeholder="Buscar"/>
+    <select hx-get="/admin/panel/registros/search" hx-trigger="change" hx-target="#search_results" hx-include="[name='select'], [name='input']" id="select" name="select" class="select select-bordered join-item select-primary" onchange="changeInput()">
+      <option value="personal_name">Nombre</option>
+      <option value="date">Fecha</option>
+      <option value="time">Hora</option>
     </select>
   </div>
   <a href=""></a>
@@ -40,7 +58,7 @@
         <th></th> 
         <th>Nombre</th> 
         <th>Fecha</th> 
-        <th>Hora</th>
+        <th>Hora</th> 
         <th>Foto</th> 
       </tr>
     </thead>
@@ -50,7 +68,7 @@
                 <td>{{this.id}}</td>
                 <td>{{this.personal_name}}</td> 
                 <td>{{this.date}}</td> 
-                <td>{{this.time}}</td>
+                <td>{{this.time}}</td> 
                 <td>
                   <a onclick="getImage({{this.id}})" class="btn btn-sm btn-info btn-outline"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-camera"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
                     VER
@@ -64,8 +82,8 @@
         <th></th> 
         <th>Nombre</th> 
         <th>Fecha</th> 
-        <th>Hora</th>
-        <th>Foto</th> 
+        <th>Hora</th> 
+        <th>Tiempo</th>
       </tr>
     </tfoot>
   </table>

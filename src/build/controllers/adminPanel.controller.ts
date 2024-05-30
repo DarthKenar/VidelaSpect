@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import { Auth, Personal, UserInOutRecords } from "../../database/entity/models";
 import DataBase from "../../database/data-source";
-import { savePersonal, registersFiltered, personalFiltered, saveAuth, getAuthOrCreate, deleteAuth } from "../utils/adminPanel.utils"
-import { validateAndHandleExcelExport, validateDniFormat, validatePersonWithDniDoesNotExist } from "../validators/adminPanel.validator"
+import { savePersonal, registersFiltered, personalFiltered, saveAuth, getAuthOrCreate, deleteAuth, getPhotoPath, makeRecordsResponse } from "../utils/adminPanel.utils"
+import { validateAndHandleExcelExport, validateDniFormat, validatePersonWithDniDoesNotExist, validatePhotoExist } from "../validators/adminPanel.validator"
 import  { validateAreEmptyFieldsInPersonal }  from "../validators/personal.validator"
-import * as fs from 'fs';
+
 import { error } from "../interfaces/interfaces"
 import { ValidationClass } from "../interfaces/interfaces";
 import { getPersonalUiOrCreate } from "../utils/adminProfile.utils";
@@ -36,7 +36,8 @@ export const getPanelPersonal = async (req:Request, res:Response)=>{
 export const getPanelRegisters = async (req:Request, res:Response)=>{
     let registroRepository = DataBase.getRepository(UserInOutRecords)
     let registros:UserInOutRecords[] = await registroRepository.find()
-    res.render("adminPanelRegistros",{registros})
+    let recordsResponse = makeRecordsResponse(registros)
+    res.render("adminPanelRegistros",{registros:recordsResponse})
 }
 
 export const getCreatePersonal = async (req:Request, res:Response)=>{
@@ -185,20 +186,16 @@ export const postDeletePersonal = async (req:Request, res:Response)=>{
 export const getPanelRegisterPhoto = async (req:Request, res:Response)=>{
     try{
         let registroId = Number(req.params.id)
-        let fotoPath:string = PATH.join(__dirname, `../../database/fotos/${registroId}.png`)
         if(registroId){
-            if(fs.existsSync(fotoPath)){
-                res.sendFile(fotoPath,(err)=>{console.log(err)})
+            let photoPath:string = await getPhotoPath(registroId)
+            let validation = new ValidationClass
+            validation = await validatePhotoExist(validation, photoPath)
+            if (validation.status) {
+                res.sendFile(photoPath,(err)=>{console.log(err)})
             }else{
-                let validation = new ValidationClass
-                let registroRepository = DataBase.getRepository(UserInOutRecords)
-                let registros:UserInOutRecords[] = await registroRepository.find()
-                let registro:UserInOutRecords|null = await registroRepository.findOneBy({id:registroId})
-                if(registro){
-                    validation.addMessage(`La foto buscada de ${registro.personal_name} no se encuentra.`,"error")
-                    res.render("adminPanelRegistros",{registros, messages: validation.messages})
-                }
-            }
+                photoPath = PATH.join(__dirname, `../../database/fotos/pictureNotFound.png`)
+                res.sendFile(photoPath,(err)=>{console.log(err)})
+            }  
         }
     }catch(err){
         console.log(err)
@@ -212,18 +209,6 @@ export const getPanelPersonalFiltered = async (req:Request, res:Response)=>{
         let select = String(req.query.select)
         let personal = await personalFiltered(input, select)
         res.render("adminPanelPersonalResponse",{personal, input, select})
-    }catch(err){
-        console.log(err)
-        res.render("error", {messages: error})
-    }
-}
-
-export const getPanelRegistersFiltered = async (req:Request, res:Response)=>{
-    try{
-        let input = String(req.query.input)
-        let select = String(req.query.select)
-        let registros = await registersFiltered(input, select)
-        res.render("adminPanelRegistrosResponse",{registros, input, select})
     }catch(err){
         console.log(err)
         res.render("error", {messages: error})
@@ -247,16 +232,40 @@ export const getPanelPersonalExcel = async (req:Request, res:Response)=>{
     }
 }
 
+export const getPanelRegistersFiltered = async (req:Request, res:Response)=>{
+    try{
+        let name = String(req.query.name)
+        let select = String(req.query.select)
+        let fromTime = String(req.query.fromTime)
+        let toTime = String(req.query.toTime)
+        let fromDate = String(req.query.fromDate)
+        let toDate = String(req.query.toDate)
+        let registros = await registersFiltered(name, select, fromTime, toTime, fromDate, toDate)
+        let recordsResponse = makeRecordsResponse(registros)
+        res.render("adminPanelRegistrosResponse",{registros: recordsResponse, name, select})
+    }catch(err){
+        console.log(err)
+        res.render("error", {messages: error})
+    }
+}
+
+
+
 export const getPanelRegisterExcel = async (req:Request, res:Response)=>{
     try{
-        let input = String(req.query.input)
+        let name = String(req.query.name)
         let select = String(req.query.select)
+        let fromTime = String(req.query.fromTime)
+        let toTime = String(req.query.toTime)
+        let fromDate = String(req.query.fromDate)
+        let toDate = String(req.query.toDate)
+        let registros = await registersFiltered(name, select, fromTime, toTime, fromDate, toDate)
         let emailOption = Boolean(req.query.email)
         let admin = req.admin
-        let registros = await registersFiltered(input, select)
         let validation = new ValidationClass
-        validation = await validateAndHandleExcelExport(validation, registros, emailOption, admin.id, input, select)
-        res.render("adminPanelRegistrosResponse",{registros, input, select, messages: validation.messages})
+        let recordsResponse = makeRecordsResponse(registros)
+        validation = await validateAndHandleExcelExport(validation, registros, emailOption, admin.id, name, select)
+        res.render("adminPanelRegistrosResponse",{registros: recordsResponse, name, select, messages: validation.messages})
 
     }catch(err){
         console.log(err)

@@ -1,8 +1,9 @@
 import DataBase from "../../database/data-source"
-import { AiOptions, Personal, UserInOutRecords } from "../../database/entity/models"
+import { AiOptions, Personal } from "../../database/entity/models"
 import { comparePass } from "../helpers/bcrypt.helpers"
 import { Image, ValidationClass} from "../interfaces/interfaces"
-import { getDate, makeRegistrationMessageRefuse } from "../utils/personal.utils"
+import { makeRegistrationMessageRefuse } from "../utils/personal.utils"
+import { getTodayRegistersWithPersonal } from "../utils/personal.utils"
 
 export const validateAreEmptyFieldsInPersonal = (validation:ValidationClass, name:string, dni:string, position:string):ValidationClass => {
     if (name.length === 0 || dni.length === 0 || position.length === 0) {
@@ -47,11 +48,9 @@ export const validateComparePass = async (validation:ValidationClass, passwordOl
 }
 
 export const validateDailyStaffRegistration = async(validation: ValidationClass, personal:Personal):Promise<ValidationClass>=>{
-    let dateTime = new Date
-    let date = getDate(dateTime)
-    let registroRepository = await DataBase.getRepository(UserInOutRecords)
-    let registers = await registroRepository.findBy({personal_id:personal.id,date:date})
-    if(registers.length === personal.dailyEntries){
+
+    let records = await getTodayRegistersWithPersonal(personal)
+    if(records.length >= personal.dailyEntries){
       validation.status = false
       validation = await makeRegistrationMessageRefuse(validation, personal)
     }
@@ -76,30 +75,27 @@ export const validateExistPersonalWhitDni = async (validation:ValidationClass, d
     return validation
 }
 
-export const validateHumanFaceInImage = async (validation:ValidationClass, data:any, aiOptions:AiOptions):Promise<ValidationClass>=>{
+export const validateHumanFaceInImageByAccuracy = async (validation:ValidationClass, data:any, aiOptions:AiOptions):Promise<ValidationClass>=>{
     if (data) {
-        console.log(data)
         for (let index = 0; index < data.length; index++) {
-            let score = data[index].score;
-            let label = data[index].label;
-            if (label === "Human Face") {
-                if (score*100 < aiOptions.accuracy) {
-                    validation.status = false
-                    validation.addMessage("La imagen no coincide con un rostro humano.","error")
+            if (data[index].label === "Human Face") {
+                if (Math.round(data[index].score*100) > aiOptions.accuracy) {
+                    validation.addMessage("La imagen ha superado la validación de rostro humano.","success")
                 }else{
-                    validation.addMessage("La imagen contiene un rostro humano.","success")
+                    validation.status = false
+                    validation.addMessage("La imagen no ha superado la validación de rostro humano.","error")
                 }
             }
         }
     }else{
         validation.status = false
-        validation.addMessage("No se pudo obtener información de la imagen.","error")
+        validation.addMessage("La IA no ha podido obtener información de la foto. Si este problema persiste, por favor contemple desactivarla temporalmente o revise su conexión a internet.","error")
     }
     return validation
 }
 
 export const validateImageSize = (validation:ValidationClass, img:Image|undefined):ValidationClass=>{
-    if (img && img.size < 100) {
+    if (img && img.size < 1000) {
         validation.status = false
         validation.addMessage("No hay una imagen para procesar, por favor acérquese a la cámara.","error")
     }

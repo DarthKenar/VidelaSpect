@@ -1,25 +1,33 @@
 import { Request, Response } from "express";
+import { addDay } from "@formkit/tempo"
 import DataBase from "../../database/data-source";
 import { AiOptions, Auth, Personal, UserInOutRecords } from "../../database/entity/models";
 import { AiDataClass, Image, ValidationClass } from "../interfaces/interfaces";
 const fs = require('fs');
+import { format } from "@formkit/tempo"
+const PATH = require("path")
+
 // Escribe el buffer en un archivo
 
-export async function saveImage(registroId:number, image:Image|undefined){
+export async function saveImage(registroId:number, image:Image|undefined, photoPath:string, dateTime:Date){
+    
     if(image){
       // ${dia},${dia}.${mes}-${horas}.${minutos}-${personal.name}`
-      fs.writeFile(`dist/database/fotos/${registroId}`+".png", image.buffer, function(err:Error) {
+      fs.writeFile(PATH.join(__dirname, photoPath), image.buffer, function(err:Error) {
           if (err) {
-            console.log('Hubo un error al escribir el archivo', err);
-            fs.mkdirSync(`./dist/database/fotos/`,{recursive:true});
-            fs.writeFile(`dist/database/fotos/${registroId}`+".png", image.buffer,function(err:Error) {
+            console.log('Hubo un error al escribir el archivo, se creará la carpeta para almacenar las fotos.', err);
+            fs.mkdirSync(`./dist/database/fotos/${dateTime.getFullYear()}/${dateTime.getMonth()+1}/`,{recursive:true});
+            fs.writeFile(PATH.join(__dirname, photoPath), image.buffer,function(err:Error) {
               if(err){
                 console.log(err)
+                console.log("La carpeta para la/s imagen/es no existe.")
               }else{
-                console.log("La carpeta se ha creado correctamente")
+                console.log("La carpeta se ha creado correctamente.")
               }
             })
             //TODO:
+            //Si esta activada la opción en la base de datos de eliminar la imagen, se debería eliminar la imagen guardada en la carpeta.
+            //Si no está activada la opción, no hace nada.
             //Aca estaría bueno eliminar automáticamente la carpeta pero sale un error cuando lo hago porque pareciera que se necesitan ciertos permisos.
           } else {
             console.log('Archivo guardado con éxito');
@@ -30,37 +38,42 @@ export async function saveImage(registroId:number, image:Image|undefined){
     }
 }
 
-export const createRegisterWithPersonal = async (personal:Personal):Promise<UserInOutRecords>=>{
+export function createDateInTimeZone() {
+  let date = new Date();
+  let offset = date.getTimezoneOffset();
+  return new Date(date.getTime() - (offset*60*1000));
+}
+
+export const createRegisterWithPersonal = async (personal:Personal, img:Image|undefined):Promise<UserInOutRecords>=>{
   let registerRepository = DataBase.getRepository(UserInOutRecords)
   let dateTime = new Date
-  let date = getDate(dateTime)
-  let time = getTime(dateTime)
-  let registerNew = new UserInOutRecords
-  registerNew.personal_id = personal.id
-  registerNew.personal_name = personal.name
-  registerNew.date = date
-  registerNew.time = time
-  registerNew = await registerRepository.save(registerNew)
-  return registerNew
+  let recordNew = new UserInOutRecords
+  recordNew.personal_id = personal.id
+  recordNew.personal_name = personal.name
+  recordNew.dateTime = dateTime
+  recordNew.photoPath = ""
+  recordNew = await registerRepository.save(recordNew)
+  recordNew.photoPath = `../../database/fotos/${recordNew.dateTime.getFullYear()}/${recordNew.dateTime.getMonth()+1}/${personal.name}-${recordNew.id}.png`
+  recordNew = await registerRepository.save(recordNew)
+  await saveImage(recordNew.id, img, recordNew.photoPath, recordNew.dateTime)
+  return recordNew
 }
 
 export async function getTodayRegistersWithPersonal(personal:Personal):Promise<UserInOutRecords[]> {
-  let dateTime = new Date
-  let fecha = getDate(dateTime)
-  let registroRepository = await DataBase.getRepository(UserInOutRecords)
-  let registers = await registroRepository.findBy({personal_id:personal.id,date:fecha})
-  return registers
-} 
-
-export function getDate(ahora:Date):string {
-  let ano = ahora.getFullYear()
-  let dia = ("0" + ahora.getDate()).slice(-2)
-  let mes = ("0" + (ahora.getMonth() + 1)).slice(-2)
-  return `${dia}-${mes}-${ano}`
+  let today = new Date()
+  today.setHours(0, 0, 0, 0);
+  let tomorrow = addDay(today, 1)
+  let registroRepository = await DataBase.getRepository(UserInOutRecords);
+  let records = await registroRepository.createQueryBuilder("record")
+  .where("record.personal_id = :personal_id", { personal_id: personal.id })
+  .andWhere("record.dateTime >= :today", { today: today })
+  .andWhere("record.dateTime < :tomorrow", { tomorrow: tomorrow })
+  .getMany();
+  return records;
 }
 
 export function getTime(dateTime:Date):string {
-  return dateTime.toTimeString().split(' ')[0];  // Formato: "HH:mm:ss"
+  return format(dateTime, { time: "medium" }, "es") //HH:MM:SS
 }
 
 export const isPar = (numero:number) => numero % 2 === 0;
@@ -83,26 +96,23 @@ export const clearCookies = (res:Response) => {
 }
 
 export const makeRegistrationMessage = async (validation:ValidationClass, personal:Personal)=>{
-  let date = new Date
-  let hours = date.getHours()
-  let minutes = date.getMinutes()
-  let minutesString = formalizeMinutes(minutes)
+  let dateTime = new Date()
   let cantidadDeRegistros = await (await getTodayRegistersWithPersonal(personal)).length
   if(!(isPar(cantidadDeRegistros))){
       var tipoDeRegistro = "entrada" 
   }else{
       var tipoDeRegistro = "salida"
   }
-  validation.addMessage(`Se ha registrado correctamente su ${tipoDeRegistro} a las: ${hours}:${minutesString} \nEsperamos que tenga una excelente jornada laboral.`, "success")
+  validation.addMessage(`Se ha registrado correctamente su ${tipoDeRegistro} a las: ${getTime(dateTime)} \nEsperamos que tenga una excelente jornada laboral.`, "success")
   return validation
 }
 
 export const makeRegistrationMessageRefuse = async (validation:ValidationClass, personal:Personal):Promise<ValidationClass>=>{
     //obtengo la cantidad de registros totales y los agrego al mensaje de validación
-    let registers = await getTodayRegistersWithPersonal(personal)
-    let entrada = registers[0];
-    let salida = registers[registers.length-1];
-    validation.addMessage(`No se puede realizar un nuevo registro ya que hoy ya se han realizado las cargas correspondientes a su entrada y salida. \nEntrada: ${entrada.time} \nSalida: ${salida.time} `, "warning")
+    let records = await getTodayRegistersWithPersonal(personal)
+    let entrada = records[0];
+    let salida = records[records.length-1];
+    validation.addMessage(`No se puede realizar un nuevo registro ya que hoy ya se han realizado las cargas correspondientes a su entrada y salida. \nEntrada: ${getTime(entrada.dateTime)} \nSalida: ${getTime(salida.dateTime)} `, "warning")
     return validation
 }
 
@@ -117,44 +127,29 @@ export const getIsParRegistersQuantity = async (personal:Personal):Promise<boole
   return isPar(recordsQuantity) && recordsQuantity < personal.dailyEntries
 }
 
-export const makeAiData = (data:any, aiOptions:AiOptions):AiDataClass=>{
-
-  let replaceLabel = (label:string):string =>{
-      let newLabel = label
-      switch (label) {
-          case "Human Face":
-              newLabel = "Rostro humano"
-              break;
-          case "Empty Place":
-              newLabel = "Lugar vacío"
-              break;
-          case "Inanimate Object":
-              newLabel = "Objeto inanimado"
-              break;
-      }
-      return newLabel
-  }
-
-  var score: number = 0
-  var label: string = "Error"
-  var response:string = "No se pudo obtener información de la imagen."
-  
+export const makeAiData = (data:any, aiOptions:AiOptions, validation:ValidationClass):AiDataClass=>{
+  var response:string = ""
+  var score:number = 0
+  var label:string = ""
   for (let index = 0; index < data.length; index++) {
-      if (data[index].label === "Human Face" && data[index].score*100 > aiOptions.accuracy) {
+      if (data[index].label === "Human Face") {
           score = Math.round(data[index].score*100)
-          label = replaceLabel(data[index].label);
-          if (index === 0) {
-              response = "Muchas gracias por completar el registro."
-          }
-      }
-      if (data[index].label === "Empty Place" && index === 0) {
-          response = "En la foto pareciera figurar un lugar vacío. Por favor, acérquese a la cámara."
-      }
-      if (data[index].label === "Inanimate Object" && index === 0) {
-          response = "En la foto pareciera figurar un objeto inanimado. Por favor, acérquese a la cámara."
+          label = data[index].label
       }
   }
-
-  let aiData = (new AiDataClass(score, replaceLabel(label), response))
+  if (validation.status) {
+    response = "Muchas gracias por completar el registro."
+  }else{
+    if (data[0].label === "Empty Place") {
+      response = "En la foto pareciera figurar un lugar vacío. Por favor, intente nuevamente acercándose a la cámara."
+    }
+    if (data[0].label === "Inanimate Object") {
+        response = "En la foto pareciera figurar un objeto inanimado. Por favor, intente nuevamente acercándose a la cámara."
+    }
+    if (data[0].label === "Human Face") {
+        response = "En la foto pareciera figurar un rostro humano, pero la confianza de la IA no es suficiente para validar el registro. Por favor, intente nuevamente acercándose a la cámara."
+    }
+  }
+  let aiData = (new AiDataClass(score, label, response))
   return aiData
 }

@@ -1,13 +1,13 @@
 import DataBase from "../../database/data-source"
-import { Personal } from "../../database/entity/models"
+import { Personal, UserInOutRecords } from "../../database/entity/models"
 import { ValidationClass } from "../interfaces/interfaces"
 import { exportExcel, getEmailWhitUserId, sendExcel } from "../utils/adminPanel.utils"
 import { validateEmailIsNotEmpty, validateListIsNotEmpty } from "./adminProfile.validator"
+import * as fs from 'fs';
 
 export const validateAndHandleExcelExport = async(validation:ValidationClass, list:any[], emailOption:boolean, userId:any, input:string, select:string):Promise<ValidationClass>=>{
     validation = validateListIsNotEmpty(validation, list)
     if (emailOption) {
-        console.log(userId)
         let email = await getEmailWhitUserId(userId)
         validation = validateEmailIsNotEmpty(validation, email)
         if (validation.status && email) {
@@ -48,4 +48,10 @@ export const validateDniFormat = (validation:ValidationClass, dni:string): Valid
     return validation
 }
 
-
+export const validatePhotoExist = async (validation:ValidationClass, photoPath:string):Promise<ValidationClass>=>{
+    if (!photoPath|| !fs.existsSync(photoPath)) {
+        validation.status = false
+        validation.addMessage(`La foto buscada de no se encuentra.`,"error")
+    }
+    return validation
+}

@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/DarthKenar/VidelaSpect#readme",
   "dependencies": {
+    "@formkit/tempo": "^0.0.19",
     "@huggingface/inference": "^2.6.6",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",

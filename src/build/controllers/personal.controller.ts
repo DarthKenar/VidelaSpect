@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import DataBase from "../../database/data-source";
 import { Personal } from "../../database/entity/models";
 import { saveImage, getPassWhitPersonal, clearCookies, createRegisterWithPersonal, makeRegistrationMessage, makeRegistrationMessageRefuse, getPersonalWhitDni, getIsParRegistersQuantity, makeAiData} from "../utils/personal.utils"
-import { validateHumanFaceInImage, validateExistDni, validateExistPersonalWhitDni, validateDailyStaffRegistration, validateImageSize } from "../validators/personal.validator"
+import { validateHumanFaceInImageByAccuracy, validateExistDni, validateExistPersonalWhitDni, validateDailyStaffRegistration, validateImageSize } from "../validators/personal.validator"
 import { ValidationClass , Image, error, AiDataClass} from "../interfaces/interfaces";
 import {comparePass} from "../helpers/bcrypt.helpers"
 import { getPersonalUiOrCreate } from "../utils/adminProfile.utils";
@@ -42,14 +42,14 @@ export const postRegistroDNI = async (req:Request, res:Response)=>{
                             res.render("registroFoto", {personal, tipoDeRegistro})
                         }
                     }else{
-                        res.render("registroError",{personal, messages: validation.messages})
+                        res.render("registroResponse",{personal, validation})
                     }
                 }else{
                     res.render("registroPassword",{admin: personal})
                 }
             }
         }else{
-            res.render("registroError",{messages: validation.messages})
+            res.render("registroResponse",{validation})
         }
     }catch(err){
         console.log(err)
@@ -66,35 +66,36 @@ export const postRegistroFoto = async (req:Request, res:Response)=>{
             let img:Image|undefined = req.file
             validation = validateImageSize(validation, img)
             if(validation.status){
-                let register = await createRegisterWithPersonal(personal)
                 let aiOptions = await getAiOptionsOrCreate()
                 if (aiOptions.status) {
+
+                    //TODO: capturar error get ImageClassification
+
                     let data = await getImageClassification(img)
-                    validation = await validateHumanFaceInImage(validation, data, aiOptions)
+                    validation = await validateHumanFaceInImageByAccuracy(validation, data, aiOptions)
+                    let aiData:AiDataClass = makeAiData(data, aiOptions, validation)
                     if(validation.status){
-                        await saveImage(register.id, img)
+                        await createRegisterWithPersonal(personal, img)
                         validation = await makeRegistrationMessage(validation, personal)
-                        let aiData:AiDataClass = makeAiData(data, aiOptions)
-                        res.render("registroOk",{personal, aiData, messages: validation.messages})
+                        res.render("registroResponse",{personal, aiData, validation})
                     }else{
-                        let aiData:AiDataClass = makeAiData(data, aiOptions)
                         validation = await makeRegistrationMessageRefuse(validation, personal)
-                        console.log(aiData)
-                        res.render("registroError",{personal, aiData:aiData, messages: validation.messages})
+                        res.render("registroResponse",{personal, aiData, validation})
                     }
                 }else{
-                    await saveImage(register.id, img)
+                    await createRegisterWithPersonal(personal, img)
                     validation = await makeRegistrationMessage(validation, personal)
-                    res.render("registroOk",{personal, messages: validation.messages})
+                    res.render("registroResponse",{personal, validation})
                 }
             }else{
                 validation = await makeRegistrationMessageRefuse(validation, personal)
-                res.render("registroError",{personal, messages: validation.messages})
+                res.render("registroResponse",{personal, validation})
             }
         }
     }catch(err){
-        console.log(err)
-        res.render("error", {error})
+        let validation = new ValidationClass
+        validation.addMessage("Ha ocurrido un error de conexión con la inteligencia artificial. Verifique su conexión a internet o contacte un administrador para solucionar el problema.","error")
+        res.render("error", {messages: validation.messages})
     }
 }
 

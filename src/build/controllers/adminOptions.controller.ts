@@ -60,6 +60,7 @@ export const getRegisterDelete = async (req: Request, res: Response)=>{
     }
 }
 
+//TODO: Implementar la eliminación de registros
 export const postRegisterDelete = async (req: Request, res: Response)=>{
     const fs = require('fs');
 
