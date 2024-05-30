@@ -1,5 +1,5 @@
 <dialog id="my_modal_3" class="modal max-w-[50%] m-auto">
-    <div class="modal-box max-w-[50%] p-10 glass">
+    <div class="modal-box max-w-[70%] p-10 glass">
         <form method="dialog">
             <a href="/personal/dni" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</a>
         </form>
@@ -20,10 +20,13 @@
     </div>
 </dialog>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-var dialog = document.getElementById("my_modal_3");
-dialog.showModal();
-});
+    setTimeout(function() {
+    window.location.href = '/personal/dni';
+    }, 5000);
+    document.addEventListener("DOMContentLoaded", function() {
+    var dialog = document.getElementById("my_modal_3");
+    dialog.showModal();
+    });
 </script>
 <section class="w-full h-full flex flex-col items-center justify-items-center justify-center">
     <div class="h-[80%]">
