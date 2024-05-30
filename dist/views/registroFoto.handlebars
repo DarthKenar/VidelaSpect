@@ -1,8 +1,5 @@
 <menu class="flex justify-between my-10">
-    <a href="/personal/dni" class="btn btn-ghost">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-corner-up-left"><polyline points="9 14 4 9 9 4"></polyline><path d="M20 20v-7a4 4 0 0 0-4-4H4"></path></svg>
-        VOLVER
-    </a>
+    {{>backToRegisterDNI}}
     <div>
         <h1 class="pt-4 pb-4 text-center w-full font-semibold text-5xl">Bienvenido/a {{personal.name}}</h1>
         <h2 class="m-auto text-center">Está registrando su <span class="underline font-bold text-lg">{{tipoDeRegistro}}.</span></h2>
