@@ -3738,8 +3738,8 @@ details.collapse summary::-webkit-details-marker {
   margin: 2.5rem;
 }
 
-.m-\[0\.25rem\] {
-  margin: 0.25rem;
+.m-\[0\.5rem\] {
+  margin: 0.5rem;
 }
 
 .m-auto {
@@ -3782,8 +3782,8 @@ details.collapse summary::-webkit-details-marker {
   margin-left: 1.25rem;
 }
 
-.ml-\[0\.75rem\] {
-  margin-left: 0.75rem;
+.ml-\[2rem\] {
+  margin-left: 2rem;
 }
 
 .mr-1 {
@@ -3854,6 +3854,10 @@ details.collapse summary::-webkit-details-marker {
   height: 3rem;
 }
 
+.h-\[4rem\] {
+  height: 4rem;
+}
+
 .h-\[5\%\] {
   height: 5%;
 }
@@ -3880,6 +3884,10 @@ details.collapse summary::-webkit-details-marker {
 
 .h-full {
   height: 100%;
+}
+
+.h-\[75\%\] {
+  height: 75%;
 }
 
 .w-10 {
@@ -3924,10 +3932,6 @@ details.collapse summary::-webkit-details-marker {
 
 .w-\[30rem\] {
   width: 30rem;
-}
-
-.w-\[3rem\] {
-  width: 3rem;
 }
 
 .w-\[4rem\] {
@@ -4233,6 +4237,11 @@ details.collapse summary::-webkit-details-marker {
 .text-xs {
   font-size: 0.75rem;
   line-height: 1rem;
+}
+
+.text-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
 }
 
 .font-bold {
